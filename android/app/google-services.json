@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "841688902664",
+    "project_id": "otp-verification-groceries",
+    "storage_bucket": "otp-verification-groceries.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841688902664:android:fa6d17e23f841ee1d2f5bd",
+        "android_client_info": {
+          "package_name": "com.demogroceries"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlNQuB1xObZqpk9tF5y4TzD-GTogG1j74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

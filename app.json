@@ -1,4 +1,19 @@
 {
   "name": "demoGroceries",
-  "displayName": "demoGroceries"
+  "displayName": "demoGroceries",
+  "expo": {
+    "ios": {
+      "bundleIdentifier": "com.demoGroceries",
+      "buildNumber": "1.0.0",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "plugins": [["expo-secure-store"]],
+    "extra": {
+      "eas": {
+        "projectId": "4685f6f5-4f0b-488d-9a2e-5c1b8f7b352a"
+      }
+    }
+  }
 }
