@@ -1,11 +1,13 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { Fragment } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Right from "../../assets/icons/account/right_arrow.svg"
 import { useQuery } from '@tanstack/react-query'
 import { getUserData } from '../../api/userAPI'
 import { useNavigation } from '@react-navigation/native'
-import { BASE_URL } from "@env"
+import { IMAGE_URL } from "@env"
+import { Appbar, Divider } from 'react-native-paper'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 
 const FavouriteProductScreen = () => {
   const navigation = useNavigation()
@@ -22,14 +24,19 @@ const FavouriteProductScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
 
-      <View className="border-b-2 border-gray-200 items-center flex-row justify-center">
+      <View className="items-center flex-row justify-center">
 
         <Text
-          className="text-xl py-6 text-black font-mulish-extrabold">
+          className="py-6 text-black font-mulish-bold"
+          style={{
+            fontSize: responsiveFontSize(3)
+          }}>
           Favourite
         </Text>
 
       </View>
+
+      <Divider />
 
 
       {userData?.favourite?.length > 0 ?
@@ -37,40 +44,62 @@ const FavouriteProductScreen = () => {
 
           {userData?.favourite?.map((product) => {
             return (
-              <TouchableOpacity
-                onPress={() => navigation.navigate("ProductDetails", { product })}
-                key={product._id}
-                className='border-gray-200 border-b-2 px-4 py-4 flex-row  '>
-                <Image
-                  className="self-center w-24 h-24 "
-                  resizeMode='contain'
-                  source={{ uri: `${BASE_URL}${product?.url}` }}
-                />
+              <Fragment key={product._id}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("ProductDetails", { product })}
+                  key={product._id}
+                  className=' px-4 py-4 flex-row  '>
+                  <Image
+                    className="self-center "
+                    style={{
+                      width: responsiveWidth(30),
+                      height: responsiveHeight(14)
+                    }}
+                    resizeMode='contain'
+                    source={{ uri: `${IMAGE_URL}${product?.url}` }}
+                  />
 
-                <View className="pl-4 flex-shrink w-full justify-center">
+                  <View className="pl-4 flex-shrink w-full justify-center gap-y-2 ">
 
-                  <Text
-                    className="text-black text-xl font-mulish-bold">
-                    {product?.title}
-                  </Text>
+                    <Text
+                      className="text-black font-mulish-bold"
+                      style={{
+                        fontSize:responsiveFontSize(2.5)
+                      }}
+                      >
+                      {product?.title}
+                    </Text>
 
-                  <Text
-                    className="text-base font-mulish-medium text-slate-500">
-                    {product?.baseQuantity}
-                  </Text>
+                    <Text
+                      className="font-mulish-regular text-slate-500"
+                      style={{
+                        fontSize:responsiveFontSize(2)
+                      }}>
+                      {product?.baseQuantity}
+                    </Text>
 
-                </View>
+                  </View>
 
-                <View
-                  className="justify-center items-center flex-row gap-2">
-                  <Text
-                    className="text-xl text-black font-mulish-semibold">
-                    ₹{product?.price}
-                  </Text>
-                  <Right color="black" />
-                </View>
+                  <View
+                    className="justify-center items-center flex-row gap-x-3"
+                    style={{paddingHorizontal:responsiveWidth(5)}}
+                    >
+                    <Text
+                      className=" text-black font-mulish-semibold"
+                      style={{
+                        fontSize:responsiveFontSize(2.5)
+                      }}>
+                      ₹{product?.price}
+                    </Text>
+                    <Right color="black"  />
+                  </View>
 
-              </TouchableOpacity>)
+                </TouchableOpacity>
+                <Divider style={{
+                  marginHorizontal: responsiveWidth(5)
+                }} />
+              </Fragment>
+            )
           }
           )
           }

@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Appbar } from 'react-native-paper'
+import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { Formik } from 'formik'
 import { object, string } from 'yup'
@@ -9,6 +9,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { useMutation } from '@tanstack/react-query'
 import { addAddressApi } from '../../api/addressAPI'
 import { Dialog } from 'react-native-alert-notification'
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 
 const AddAddressScreen = () => {
   const navigation = useNavigation()
@@ -27,7 +28,7 @@ const AddAddressScreen = () => {
   })
 
 
-  const { mutate: addAddress, } = useMutation({
+  const { mutate: addAddress, isPending } = useMutation({
     mutationFn: addAddressApi,
     onError: () => {
       Dialog.show({
@@ -53,11 +54,25 @@ const AddAddressScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
 
-      <Appbar.Header mode='center-aligned'>
-        <Appbar.BackAction
+      <Appbar.Header mode='center-aligned' style={{
+                backgroundColor: 'white',
+                height: responsiveHeight(10),
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+            }}
+        statusBarHeight={0}>
+        <Appbar.BackAction iconColor='black'
           onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Add Address" />
+        <Appbar.Content title="Add Address" titleStyle={{
+          fontFamily: "Mulish-Bold",
+          color: "black",
+          fontSize: responsiveFontSize(3)
+        }} />
       </Appbar.Header>
+      <Divider style={{
+        marginBottom: responsiveHeight(1)
+      }} />
 
 
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -183,10 +198,13 @@ const AddAddressScreen = () => {
               <TouchableOpacity
                 onPress={handleSubmit}
                 className="my-3 p-4 w-full rounded-2xl items-center bg-[#53B175]">
-                <Text
-                  className="text-white text-lg font-mulish-semibold">
-                  Add this Address
-                </Text>
+
+                {isPending ? <ActivityIndicator color='white' /> :
+                  <Text
+                    className="text-white text-lg font-mulish-semibold">
+                    Add this Address
+                  </Text>
+                }
               </TouchableOpacity>
             </>
 

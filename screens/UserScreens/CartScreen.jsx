@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, TouchableOpacity, ScrollView, Image, StatusBar } from 'react-native'
+import React, { Fragment, useState } from 'react'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Plus from "../../assets/icons/commons/plus.svg"
 import Minus from "../../assets/icons/commons/minus.svg"
@@ -7,11 +7,11 @@ import Close from "../../assets/icons/commons/cross.svg"
 import Cart from "../../assets/icons/tabs/cart.svg"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getcartItems } from '../../api/userAPI'
-import { BASE_URL } from "@env";
+import { IMAGE_URL } from "@env";
 import { useFocusEffect } from '@react-navigation/native'
 import { addToCartApi, getItemsFromCartApi, removeFromCart } from '../../api/cartAPI'
-import { ActivityIndicator } from 'react-native-paper'
-import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions'
+import { ActivityIndicator, Divider } from 'react-native-paper'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 
 
 const CartScreen = ({ navigation }) => {
@@ -86,18 +86,18 @@ const CartScreen = ({ navigation }) => {
     }
   })
 
-  const insets = useSafeAreaInsets();
 
 
   return (
     <SafeAreaView className="flex-1 bg-white"
       edges={['right', 'top', 'left']}
+
     >
-      <View className="border-b-2 border-gray-200 items-center flex-row justify-center">
+      <View className="items-center flex-row justify-center">
 
         <Text
-          className=" py-6 text-black font-mulish-extrabold"
-          style={{ fontSize: responsiveFontSize(3.5) }}>
+          className=" py-6 text-black font-mulish-bold"
+          style={{ fontSize: responsiveFontSize(3) }}>
           My Cart
         </Text>
         <View
@@ -110,6 +110,9 @@ const CartScreen = ({ navigation }) => {
           </Text>
         </View>
       </View>
+      <Divider style={{
+        marginVertical: responsiveHeight(0.5)
+      }} />
       {isLoading ?
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator animating={true} size={'large'}
@@ -123,96 +126,109 @@ const CartScreen = ({ navigation }) => {
               className="overflow-hidden">
               {cartItems?.cart?.map((product) => {
                 return (
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate("ProductDetails", { product })}
+                  <Fragment key={product?._id}>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("ProductDetails", { product })}
 
-                    key={product._id}
-                    className='border-gray-200 border-b-2 px-4 py-3 flex-row  '>
-                    <Image className="self-center h-24 "
-                      style={{
-                        width: responsiveWidth(30)
+                      key={product._id}
+                      className=' px-4 py-3 flex-row  '>
+                      <Image className="self-center"
+                        style={{
+                          width: responsiveWidth(30),
+                          height: responsiveHeight(15)
+                        }}
+                        resizeMode='contain'
+                        source={{ uri: `${IMAGE_URL}${product?.url}` }}
+                      />
 
-                      }} resizeMode='contain'
-                      source={{ uri: `${BASE_URL}${product?.url}` }}
-                    />
-
-                    <View className=" pl-4  flex-shrink w-full">
-
-                      <Text
-                        className=" text-black text-xl font-mulish-bold"
-                        style={{ fontSize: responsiveFontSize(3) }}>
-                        {product?.title}
-                      </Text>
-
-                      <Text
-                        className=" font-mulish-medium text-slate-500"
-                        style={{ fontSize: responsiveFontSize(2) }}>
-                        ₹{product?.price} / {product?.unit}
-                      </Text>
-
-
-
-                      <View className='flex-row py-4 justify-between items-center'>
-                        <View className="flex-row items-center justify-around w-3/5">
-
-                          <TouchableOpacity
-                            disabled={isLoading}
-                            onPress={() => {
-                              let quantity = product?.quantity + 1
-                              modifyQuantity({
-                                ...product,
-                                quantity: product?.quantity - 1,
-                                totalPrice: quantity * product?.price,
-                              })
-                            }}
-                            className={`
-                            ${isPending ? "bg-gray-100" : "bg-white"}
-                             border-gray-200  border-2 rounded-2xl p-3 `}
-                          >
-                            <Minus style={{ color: "black" }} />
-                          </TouchableOpacity>
-                          <Text className="text-xl text-black font-mulish-semibold mx-6">
-                            {/* {isPending ? "" : product?.quantity} */}
-                            {product?.quantity}
-                          </Text>
-                          <TouchableOpacity
-                            // disabled={isPending}
-                            onPress={() => {
-                              let quantity = product?.quantity + 1
-                              modifyQuantity({
-                                ...product,
-                                quantity: product?.quantity + 1,
-                                totalPrice: quantity * product?.price
-                              })
-                            }}
-                            className={`
-                            ${isPending ? "bg-gray-100" : "bg-white"}
-                             border-gray-200  border-2 rounded-2xl p-3 `}
-                          >
-                            <Plus style={{ color: "#53B175" }} />
-                          </TouchableOpacity>
-                        </View>
+                      <View className=" pl-4  flex-shrink w-full">
 
                         <Text
-                          className="text-black text-lg font-mulish-semibold">
-                          {/* ₹{isPending ? "" : product?.totalPrice} */}
-                          ₹ {product?.totalPrice}
-
+                          className=" text-black text-xl font-mulish-bold"
+                          style={{ fontSize: responsiveFontSize(2.5) }}>
+                          {product?.title}
                         </Text>
+
+                        <Text
+                          className=" font-mulish-medium text-slate-500"
+                          style={{ fontSize: responsiveFontSize(1.5) }}>
+                          ₹{product?.price} / {product?.unit}
+                        </Text>
+
+
+
+                        <View className='flex-row py-4 justify-between items-center'>
+                          <View className="flex-row items-center justify-around w-3/5">
+
+                            <TouchableOpacity
+                              disabled={isLoading}
+                              onPress={() => {
+                                let quantity = product?.quantity + 1
+                                modifyQuantity({
+                                  ...product,
+                                  quantity: product?.quantity - 1,
+                                  totalPrice: quantity * product?.price,
+                                })
+                              }}
+                              className={`
+                            ${isPending ? "bg-gray-100" : "bg-white"}
+                             border-gray-200  border-2 rounded-2xl p-3 `}
+                            >
+                              <Minus style={{ color: "black" }} />
+                            </TouchableOpacity>
+                            <Text
+                              className="text-xl text-black font-mulish-semibold mx-6"
+                              style={{
+                                fontSize: responsiveFontSize(2)
+                              }}>
+                              {/* {isPending ? "" : product?.quantity} */}
+                              {product?.quantity}
+                            </Text>
+                            <TouchableOpacity
+                              // disabled={isPending}
+                              onPress={() => {
+                                let quantity = product?.quantity + 1
+                                modifyQuantity({
+                                  ...product,
+                                  quantity: product?.quantity + 1,
+                                  totalPrice: quantity * product?.price
+                                })
+                              }}
+                              className={`
+                            ${isPending ? "bg-gray-100" : "bg-white"}
+                             border-gray-200  border-2 rounded-2xl p-3 `}
+                            >
+                              <Plus style={{ color: "#53B175" }} />
+                            </TouchableOpacity>
+                          </View>
+
+                          <Text
+                            className="text-black font-mulish-semibold"
+                            style={{
+                              fontSize: responsiveFontSize(2)
+                            }}>
+                            {/* ₹{isPending ? "" : product?.totalPrice} */}
+                            ₹ {product?.totalPrice}
+
+                          </Text>
+
+                        </View>
 
                       </View>
 
-                    </View>
+                      <View className="absolute right-5 top-5 ">
+                        <TouchableOpacity
+                          onPress={() => { removeItem(product?._id) }}
+                        >
+                          <Close />
+                        </TouchableOpacity>
+                      </View>
 
-                    <View className="absolute right-5 top-5 ">
-                      <TouchableOpacity
-                        onPress={() => { removeItem(product?._id) }}
-                      >
-                        <Close />
-                      </TouchableOpacity>
-                    </View>
-
-                  </TouchableOpacity>
+                    </TouchableOpacity>
+                    <Divider style={{
+                      marginHorizontal: responsiveWidth(5)
+                    }} />
+                  </Fragment>
                 )
               })}
             </ScrollView>

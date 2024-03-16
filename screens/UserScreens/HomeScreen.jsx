@@ -13,14 +13,25 @@ import AddedToCartPopUp from '../components/AddedToCartPopUp';
 import { useQuery } from '@tanstack/react-query';
 import { getBestSellingProducts } from '../../api/productAPI';
 import { getUserData } from '../../api/userAPI';
-import { BASE_URL } from '@env';
+import { IMAGE_URL } from '@env';
 import { ActivityIndicator } from 'react-native-paper';
 import { useNetInfoInstance } from "@react-native-community/netinfo";
+// import fs from 'fs';
+
 
 const HomeScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false)
     const { netInfo: { type, isConnected } } = useNetInfoInstance();
     // console.log( isConnected)
+
+    // const get = async (url) => {
+    //     console.log(process.cwd())
+    //     // let usersPath = path.join(process.cwd(), url);
+    //     const file = await fs.readFile(url);
+    //     console.log(file)
+
+    //     return file
+    // }
 
 
 
@@ -49,17 +60,16 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView className=' bg-white flex-1 '
-        edges={['right', 'top', 'left']}
+            edges={['right', 'top', 'left']}
 
         >
-
             {modalVisible === true ?
                 <AddedToCartPopUp visible={true} />
                 :
                 <></>
             }
             <View className=" justify-center items-center "
-            style={{marginVertical:responsiveHeight(2.5)}}>
+                style={{ marginVertical: responsiveHeight(2.5) }}>
                 <Image
                     resizeMode='contain'
                     style={{
@@ -84,7 +94,7 @@ const HomeScreen = ({ navigation }) => {
                     onPress={() => navigation.navigate("Explore", { fromHome: true })}
                     className='px-2.5 py-3.5 w-full '>
                     <Text
-                        className=" text-base font-mulish-semibold">
+                        className=" text-base font-mulish-semibold  text-black">
                         Search Store
                     </Text>
 
@@ -118,7 +128,9 @@ const HomeScreen = ({ navigation }) => {
                             Best Selling Products
                         </Text>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("BestSellingProducts")}>
+                            onPress={() => navigation.navigate("CategoryProducts", {
+                                category: "Best-Selling"
+                            })}>
                             <Text
                                 className='text-[#53B175] '
                                 style={{ fontSize: responsiveFontSize(2.5) }}>
@@ -141,14 +153,13 @@ const HomeScreen = ({ navigation }) => {
                                     <TouchableOpacity
                                         key={product?._id}
                                         onPress={() => navigation.navigate("ProductDetails", { product })}
-                                        className='border-gray-200 border-2 px-4 py-4 rounded-2xl'
+                                        className='border-gray-100 border-2 px-4 py-4 rounded-2xl'
                                         style={{ width: responsiveWidth(45) }}>
-
 
                                         <Image
                                             className="items-center bg-center self-center w-full "
                                             resizeMode='contain'
-                                            source={{ uri: `${BASE_URL}${product?.url}` }}
+                                            source={{ uri: `${IMAGE_URL}${product?.url}` }}
                                             style={{ height: responsiveHeight(15) }} />
 
                                         <Text
@@ -157,7 +168,6 @@ const HomeScreen = ({ navigation }) => {
                                         >
                                             {product?.title}
                                         </Text>
-
                                         <Text
                                             className=" font-mulish-medium text-slate-500"
                                             style={{ fontSize: responsiveFontSize(2) }}
@@ -193,8 +203,8 @@ const HomeScreen = ({ navigation }) => {
 
                     {!loadingProducts &&
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("BestSellingProducts")}
-                            className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center items-center'
+                            onPress={() => navigation.navigate("CategoryProducts")}
+                            className='border-gray-100 border-2 px-4 py-4 rounded-2xl justify-center items-center'
                             style={{ width: responsiveWidth(45) }}>
 
                             <View

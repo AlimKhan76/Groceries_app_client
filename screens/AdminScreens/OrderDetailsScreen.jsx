@@ -8,7 +8,7 @@ import Person from "../../assets/icons/tabs/person.svg"
 import Phone from "../../assets/icons/admin/phone.svg"
 import { Appbar, DataTable, Divider } from 'react-native-paper'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { responsiveFontSize } from 'react-native-responsive-dimensions'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 
 const OrderDetailsScreen = ({ navigation, route }) => {
     const { order } = route?.params;
@@ -21,31 +21,36 @@ const OrderDetailsScreen = ({ navigation, route }) => {
     const [selected, setSelected] = useState("null");
 
     return (
-        <SafeAreaView className="px-2.5 bg-gray-100 flex-1 "
+        <SafeAreaView className=" flex-1 "
             edges={["right", "left", "top"]}>
 
 
             <Appbar.Header mode='center-aligned'
                 style={{
-                    backgroundColor: ' rgb(243 244 246 )'
+                    backgroundColor: 'white',
+                    height: responsiveHeight(10),
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
                 }}
                 statusBarHeight={0} >
                 <Appbar.BackAction
                     iconColor="black"
                     onPress={() => navigation.goBack()} />
 
-                <Appbar.Content title="Order Details "
+                <Appbar.Content
+                    title="Order Details "
                     titleStyle={{
                         fontFamily: "Mulish-SemiBold",
                         color: "black",
                         fontSize: responsiveFontSize(3.5),
                     }} />
             </Appbar.Header>
-            <Divider bold />
+            <Divider />
 
 
 
-            <ScrollView className="my-5">
+            <ScrollView className="my-5 px-2.5">
 
                 <View className='flex-row pb-5 items-center'>
                     <Text
@@ -63,9 +68,9 @@ const OrderDetailsScreen = ({ navigation, route }) => {
 
                 {/* Order Details Card */}
                 <View
-                    className='bg-white rounded-2xl p-3 mb-3 border-gray-300 border-2'>
+                    className='bg-white rounded-2xl p-3 mb-3 border-gray-200 border-2'>
                     <View
-                        className="border-b-2 flex-row justify-between items-center border-gray-300 py-2.5 ">
+                        className=" flex-row justify-between items-center py-2.5 ">
                         <View>
                             <Text
                                 className='text-xl text-black font-mulish-semibold'
@@ -85,6 +90,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                             Total : ₹ {order?.totalPrice}
                         </Text>
                     </View>
+                    <Divider />
 
 
 
@@ -322,9 +328,12 @@ const OrderDetailsScreen = ({ navigation, route }) => {
 
             </ScrollView>
 
-            <View className="relative bottom-5 ">
+            <View className="relative bottom-5 items-center"
+            >
                 <TouchableOpacity className='bg-[#53B175] p-5 rounded-2xl '
-                // disabled={() =>  selected==="null" ? true : false }
+                    // disabled={() =>  selected==="null" ? true : false }
+                    style={{ width: responsiveWidth(90) }}
+
                 >
 
                     <View className="flex-row items-center justify-center gap-2">

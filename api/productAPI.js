@@ -24,3 +24,16 @@ exports.changeFavouriteProduct = async (productData) => {
         throw error.response.data.message
     }
 }
+
+exports.getProductByCategory = async (category) => {
+    try {
+        console.log(category)
+        const { data } = await API.get(`product/getByCategory/${category}`)
+        console.log(`All the products of ${category} are fetched` + data)
+        return data;
+    }
+    catch (error) {
+        console.log(`Error in fetching products of  ${category}` + error.response.data.message)
+        throw error.response.data.message
+    }
+}

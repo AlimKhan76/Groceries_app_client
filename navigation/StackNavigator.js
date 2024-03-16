@@ -6,7 +6,6 @@ import GetStartedScreen from '../screens/GetStartedScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import { UserBottomTabs } from './UserBottomTabs';
-import { AdminBottomTabs } from './AdminBottomTabs';
 import OrderDetailsScreen from '../screens/AdminScreens/OrderDetailsScreen';
 import UpdateProductScreen from '../screens/AdminScreens/UpdateProductScreen';
 import AddedToCartPopUp from '../screens/components/AddedToCartPopUp';
@@ -19,7 +18,8 @@ import * as SecureStore from 'expo-secure-store';
 import CheckoutPage from '../screens/UserScreens/CheckoutPage';
 import AddAddressScreen from '../screens/UserScreens/AddAddressScreen';
 import OrderConfirmationScreen from '../screens/UserScreens/OrderConfirmationScreen';
-import AllBestSellingProductScreen from '../screens/UserScreens/AllBestSellingProductScreen';
+import AllCategorizedProductScreen from '../screens/UserScreens/AllCategorizedProductScreen';
+import { AdminBottomTabs } from './AdminBottomTabs';
 
 const StackNavigator = () => {
     const Stack = createNativeStackNavigator();
@@ -125,8 +125,8 @@ const StackNavigator = () => {
                     component={OrderConfirmationScreen}
                 />
                 <Stack.Screen
-                    name='BestSellingProducts'
-                    component={AllBestSellingProductScreen}
+                    name='CategoryProducts'
+                    component={AllCategorizedProductScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>

@@ -38,6 +38,8 @@ target 'demoGroceries' do
   config = use_native_modules!
   pod 'Firebase/Core', '~> 6.3.0'
   pod 'Firebase/Auth', '~> 6.3.0'
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
 
   use_react_native!(
     :path => config[:reactNativePath],

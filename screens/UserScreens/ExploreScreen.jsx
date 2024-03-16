@@ -5,20 +5,24 @@ import Search from "../../assets/icons/commons/search.svg"
 import { useFocusEffect } from '@react-navigation/native'
 import { searchApi } from '../../api/searchAPI'
 import { useQuery } from '@tanstack/react-query';
-import { BASE_URL } from '@env';
+import { IMAGE_URL } from '@env';
 import RightArrow from "../../assets/icons/account/right_arrow.svg"
 import CategoriesCard from '../components/CategoriesCard'
 import { ActivityIndicator, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-
+import categoriesCard from '../components/CategoriesCard'
+import { assets } from '../../react-native.config'
 
 const ExploreScreen = ({ navigation, route }) => {
   const inputRef = useRef();
   const [searchQuery, setSearchQuery] = useState("")
-
+  // const { data: categorizedProducts } = route?.params
   useFocusEffect(React.useCallback(() => {
     inputRef.current.focus();
-  }))
+    return () => {
+      setSearchQuery("")
+    }
+  }, []))
 
   const { data, refetch, isLoading } = useQuery({
     queryKey: ['searchItem', searchQuery],
@@ -37,17 +41,18 @@ const ExploreScreen = ({ navigation, route }) => {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <SafeAreaView className="flex-1 bg-white px-2 " 
-          edges={['right', 'top', 'left']}
-          >
+      <SafeAreaView className="flex-1 bg-white px-2 "
+        edges={['right', 'top', 'left']}
+      >
 
         <Text
-          className=" font-mulish-bold text-black text-center my-5"
-          style={{ fontSize: responsiveFontSize(3.5) }}>
+          className=" font-mulish-bold text-black text-center my-6"
+          style={{ fontSize: responsiveFontSize(3) }}>
           Find Products
         </Text>
 
-        <Divider bold />
+        {/* <Divider bold /> */}
+        {/* {console.log(categorizedProducts) */}
 
         <View
           className='bg-gray-200 mx-6 my-2 rounded-2xl px-3 flex-row items-center'>
@@ -55,8 +60,9 @@ const ExploreScreen = ({ navigation, route }) => {
           <TextInput
             ref={inputRef}
             maxLength={20}
+            value={searchQuery}
             onChangeText={e => setSearchQuery(e)}
-            className='px-2.5 py-3.5 text-base font-mulish-semibold w-full '
+            className='px-2.5 py-3.5 text-base font-mulish-semibold w-full text-black'
             placeholder='Search store'
             placeholderTextColor={'gray'}
           />
@@ -81,7 +87,7 @@ const ExploreScreen = ({ navigation, route }) => {
 
             :
             <ScrollView
-            className=''
+              className='py-2'
               horizontal={false} >
 
               <View className="flex-row flex-wrap gap-2 justify-center  "
@@ -94,13 +100,13 @@ const ExploreScreen = ({ navigation, route }) => {
                       <TouchableOpacity
                         key={product?._id}
                         onPress={() => navigation.navigate("ProductDetails", { product })}
-                        className='border-gray-200 border-2 px-4 py-4 rounded-2xl '
+                        className='border-gray-100 border-2 px-4 py-4 rounded-2xl '
                         style={{ width: responsiveWidth(45) }}>
 
                         <Image
                           className="items-center bg-center self-center w-full h-24"
                           resizeMode='contain'
-                          source={{ uri: `${BASE_URL}${product?.url}` }} />
+                          source={{ uri: `${IMAGE_URL}${product?.url}` }} />
 
                         <Text
                           className="pt-2 text-black text-lg items-center font-mulish-extrabold ">
@@ -134,10 +140,9 @@ const ExploreScreen = ({ navigation, route }) => {
 
 
 
-
                 {searchQuery === "" &&
-                  <CategoriesCard />
-                }
+                <CategoriesCard/>
+              }
               </View>
 
             </ScrollView>

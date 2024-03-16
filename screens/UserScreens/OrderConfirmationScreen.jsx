@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ActivityIndicator, Appbar, DataTable } from 'react-native-paper'
+import { ActivityIndicator, Appbar, DataTable, Divider } from 'react-native-paper'
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -10,6 +10,7 @@ import { getUserData } from '../../api/userAPI'
 import { getItemsFromCartApi } from '../../api/cartAPI'
 import { placeOrderApi } from '../../api/orderAPI'
 import { Dialog } from 'react-native-alert-notification'
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 
 
 const OrderConfirmationScreen = () => {
@@ -68,24 +69,41 @@ const OrderConfirmationScreen = () => {
     return (
         <SafeAreaView className="flex-1  ">
 
-            <Appbar.Header mode='center-aligned'>
-                <Appbar.BackAction
+            <Appbar.Header mode='center-aligned'
+                style={{
+                    backgroundColor: 'white',
+                    height: responsiveHeight(10),
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                }}>
+                <Appbar.BackAction iconColor='black'
                     onPress={() => navigation.goBack()} />
-                <Appbar.Content title="Confirm Order" />
+                <Appbar.Content title="Confirm Order"
+                    titleStyle={{
+                        fontFamily: "Mulish-Bold",
+                        fontSize: responsiveFontSize(3),
+                        color: "black"
+
+                    }} />
             </Appbar.Header>
+            <Divider />
 
 
             <ScrollView className="m-3  overflow-hidden mb-8">
 
-                <View className="border-2 border-gray-200 bg-white rounded-2xl p-3 my-2">
+                <View className="border-2 border-gray-100 bg-white rounded-2xl p-3 my-2">
 
-                    <View className="mx-3 border-b-2 border-gray-200 flex-row gap-x-2 items-center">
+                    <View className="mx-3 flex-row gap-x-2 items-center">
                         <MaterialIcon name="truck-delivery-outline" size={30} color="black" />
                         <Text
                             className='text-black font-mulish-semibold text-lg'>
                             Shipping to {userData?.name}
                         </Text>
                     </View>
+                    <Divider style={{
+                        marginVertical: responsiveHeight(0.5)
+                    }} />
 
                     <View className="m-3 ">
                         {/* <EntypoIcon name="address" size={20} color="black" /> */}
@@ -106,6 +124,9 @@ const OrderConfirmationScreen = () => {
 
                                 {address?.landmark}
                             </Text>
+                            <Text className='text-black font-mulish-regular text-base'>
+                                Phone no: {userData?.contactNo}
+                            </Text>
                         </View>
 
                     </View>
@@ -113,7 +134,7 @@ const OrderConfirmationScreen = () => {
                 </View>
 
 
-                <View className="border-2 border-gray-200 bg-white rounded-2xl p-3 my-2">
+                <View className=" bg-white rounded-2xl p-3 my-2">
                     <DataTable>
                         <DataTable.Header>
                             <DataTable.Title>
@@ -132,7 +153,7 @@ const OrderConfirmationScreen = () => {
                                 </Text>
                             </DataTable.Title>
                         </DataTable.Header>
-
+                        <Divider bold  />
                         {cartItems?.cart?.map((product) => {
                             return (
                                 <DataTable.Row key={product?._id}>

@@ -8,7 +8,7 @@ import Time from "../../assets/icons/admin/time.svg"
 import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
 import { useQuery } from '@tanstack/react-query'
 import { getPendingProducts } from '../../api/adminAPIs/orderAPI'
-import { responsiveFontSize } from 'react-native-responsive-dimensions'
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 
 const PendingOrderScreen = ({ navigation }) => {
   const [orders, setOrders] = useState([])
@@ -28,15 +28,20 @@ const PendingOrderScreen = ({ navigation }) => {
       edges={["right", "top", "left"]}>
 
       <Appbar.Header mode='center-aligned' style={{
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        height: responsiveHeight(10),
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
       }}
         statusBarHeight={0} >
-        <Appbar.Content title="Pending Orders" titleStyle={{
-          fontFamily: "Mulish-SemiBold",
-          color: "black",
-          fontSize: responsiveFontSize(3.5),
+        <Appbar.Content title="Pending Orders"
+          titleStyle={{
+            fontFamily: "Mulish-SemiBold",
+            color: "black",
+            fontSize: responsiveFontSize(3.5),
 
-        }} />
+          }} />
       </Appbar.Header>
       <Divider bold />
 
@@ -82,7 +87,7 @@ const PendingOrderScreen = ({ navigation }) => {
                   className="rounded-2xl bg-white mx-3 my-2.5 p-2.5 border-gray-200 border-2 
                 shadow-black shadow-md">
                   <View
-                    className="flex-row justify-between items-center border-b-2 border-gray-300 py-1.5 ">
+                    className="flex-row justify-between items-center  py-1.5 ">
                     <View className="justify-center items-start">
                       <Text
                         className=" text-black font-mulish-regular"
@@ -105,6 +110,7 @@ const PendingOrderScreen = ({ navigation }) => {
                       </Text>
                     </View>
                   </View>
+                  <Divider/>
 
                   <View className="py-2 flex-row items-center justify-between">
                     <View className="px-2" >

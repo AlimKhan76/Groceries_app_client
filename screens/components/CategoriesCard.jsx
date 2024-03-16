@@ -1,14 +1,25 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 
+
+
+
+
 const CategoriesCard = () => {
+
     const navigation = useNavigation()
     return (
         <View className="flex-row flex-wrap gap-2 justify-center">
             <TouchableOpacity
-                onPress={() => navigation.navigate("ProductDetails")}
+                onPress={() => {
+                    navigation.navigate("CategoryProducts", {
+                        category: "Beverages"
+                    })
+
+                }
+                }
                 className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
                 style={{
                     width: responsiveWidth(45),
@@ -32,8 +43,13 @@ const CategoriesCard = () => {
 
 
             <TouchableOpacity
-                // onPress={() => navigation.navigate("ProductDetails")}
-                className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
+                onPress={() => {
+                    navigation.navigate("CategoryProducts", {
+                        category: "Fruits"
+                    })
+
+                }
+                } className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
                 style={{
                     width: responsiveWidth(45),
                     height: responsiveHeight(30)

@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import React, { Fragment } from 'react'
+import { View, Text, Image, TouchableOpacity, BackHandler } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RightArrow from '../../assets/icons/account/right_arrow.svg'
 import LogOut from '../../assets/icons/account/logout.svg'
@@ -8,48 +8,45 @@ import { downloadPendingOrders } from '../../api/adminAPIs/orderAPI'
 import { useQuery } from '@tanstack/react-query'
 import RNFS from 'react-native-fs';
 import { BASE_URL } from "@env"
+import { IMAGE_URL } from "@env"
+import { Divider } from 'react-native-paper'
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
+import RNFetchBlob from 'rn-fetch-blob';
+
 
 
 
 const AdminSettingScreen = ({ navigation }) => {
 
-  const { data: download, refetch } = useQuery({
-    queryKey: ['downloadPendingOrders'],
-    queryFn: downloadPendingOrders,
-    enabled: false,
-  })
 
+  const downloadCSV = async () => {
+    RNFetchBlob.config({
+      fileCache: true,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        // setting it to true will use the device's native download manager and will be shown in the notification bar.
+        notification: true,
+        path: RNFS.DownloadDirectoryPath + `/orders-${new Date().toDateString()}.csv`,  // this is the path where your downloaded file will live in
+        description: 'Downloading orders files.'
+      }
 
-  const downloadCSV = () => {
-    const url = 'http://192.168.0.106:3000/adminOrder/downloadPendingOrders';
-    const filePath = RNFS.DownloadDirectoryPath + '/order.csv';
-
-    RNFS.downloadFile({
-      fromUrl: url,
-      toFile: filePath,
-
-      background: true, // Enable downloading in the background (iOS only)
-      discretionary: true, // Allow the OS to control the timing and speed (iOS only)
-      progress: (res) => {
-
-        // Handle download progress updates if needed
-        const progress = (res.bytesWritten / res.contentLength) * 100;
-        console.log(`Progress: ${progress.toFixed(2)}%`);
-      },
     })
-      .promise.then((response) => {
-        console.log('File downloaded!', response);
-      })
-      .catch((err) => {
-        console.log('Download error:', err);
+      .fetch("GET",
+        `${BASE_URL}adminOrder/downloadPendingOrders`,
+        // "http://192.168.0.106:5000/adminOrder/downloadPendingOrders", 
+        {
+          //some headers ..
+        })
+      .then((res) => {
+        // the temp file path
+        console.log("The file saved to ", res.path());
       });
 
   }
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {console.log(BASE_URL)}
-      <View className="flex-row py-8 px-4 border-b-gray-300 border-b-2">
+      <View className="flex-row py-8 px-4 ">
         <Image
           className="w-14 h-14 rounded-xl"
           source={(require("../../assets/images/profile.png"))} />
@@ -61,29 +58,38 @@ const AdminSettingScreen = ({ navigation }) => {
 
         </View>
       </View>
+      <Divider bold />
 
 
       {data?.map((data, index) => {
         return (
-          <TouchableOpacity
-            key={index}
-            onPress={() => {
-              data?.title === "Download Pending Orders" ?
-                downloadCSV()
-                : navigation.navigate(data?.navigation)
-            }
-            }
+          <Fragment key={index}>
 
-            className="border-b-gray-300 border-b-2 px-5 flex-row justify-between items-center py-3">
-            <View className="flex-row items-center">
-              {data?.icon}
-              <Text
-                className="text-xl text-black px-3 text-start font-mulishsb">
-                {data?.title}
-              </Text>
-            </View>
-            <RightArrow />
-          </TouchableOpacity>
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                data?.title === "Download Pending Orders" ?
+                  downloadCSV()
+                  : navigation.navigate(data?.navigation)
+              }
+              }
+
+              className="border-b-gray-300 px-5 flex-row justify-between items-center py-3">
+              <View className="flex-row items-center">
+                {data?.icon}
+                <Text
+                  className="text-xl text-black px-3 text-start font-mulishsb">
+                  {data?.title}
+                </Text>
+              </View>
+              <RightArrow color="black" />
+            </TouchableOpacity>
+            <Divider style={{
+              marginVertical: responsiveHeight(0.5),
+              marginHorizontal: responsiveWidth(2.5)
+            }} />
+          </Fragment>
+
         )
       })}
 

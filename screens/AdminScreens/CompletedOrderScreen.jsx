@@ -4,21 +4,30 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Person from "../../assets/icons/tabs/person.svg"
 import Phone from "../../assets/icons/admin/phone.svg"
 import Time from "../../assets/icons/admin/time.svg"
-import { Divider } from 'react-native-paper'
-import { responsiveFontSize } from 'react-native-responsive-dimensions'
+import { Appbar, Divider } from 'react-native-paper'
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 
 const CompletedOrderScreen = ({ navigation }) => {
   return (
     <SafeAreaView className="flex-1 bg-white"
       edges={["right", "top", "left"]}>
-      <View className="items-center py-5  ">
-        <Text
-          className="font-mulish-extrabold  text-black"
-          style={{ fontSize: responsiveFontSize(3.5) }}>
 
-          Completed Orders
-        </Text>
-      </View>
+        <Appbar.Header mode='center-aligned' style={{
+        backgroundColor: 'white',
+        height: responsiveHeight(10),
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+      }}
+        statusBarHeight={0} >
+        <Appbar.Content title="Completed Orders"
+          titleStyle={{
+            fontFamily: "Mulish-SemiBold",
+            color: "black",
+            fontSize: responsiveFontSize(3.5),
+
+          }} />
+      </Appbar.Header>
       <Divider bold />
 
 

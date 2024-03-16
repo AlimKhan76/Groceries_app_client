@@ -4,12 +4,13 @@ import LeftArrow from "../../assets/icons/account/left_arrow.svg"
 import RightArrow from "../../assets/icons/account/right_arrow.svg"
 
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ActivityIndicator, Appbar, RadioButton } from 'react-native-paper'
+import { ActivityIndicator, Appbar, Divider, RadioButton } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
 import { getAddresses } from '../../api/addressAPI'
 import OrderConfirmationScreen from './OrderConfirmationScreen'
 import { Dialog } from 'react-native-alert-notification'
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 
 const CheckoutPage = () => {
     const navigation = useNavigation()
@@ -40,12 +41,23 @@ const CheckoutPage = () => {
         <SafeAreaView className="flex-1  ">
 
 
-            <Appbar.Header mode='center-aligned'>
-                <Appbar.BackAction
+            <Appbar.Header mode='center-aligned' style={{
+                backgroundColor: 'white',
+                height: responsiveHeight(10),
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+            }}
+                statusBarHeight={0} >
+                <Appbar.BackAction iconColor='black'
                     onPress={() => navigation.goBack()} />
-                <Appbar.Content title="Checkout Page" />
+                <Appbar.Content title="Checkout Page" titleStyle={{
+                    fontFamily: "Mulish-Bold",
+                    color: "black",
+                    fontSize: responsiveFontSize(3)
+                }} />
             </Appbar.Header>
-
+            <Divider />
 
 
             <Text className="m-5 text-lg text-black font-mulish-semibold">

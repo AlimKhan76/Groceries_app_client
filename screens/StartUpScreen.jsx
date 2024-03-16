@@ -1,4 +1,4 @@
-import { Image, Text, View } from 'react-native'
+import { Image, StatusBar, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -47,8 +47,9 @@ const StartUpScreen = ({ navigation }) => {
 
 
     return (
-        <View className="flex-1 items-center justify-center bg-[#53B175] ">
 
+        <View className="flex-1 items-center justify-center bg-[#53B175] ">
+            
             <View className=" flex-row items-center h-52 justify-center">
 
                 <Image source={logo} className="aspect-auto" />

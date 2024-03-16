@@ -1,17 +1,16 @@
-import { View, Text, TouchableOpacity, Dimensions, ScrollView, Image } from 'react-native'
+import { View, Text, TouchableOpacity, Dimensions, ScrollView, Image, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LeftArrow from "../../assets/icons/account/left_arrow.svg"
 import Heart from "../../assets/icons/tabs/heart.svg"
 import Minus from "../../assets/icons/commons/minus.svg"
 import Plus from "../../assets/icons/commons/plus.svg"
-// import Image from 'react-native-scalable-image';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { changeFavouriteProduct } from '../../api/productAPI'
 import { getUserData } from '../../api/userAPI'
 import { useFocusEffect } from '@react-navigation/native'
 import { addToCartApi, getItemsFromCartApi } from '../../api/cartAPI';
-import { BASE_URL } from "@env";
+import { IMAGE_URL } from "@env";
 import { Toast } from 'react-native-alert-notification'
 import { ActivityIndicator, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -27,7 +26,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
     const [totalPrice, setTotalPrice] = useState(product?.price)
 
-    const [quantityInCart, setQuantityInCart] = useState(0)
 
 
     const lowerQuantity = () => {
@@ -66,6 +64,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         }
 
     }
+
 
 
 
@@ -111,25 +110,53 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         }
     })
 
-    const { data: cartItems, isLoading } = useQuery({
+    const { data: cartItems, isFetching } = useQuery({
         queryKey: ['cartItems'],
         queryFn: getItemsFromCartApi,
         staleTime: Infinity,
     })
 
+
+    const { mutate: modifyQuantity, isPending: modifyingCart } = useMutation({
+        mutationFn: addToCartApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['cartItems']
+            })
+        }
+    })
+
+    useEffect(() => {
+        if(!isFetching){
+            checkProductInCart().map(item=>{
+                setQuantity(item.quantity)
+            })
+        }
+
+    }, [cartItems])
+
+    const checkProductInCart = () => {
+        const cart = cartItems?.cart
+        const cartProduct = cart?.filter((item) => item?._id == product?._id)
+        return cartProduct;
+    }
+
     return (
         <SafeAreaView className="flex-1 bg-white "
             edges={['right', 'top', 'left']}
         >
-
+            <StatusBar backgroundColor={"rgb(243 244 246)"}  />
             <ScrollView className="mb-3">
                 <>
-                    {console.log(BASE_URL + product?.url)}
                     <View className="bg-gray-100 rounded-b-3xl  "
                         style={{ height: responsiveHeight(45) }}>
 
                         <View className="flex-row">
-                            <TouchableOpacity className='px-5 pt-5 '
+                            <TouchableOpacity
+                                // hitSlop={4}
+                                style={{
+                                    padding: responsiveWidth(6)
+                                }}
                                 onPress={() => navigation.goBack()}>
                                 <LeftArrow color="black" />
                             </TouchableOpacity>
@@ -138,25 +165,20 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                             <Image
                                 style={{
                                     width: responsiveWidth(100),
-                                    height: responsiveHeight(50)
+                                    height: responsiveHeight(40)
                                 }}
                                 className="self-center "
                                 resizeMode='contain'
-                                // source={require("../../assets/images/product_full/.png")}
-                                source={{ uri: `${BASE_URL}${product?.url}` }}
+                                source={{ uri: `${IMAGE_URL}${product?.url}` }}
+                            // source={{ uri: `http://192.168.0.106:3000/${product?.url}` }}
                             />
-                            {/* <Image
-                                width={(Dimensions.get('window').width) - 60}
-                                className="self-center "
-                                resizeMode='contain'
-                                source={{ uri: `${BASE_URL}${product?.url}` }} /> */}
                         </View>
 
                     </View>
 
-                    <View className="m-5">
+                    <View className="m-5 p">
                         <View
-                            className="flex-row justify-between items-center">
+                            className="flex-row justify-between items-center ">
 
                             <View className="gap-y-1">
                                 <Text
@@ -164,8 +186,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                     style={{ fontSize: responsiveFontSize(3.5) }}>
                                     {product?.title}
                                 </Text>
-                                <Text className="text-[#7C7C7C]"
-                                    style={{ fontSize: responsiveFontSize(2.5) }}>
+                                <Text className="text-[#7C7C7C] font-mulish-semibold"
+                                    style={{ fontSize: responsiveFontSize(2) }}>
                                     ₹{product?.price} / {product?.unit}
                                 </Text>
                             </View>
@@ -179,64 +201,143 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                         </View>
 
 
-                        <View
-                            className="flex-row items-center justify-between py-5 border-b-2 border-gray-200 ">
 
+
+
+
+
+                        {checkProductInCart()?.length > 0 ?
+                            checkProductInCart()?.map((item) => {
+                                return (
+                                    <View
+                                        key={item?._id}
+                                        className="flex-row items-center justify-between pt-5 ">
+                                        <View
+                                            className="flex-row items-center">
+
+                                            <TouchableOpacity
+                                                disabled={item?.quantity === 1}
+                                                onPress={() => lowerQuantity()}
+                                                // onPress={() => {
+                                                //     let quantity = item?.quantity - 1
+                                                //     modifyQuantity({
+                                                //         ...product,
+                                                //         quantity: item?.quantity - 1,
+                                                //         totalPrice: quantity * product?.price,
+                                                //     })
+                                                // }}
+                                                className="border-gray-200 border-2 rounded-2xl p-3  ">
+                                                <Minus style={{ color: "black" }} />
+                                            </TouchableOpacity>
+
+
+
+                                            <Text
+                                                className="text-black font-mulish-semibold text-lg items-center px-2.5">
+                                                {isFetching ?
+                                                    <ActivityIndicator size={'small'} /> :
+                                                    // item?.quantity
+                                                    quantity
+                                                }
+
+                                            </Text>
+
+                                            <TouchableOpacity
+                                                onPress={increaseQuantity}
+                                                // onPress={() => {
+                                                //     let quantity = item?.quantity + 1
+                                                //     modifyQuantity({
+                                                //         ...product,
+                                                //         quantity: item?.quantity + 1,
+                                                //         totalPrice: quantity * product?.price,
+                                                //     })
+                                                // }}
+                                                className="border-gray-200 border-2 rounded-2xl p-3 ">
+                                                <Plus style={{ color: "#53B175" }} />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <Text className="text-black font-mulish-bold"
+                                            style={{ fontSize: responsiveFontSize(3.5) }}>
+                                            ₹
+                                            {isFetching ?
+                                                <ActivityIndicator style={{
+                                                    paddingHorizontal: responsiveWidth(3)
+                                                }} size={'small'} /> :
+                                                // item?.totalPrice
+                                                totalPrice
+                                            }
+                                            {/* {item?.totalPrice} */}
+                                        </Text>
+                                    </View>
+
+                                )
+                            })
+                            :
                             <View
-                                className="flex-row items-center">
+                                className="flex-row items-center justify-between pt-5 ">
 
-                                <TouchableOpacity
-                                    onPress={lowerQuantity}
-                                    className="border-gray-200 border-2 rounded-2xl p-3  ">
-                                    <Minus style={{ color: "black" }} />
-                                </TouchableOpacity>
+                                <View
+                                    className="flex-row items-center">
+
+                                    <TouchableOpacity
+                                        onPress={lowerQuantity}
+                                        className="border-gray-200 border-2 rounded-2xl p-3  ">
+                                        <Minus style={{ color: "black" }} />
+                                    </TouchableOpacity>
 
 
 
-                                {/* <View className=" border-b-2 border-b-gray-300 mx-2 items-center justify-center"> */}
+                                    <Text
+                                        className="text-black font-mulish-semibold text-lg items-center">
+                                        {isFetching ? <ActivityIndicator /> :
+                                            cartItems?.cart?.map(item => {
+                                                if (item?._id === product?._id)
+                                                    return item?.quantity;
+                                                else
+                                                    return null;
+                                            })
+                                        }
 
-                                {/* <TextInput
-                            disabled={true}
-                                className=" text-black text-lg items-center  "
-                                value={`${quantity}`}
-                                onChangeText={e => setQuantity(Number(e))}
-                                keyboardType='numeric'
-                            /> */}
+                                    </Text>
 
-                                <Text className=" text-black text-xl items-center px-3"
-                                >
-                                    {quantity}
+                                    <Text className=" text-black text-xl items-center px-3"
+                                    >
+                                        {quantity}
+                                    </Text>
+
+                                    <TouchableOpacity
+                                        onPress={increaseQuantity}
+                                        className="border-gray-200 border-2 rounded-2xl p-3 ">
+                                        <Plus style={{ color: "#53B175" }} />
+                                    </TouchableOpacity>
+                                </View>
+                                <Text
+                                    className="text-black font-mulish-bold"
+                                    style={{ fontSize: responsiveFontSize(3.5) }}>
+                                    ₹{totalPrice}
                                 </Text>
-
-                                {/* </View> */}
-                                <TouchableOpacity
-                                    onPress={increaseQuantity}
-                                    className="border-gray-200 border-2 rounded-2xl p-3 ">
-                                    <Plus style={{ color: "#53B175" }} />
-                                </TouchableOpacity>
                             </View>
+                        }
 
 
-                            <Text className="text-black font-mulish-bold"
-                                style={{ fontSize: responsiveFontSize(3.5) }}>
-                                ₹{totalPrice}
-                            </Text>
-                        </View>
 
+                        <Divider style={{
+                            marginVertical: responsiveHeight(2)
+                        }} />
 
                         <View className="pt-2">
-                            <Text className="text-black text-lg font-mulish-semibold"
-                                style={{ fontSize: responsiveFontSize(3) }}>
+                            <Text className="text-black font-mulish-bold"
+                                style={{ fontSize: responsiveFontSize(2.5) }}>
                                 Product Detail
                             </Text>
 
-                            <Text className=" text-[#7C7C7C] py-1 font-mulish-semibold"
-                                style={{ fontSize: responsiveFontSize(2.4) }}>
+                            <Text className=" text-[#7C7C7C] py-1 font-mulish-medium"
+                                style={{ fontSize: responsiveFontSize(2) }}>
                                 {product?.description}
                             </Text>
                         </View>
 
-                        <Divider bold />
+                        {/* <Divider bold />
 
                         <View className="flex-row justify-between py-1 items-center">
                             <Text className="text-black font-mulish-semibold text-lg">
@@ -255,14 +356,14 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                 &nbsp;{product?.unit}
 
                             </Text>
-                        </View>
+                        </View> */}
 
 
 
                     </View>
 
                 </>
-            </ScrollView>
+            </ScrollView >
 
 
             <View className="bottom-3 relative self-center w-full overflow-hidden ">
@@ -274,6 +375,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
                     {addingToBasket ?
                         <ActivityIndicator color='white' /> :
+
                         <Text
                             className=' text-white text-xl font-mulish-semibold'>
                             {isSuccess ? 'Added to Basket' : 'Add To Basket'}
