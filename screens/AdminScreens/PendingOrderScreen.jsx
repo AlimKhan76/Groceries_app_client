@@ -110,7 +110,7 @@ const PendingOrderScreen = ({ navigation }) => {
                       </Text>
                     </View>
                   </View>
-                  <Divider/>
+                  <Divider />
 
                   <View className="py-2 flex-row items-center justify-between">
                     <View className="px-2" >
@@ -140,8 +140,7 @@ const PendingOrderScreen = ({ navigation }) => {
                         <Text
                           className="font-mulish-semibold text-black px-1.5"
                           style={{ fontSize: responsiveFontSize(2) }}>
-
-                          19-04-2024 16:04
+                          {order?.orderedDate.split(" ")[0]}
                         </Text>
                       </View>
 

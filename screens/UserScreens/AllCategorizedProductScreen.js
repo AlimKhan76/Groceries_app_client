@@ -8,7 +8,7 @@ import { getcategorizedProducts, getProductByCategory } from '../../api/productA
 import { BASE_URL } from "@env"
 import { IMAGE_URL } from "@env"
 import RightArrow from "../../assets/icons/account/right_arrow.svg"
-import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 
 
 const AllCategorizedProductScreen = ({ route }) => {
@@ -37,8 +37,8 @@ const AllCategorizedProductScreen = ({ route }) => {
                 alignItems: "center",
                 justifyContent: "center",
                 textAlign: "center",
-            }}>
-                {/* {console.log(products)} */}
+            }}
+                statusBarHeight={0}>
                 <Appbar.BackAction
                     iconColor="black"
                     onPress={() => navigation.goBack()} />
@@ -74,7 +74,8 @@ const AllCategorizedProductScreen = ({ route }) => {
                                     <TouchableOpacity
                                         key={product?._id}
                                         onPress={() => navigation.navigate("ProductDetails", { product })}
-                                        className='border-gray-100 border-2 px-4 py-4 rounded-2xl w-44'>
+                                        className='border-gray-100 border-2 px-4 py-4 rounded-2xl '
+                                        style={{ width: responsiveWidth(45) }}>
 
                                         <Image
                                             className="items-center bg-center self-center w-full h-24"

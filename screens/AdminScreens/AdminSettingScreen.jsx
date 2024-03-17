@@ -12,34 +12,69 @@ import { IMAGE_URL } from "@env"
 import { Divider } from 'react-native-paper'
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import RNFetchBlob from 'rn-fetch-blob';
-
+import * as SecureStore from "expo-secure-store";
 
 
 
 const AdminSettingScreen = ({ navigation }) => {
 
+  const logout = async () => {
+    try {
+      SecureStore.deleteItemAsync('token')
+      SecureStore.deleteItemAsync('role').then((res) => {
+        console.log("Admin has been logged out successfully")
+        navigation.replace("Login")
+      })
 
+    } catch (error) {
+      console.log("Error in loging out " + error)
+
+    }
+
+  }
   const downloadCSV = async () => {
-    RNFetchBlob.config({
-      fileCache: true,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        // setting it to true will use the device's native download manager and will be shown in the notification bar.
+    RNFetchBlob.config(Platform.select({
+      ios: {
+        fileCache: true,
         notification: true,
-        path: RNFS.DownloadDirectoryPath + `/orders-${new Date().toDateString()}.csv`,  // this is the path where your downloaded file will live in
-        description: 'Downloading orders files.'
-      }
+        title: `orders-${new Date().toDateString()}.csv`,
+        path: RNFS.DocumentDirectoryPath + `/orders-${new Date().toDateString()}.csv`,
 
+      },
+      android: {
+        addAndroidDownloads: {
+          fileCache: true,
+          useDownloadManager: true,
+          // setting it to true will use the device's native download manager and will be shown in the notification bar.
+          notification: true,
+          path: RNFS.DownloadDirectoryPath + `/orders-${new Date().toDateString()}.csv`,  // this is the path where your downloaded file will live in
+          description: 'Downloading orders files.'
+        }
+
+        // fileCache: true,
+        // useDownloadManager: true,
+        // // setting it to true will use the device's native download manager and will be shown in the notification bar.
+        // notification: true,
+        // path: RNFS.DownloadDirectoryPath + `/orders-${new Date().toDateString()}.csv`,  // this is the path where your downloaded file will live in
+        // description: 'Downloading orders files.'
+      }
     })
+
+    )
+
+
       .fetch("GET",
         `${BASE_URL}adminOrder/downloadPendingOrders`,
-        // "http://192.168.0.106:5000/adminOrder/downloadPendingOrders", 
+        // "http://192.168.0.106:5000/adminOrder/downloadPendingOrders",
         {
           //some headers ..
         })
       .then((res) => {
         // the temp file path
         console.log("The file saved to ", res.path());
+        if (Platform.OS === "ios") {
+          RNFetchBlob.ios.openDocument(res.data);
+        }
       });
 
   }
@@ -98,7 +133,7 @@ const AdminSettingScreen = ({ navigation }) => {
         className='absolute overflow-hidden bottom-5 self-center w-full  '>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("Login")}
+          onPress={logout}
           className="bg-gray-200 mx-5 p-5 rounded-2xl ">
           <View className="flex-row items-center justify-center ">
             <View className="absolute left-0">

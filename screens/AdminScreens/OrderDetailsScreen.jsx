@@ -80,8 +80,9 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                             </Text>
                             <Text
                                 className="text-black py-2 font-mulish-regular">
-                                19-02-2024 at 16:04
+                                {order?.orderedDate.replace(" ", " at ")} PM
                             </Text>
+
                         </View>
                         <Text
                             className="font-mulish-bold  text-black"
@@ -261,7 +262,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                                     <Text className='text-lg text-black font-mulish-medium'
                                         style={{ fontSize: responsiveFontSize(2) }}>
 
-                                        ₹ {order?.totalPrice}
+                                        ₹ {order?.subTotal}
                                     </Text>
 
                                 </DataTable.Cell>
@@ -273,7 +274,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                                     <Text className='text-lg text-black font-mulish-medium'
                                         style={{ fontSize: responsiveFontSize(2) }}>
 
-                                        Discount  :
+                                        Discount  :({order?.couponCode})
                                     </Text>
 
                                 </DataTable.Cell>
@@ -282,8 +283,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                                     <Text className='text-lg text-black font-mulish-regular'
                                         style={{ fontSize: responsiveFontSize(2) }}>
 
-                                        - ₹ 0
-                                        {/* {order?.totalPrice} */}
+                                        - ₹ {order?.discount}
                                     </Text>
 
                                 </DataTable.Cell>

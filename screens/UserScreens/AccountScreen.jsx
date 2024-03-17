@@ -21,7 +21,7 @@ const AccountScreen = ({ navigation }) => {
       SecureStore.deleteItemAsync('token')
       SecureStore.deleteItemAsync('role').then((res) => {
         console.log("User has been logged out successfully")
-        navigation.navigate("Login")
+        navigation.replace("Login")
       })
 
     } catch (error) {

@@ -21,14 +21,15 @@ const data = [
     //     "icon": <Pin />,
     //     "title": "Delivery Address",
     // },
-    // {
-    //     "icon": <Payment />,
-    //     "title": "Payment Methods",
-    // },
-    // {
-    //     "icon": <Ticket />,
-    //     "title": "Promo Card"
-    // },
+    {
+        "icon": <Payment />,
+        "title": "Payment Records",
+    },
+    {
+        "icon": <Ticket />,
+        "title": "Promo Card",
+        "navigation": "CouponCodeScreen"
+    },
     // {
     //     "icon": <Bell />,
     //     "title": "Notifications"

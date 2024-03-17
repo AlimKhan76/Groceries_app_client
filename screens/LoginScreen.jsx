@@ -9,6 +9,8 @@ import { Dialog } from 'react-native-alert-notification'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { ActivityIndicator } from 'react-native-paper'
+import { CommonActions } from '@react-navigation/native';
+
 
 
 const LoginScreen = ({ navigation }) => {
@@ -41,17 +43,17 @@ const LoginScreen = ({ navigation }) => {
                 button: '',
             })
             if (data?.role === "admin") {
-                navigation.navigate("Admin")
+                navigation.replace("Admin")
             }
             else {
-                navigation.navigate('Main')
+                navigation.replace('Main')
             }
         },
         onError: (error) => {
             Dialog.show({
                 type: 'DANGER',
                 title: 'Error',
-                autoClose: 1500,
+                autoClose: 1000,
                 textBody: error,
                 button: 'Close',
             })

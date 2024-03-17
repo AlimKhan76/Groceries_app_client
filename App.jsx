@@ -13,14 +13,24 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <PaperProvider>
 
-          <AlertNotificationRoot>
+          <AlertNotificationRoot theme='light'
+            colors={[
+              {
+                card: "white",
+                label: "black",
+                success: "rgb(83 177 117)",
+                danger: "red",
+                warning: "orange"
+              }]
+            }
+          >
             <StatusBar backgroundColor="white" barStyle="dark-content" />
 
             <StackNavigator />
           </AlertNotificationRoot>
 
         </PaperProvider>
-      </QueryClientProvider>
+      </QueryClientProvider >
     </>
   );
 }

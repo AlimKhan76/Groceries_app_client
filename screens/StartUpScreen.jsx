@@ -1,17 +1,17 @@
 import { Image, StatusBar, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useFocusEffect } from '@react-navigation/native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SecureStore from "expo-secure-store"
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 
 const StartUpScreen = ({ navigation }) => {
     const logo = require("../assets/images/logo.png")
 
-
+    // Checking for token if present in localStorage of device, to see if the user is logged in
     const setInitialRoutes = async () => {
-
         const token = await SecureStore.getItemAsync("token")
         const role = await SecureStore.getItemAsync("role")
+
         if (token) {
             if (role === 'admin') {
                 return 'Admin'
@@ -26,39 +26,43 @@ const StartUpScreen = ({ navigation }) => {
 
     }
 
-
-    // useEffect(() => {
-    //     setInitialRoutes().then((route) => {
-    //         navigation.navigate(route)
-    //     })
-    //         .catch((err) => {
-    //             console.log(err)
-    //         })
-    // }, [])
-
+    // Redirecting after a timeout for the splash screen
     useFocusEffect(React.useCallback(() => {
-        setInitialRoutes().then((route) => {
-            navigation.navigate(route)
-        })
-            .catch((err) => {
-                console.log(err)
+        setTimeout(() => {
+            setInitialRoutes().then((route) => {
+                navigation.replace(route)
             })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }, 400)
     }, []))
 
 
     return (
-
         <View className="flex-1 items-center justify-center bg-[#53B175] ">
-            
-            <View className=" flex-row items-center h-52 justify-center">
 
-                <Image source={logo} className="aspect-auto" />
+            <StatusBar animated={true} hidden showHideTransition={true} />
+
+            <View className=" flex-row items-center justify-center">
+                <Image source={logo}
+                    style={{
+                        width: responsiveWidth(14),
+                        height: responsiveHeight(8)
+                    }} />
 
                 <View className="flex-col items-center px-2">
                     <Text
-                        className="font-base text-white text-6xl font-mulishsb">nectar</Text>
-                    <Text className="text-white flex-col font-mulishr">
-                        Delivering groceries to your doorstep
+                        className="text-white font-mulish-semibold"
+                        style={{ fontSize: responsiveFontSize(9) }}>
+                        nectar
+                    </Text>
+
+                    <Text className="text-white flex-col font-mulish-regular"
+                        style={{
+                            fontSize: responsiveFontSize(2)
+                        }}>
+                        Delivering groceries for your needs
                     </Text>
                 </View>
 

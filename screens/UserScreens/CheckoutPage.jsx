@@ -67,7 +67,10 @@ const CheckoutPage = () => {
 
             <View className="mx-5">
                 {isLoading ?
-                    <ActivityIndicator size={'large'} /> :
+                    <ActivityIndicator size={'large'} color='rgb(83,177,117)' 
+                    style={{
+                        height:responsiveHeight(40)
+                    }}/> :
 
 
                     <ScrollView horizontal={false} className="h-2/4 mb-2">
@@ -75,7 +78,6 @@ const CheckoutPage = () => {
                             <RadioButton.Group
                                 onValueChange={value => setAddress(value)}
                                 value={address}>
-                                {console.log(address)}
 
                                 {userAddress?.address?.map((address, index) => {
                                     return (
@@ -121,7 +123,7 @@ const CheckoutPage = () => {
 
 
             <View
-                className="bottom-10 absolute self-center w-full overflow-hidden  ">
+                className="bottom-5 absolute self-center w-full overflow-hidden  ">
                 <TouchableOpacity
                     onPress={proceedToOrderConfirmation}
                     className="bg-[#53B175] p-5 rounded-3xl flex-row mx-5 items-center justify-center ">

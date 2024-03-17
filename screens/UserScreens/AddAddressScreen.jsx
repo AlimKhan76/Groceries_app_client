@@ -54,25 +54,35 @@ const AddAddressScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
 
-      <Appbar.Header mode='center-aligned' style={{
-                backgroundColor: 'white',
-                height: responsiveHeight(10),
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-            }}
+      <Appbar.Header
+        mode='center-aligned'
+        style={{
+          backgroundColor: 'white',
+          height: responsiveHeight(10),
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+        }}
         statusBarHeight={0}>
-        <Appbar.BackAction iconColor='black'
+
+        <Appbar.BackAction
+          iconColor='black'
           onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Add Address" titleStyle={{
-          fontFamily: "Mulish-Bold",
-          color: "black",
-          fontSize: responsiveFontSize(3)
-        }} />
+
+        <Appbar.Content
+          title="Add Address"
+          titleStyle={{
+            fontFamily: "Mulish-Bold",
+            color: "black",
+            fontSize: responsiveFontSize(3)
+          }} />
+
       </Appbar.Header>
-      <Divider style={{
-        marginBottom: responsiveHeight(1)
-      }} />
+
+      <Divider
+        style={{
+          marginBottom: responsiveHeight(1)
+        }} />
 
 
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

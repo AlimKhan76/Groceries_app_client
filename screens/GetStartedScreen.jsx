@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, Image, TouchableOpacity } from 'react-native'
+import { View, Text, ImageBackground, Image, TouchableOpacity, StatusBar } from 'react-native'
 import React from 'react'
 
 const GetStartedScreen = ({ navigation }) => {
@@ -7,6 +7,8 @@ const GetStartedScreen = ({ navigation }) => {
             source={require("../assets/images/onboarding-background.png")}
             className="flex-1 items-center justify-center">
 
+            <StatusBar animated={true} hidden showHideTransition={true} />
+            
             <View className=" absolute bottom-0 items-center mb-24 w-full">
 
                 <Image source={require("../assets/images/logo.png")}
@@ -19,7 +21,7 @@ const GetStartedScreen = ({ navigation }) => {
                 <Text className="text-white font-mulish-medium mb-8" >Get your groceries to your doorstep</Text>
                 <TouchableOpacity
                     className="p-5 w-3/4 rounded-2xl items-center bg-[#53B175] "
-                    onPress={() => navigation.navigate("Login")}
+                    onPress={() => navigation.replace("Login")}
                 >
 
                     <Text className="text-white font-mulish-semibold text-xl">Get Started</Text>

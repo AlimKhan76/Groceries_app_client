@@ -203,7 +203,7 @@ const HomeScreen = ({ navigation }) => {
 
                     {!loadingProducts &&
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("CategoryProducts")}
+                            onPress={() => navigation.navigate("CategoryProducts",{category:"Best-Selling"})}
                             className='border-gray-100 border-2 px-4 py-4 rounded-2xl justify-center items-center'
                             style={{ width: responsiveWidth(45) }}>
 

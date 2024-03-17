@@ -1,6 +1,4 @@
 const { API } = require("../config/axios");
-import RNFS from 'react-native-fs';
-
 
 
 exports.getPendingProducts = async () => {

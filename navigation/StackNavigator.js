@@ -1,5 +1,4 @@
 import React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import StartUpScreen from '../screens/StartUpScreen';
 import GetStartedScreen from '../screens/GetStartedScreen';
@@ -20,6 +19,7 @@ import AddAddressScreen from '../screens/UserScreens/AddAddressScreen';
 import OrderConfirmationScreen from '../screens/UserScreens/OrderConfirmationScreen';
 import AllCategorizedProductScreen from '../screens/UserScreens/AllCategorizedProductScreen';
 import { AdminBottomTabs } from './AdminBottomTabs';
+import { NavigationContainer } from '@react-navigation/native';
 
 const StackNavigator = () => {
     const Stack = createNativeStackNavigator();
@@ -27,21 +27,25 @@ const StackNavigator = () => {
     return (
 
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={async () => {
-                let token = SecureStore.getItem("token")
-                let role = SecureStore.getItem("role")
-                if (!token) {
-                    return "GetStartedScreen"
-                }
-                else {
-                    if (role === "admin") {
-                        return "Admin"
-                    }
-                    else if (role === 'customer') {
-                        return "Main"
-                    }
-                }
-            }}
+            <Stack.Navigator
+                //  initialRouteName={ async() => {
+                // let token = SecureStore.getItem("token")
+                // let role = SecureStore.getItem("role")
+                // if (!token) {
+                //     return "GetStartedScreen"
+                // }
+                // else {
+                //     if (role.includes("admin")) {
+                //         return "Main"
+                //     }
+                //     else if (role.includes('customer')) {
+                // return "Main"
+                //     }
+                // }
+                // }}
+
+                initialRouteName='StartUpLoading'
+
                 screenOptions={{
                     headerShown: false,
                     animation: "slide_from_right",
@@ -51,12 +55,12 @@ const StackNavigator = () => {
             >
 
                 <Stack.Screen
-                    name='StartUpLoading'
-                    component={StartUpScreen}
-                />
-                <Stack.Screen
                     name='GetStartedScreen'
                     component={GetStartedScreen}
+                />
+                <Stack.Screen
+                    name='StartUpLoading'
+                    component={StartUpScreen}
                 />
                 <Stack.Screen
                     name='Login'
@@ -74,7 +78,7 @@ const StackNavigator = () => {
                     }}
                 />
                 <Stack.Screen
-                    name='Admin'
+                 name='Admin'
                     component={AdminBottomTabs}
                     screenOptions={{
                         animation: "slide_from_right"
