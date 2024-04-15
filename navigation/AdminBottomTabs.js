@@ -5,7 +5,9 @@ import PendingOrderScreen from "../screens/AdminScreens/PendingOrderScreen"
 import Order from "../assets/icons/tabs/order.svg"
 import History from "../assets/icons/tabs/history.svg"
 import Setting from "../assets/icons/tabs/setting.svg"
-import { responsiveHeight } from "react-native-responsive-dimensions";
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 export const AdminBottomTabs = () => {
@@ -17,7 +19,7 @@ export const AdminBottomTabs = () => {
                 tabBarIconStyle: {
                     marginTop: 5,
                 },
-                tabBarLabelStyle: { fontSize: 15, fontFamily: 'Mulish-SemiBold' },
+                tabBarLabelStyle: { fontSize: responsiveFontSize(1.5), fontFamily: 'Mulish-SemiBold' },
                 headerShown: false,
                 tabBarActiveTintColor: "#53B175",
                 tabBarInactiveTintColor: "black",
@@ -26,15 +28,15 @@ export const AdminBottomTabs = () => {
             <Tab.Screen
                 name="PendingOrders"
                 component={PendingOrderScreen}
+
                 options={{
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <Order color="#53B175" className="pt-1" />
-                        )
+                            <MaterialIcons name="pending-actions"
+                                size={responsiveHeight(3)} color="#53B175" s />)
                             :
                             (
-                                <Order color="black" />
-                            )
+                                <MaterialIcons name="pending-actions" size={responsiveHeight(3)} color="black" />)
                 }}
             />
 
@@ -44,12 +46,11 @@ export const AdminBottomTabs = () => {
                 options={{
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <History color="#53B175" />
-                        )
+                            <MaterialIcons name="history" size={responsiveHeight(3)} color="#53B175" />)
                             :
                             (
-                                <History color="black" />
-                            )
+                                <MaterialIcons name="history"
+                                    size={responsiveHeight(3)} color="black" />)
                 }}
             />
             <Tab.Screen
@@ -59,12 +60,16 @@ export const AdminBottomTabs = () => {
 
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <Setting color="#53B175" />
+                            <Ionicons name="settings-outline"
+                                size={responsiveHeight(3)}
+                                color="#53B175" />
                         )
                             :
                             (
-                                <Setting color="black" />
-                            )
+                                <Ionicons
+                                    name="settings-outline"
+                                    size={responsiveHeight(3)}
+                                    color="black" />)
                 }}
             />
         </Tab.Navigator>

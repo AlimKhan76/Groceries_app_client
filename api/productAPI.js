@@ -13,9 +13,9 @@ exports.getBestSellingProducts = async () => {
     }
 }
 
-exports.changeFavouriteProduct = async (productData) => {
+exports.changeFavouriteProduct = async (productId) => {
     try {
-        const { data } = await API.post("product/addToFavourite", productData);
+        const { data } = await API.post("product/addToFavourite", productId);
         console.log(data)
         return data;
     }

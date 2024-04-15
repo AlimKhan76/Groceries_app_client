@@ -30,7 +30,7 @@ export const getUserData = async () => {
         console.log("User data is fetched successfully " + data)
         return data;
     } catch (error) {
-        console.log("Error in fetching User data " + error.response.data.message)
-        throw error.response.data.message
+        console.log("Error in fetching User data " + error?.response?.data?.message)
+        throw error?.response?.data?.message
     }
 }

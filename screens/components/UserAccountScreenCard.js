@@ -12,6 +12,7 @@ const data = [
     {
         "icon": <Orders />,
         "title": "Orders",
+        "navigation":"AllOrderScreen"
 
     },
     // {

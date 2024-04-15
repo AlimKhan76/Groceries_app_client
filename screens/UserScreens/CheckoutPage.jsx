@@ -63,53 +63,78 @@ const CheckoutPage = () => {
             <Text className="m-5 text-lg text-black font-mulish-semibold">
                 Select a Delivery Address
             </Text>
-
-
             <View className="mx-5">
+
+                {/* {userAddress?.address?.length !== 0 ? */}
                 {isLoading ?
-                    <ActivityIndicator size={'large'} color='rgb(83,177,117)' 
-                    style={{
-                        height:responsiveHeight(40)
-                    }}/> :
+                    <ActivityIndicator size={'large'} color='rgb(83,177,117)'
+                        style={{
+                            height: responsiveHeight(40)
+                        }} />
+                    :
+                    <ScrollView horizontal={false} className="mb-2"
+                        style={{
+                            maxHeight: responsiveHeight(40)
+                        }}>
 
-
-                    <ScrollView horizontal={false} className="h-2/4 mb-2">
                         <View className="bg-white border-2 border-gray-200 p-2.5 rounded-2xl">
-                            <RadioButton.Group
-                                onValueChange={value => setAddress(value)}
-                                value={address}>
 
-                                {userAddress?.address?.map((address, index) => {
-                                    return (
-                                        <View key={index}
-                                            className='flex-row items-center w-full justify-between py-2 border-b-2 border-b-gray-100'>
-                                            <RadioButton color='#53B175' value={address} />
-                                            <View className="flex-shrink w-4/6 ">
-                                                <Text className=" text-base text-black font-mulish-regular  ">
-                                                    {address?.line1}
-                                                </Text>
-                                                <Text className=" text-base text-black font-mulish-regular  ">
-                                                    {address?.line2}
-                                                </Text>
-                                                <Text className=" text-base text-black font-mulish-regular  ">
-                                                    {address?.pincode}
-                                                </Text>
-                                                <Text className=" text-base text-black font-mulish-regular  ">
-                                                    Near : {address?.landmark}
-                                                </Text>
+                            {userAddress.address.length !== 0 ?
+                                <RadioButton.Group
+                                    onValueChange={value => setAddress(value)}
+                                    value={address}>
+
+
+
+                                    {userAddress?.address?.map((address, index) => {
+                                        return (
+                                            <View key={index}
+                                                className='flex-row items-center w-full justify-between py-2 border-b-2 border-b-gray-100'>
+                                                <RadioButton color='#53B175' value={address} />
+                                                <View className="flex-shrink w-4/6 ">
+                                                    <Text className=" text-base text-black font-mulish-regular  ">
+                                                        {address?.line1}
+                                                    </Text>
+                                                    <Text className=" text-base text-black font-mulish-regular  ">
+                                                        {address?.line2}
+                                                    </Text>
+                                                    <Text className=" text-base text-black font-mulish-regular  ">
+                                                        {address?.pincode}
+                                                    </Text>
+
+                                                    {address?.landmark.length > 0 &&
+                                                        <Text className=" text-base text-black font-mulish-regular  ">
+                                                            Landmark : {address?.landmark}
+                                                        </Text>
+                                                    }
+
+                                                </View>
 
                                             </View>
-
-                                        </View>
-                                    )
-                                })}
+                                        )
+                                    })}
 
 
-                            </RadioButton.Group>
+                                </RadioButton.Group>
+                                :
+                                <View className="p-5">
+                                    <Text className="text-black text-center font-mulish-semibold"
+                                        style={{ fontSize: responsiveFontSize(3) }}>
+                                        No address available
+                                    </Text>
+                                </View>
+
+                            }
+
+
+
                         </View>
                     </ScrollView>
 
+
                 }
+
+
 
                 <TouchableOpacity
                     onPress={() => navigation.navigate("AddAddress")}

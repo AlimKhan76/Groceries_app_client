@@ -1,13 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import StackNavigator from './navigation/StackNavigator';
-import { AlertNotificationRoot } from 'react-native-alert-notification';
+import { AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
 import { Provider } from 'react-redux';
 import { PaperProvider } from 'react-native-paper';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { StatusBar } from 'react-native';
+import { Alert, StatusBar } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
+
 
 const queryClient = new QueryClient()
 function App() {
+
+  const [isConnected, setConnected] = useState(true);
+  console.log(isConnected)
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      console.log(state)
+      setConnected(state.isConnected);
+      if (!state.isConnected) {
+        showAlert();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const showAlert = () => {
+    Dialog.show({
+      type: "DANGER",
+      button: "OK",
+      title: "No Internet Connection",
+      textBody: "Please Enable internet connection",
+    })
+  };
+
+  
   return (
     <>
       <QueryClientProvider client={queryClient}>

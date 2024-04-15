@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Formik } from 'formik'
 import { object, string } from 'yup'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { addAddressApi } from '../../api/addressAPI'
 import { Dialog } from 'react-native-alert-notification'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
@@ -36,10 +36,10 @@ const AddAddressScreen = () => {
         title: "Error in adding Address",
         textBody: "Please try again later",
         autoClose: 1000,
-        button: 'close'
       })
     },
     onSuccess: () => {
+      useQueryClient().invalidateQueries({ queryKey: ["userAddresses"] })
       navigation.goBack();
       Dialog.show({
         type: "SUCCESS",

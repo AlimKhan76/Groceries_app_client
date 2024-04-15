@@ -48,12 +48,12 @@ const FavouriteProductScreen = () => {
                 <TouchableOpacity
                   onPress={() => navigation.navigate("ProductDetails", { product })}
                   key={product._id}
-                  className=' px-4 py-4 flex-row  '>
+                  className=' px-4 py-2 flex-row  '>
                   <Image
                     className="self-center "
                     style={{
                       width: responsiveWidth(30),
-                      height: responsiveHeight(14)
+                      height: responsiveHeight(15)
                     }}
                     resizeMode='contain'
                     source={{ uri: `${IMAGE_URL}${product?.url}` }}
@@ -64,7 +64,7 @@ const FavouriteProductScreen = () => {
                     <Text
                       className="text-black font-mulish-bold"
                       style={{
-                        fontSize:responsiveFontSize(2.5)
+                        fontSize:responsiveFontSize(2)
                       }}
                       >
                       {product?.title}
@@ -73,7 +73,7 @@ const FavouriteProductScreen = () => {
                     <Text
                       className="font-mulish-regular text-slate-500"
                       style={{
-                        fontSize:responsiveFontSize(2)
+                        fontSize:responsiveFontSize(1.5)
                       }}>
                       {product?.baseQuantity}
                     </Text>
@@ -87,11 +87,11 @@ const FavouriteProductScreen = () => {
                     <Text
                       className=" text-black font-mulish-semibold"
                       style={{
-                        fontSize:responsiveFontSize(2.5)
+                        fontSize:responsiveFontSize(2)
                       }}>
                       ₹{product?.price}
                     </Text>
-                    <Right color="black"  />
+                    <Right color="black"/>
                   </View>
 
                 </TouchableOpacity>
@@ -107,7 +107,10 @@ const FavouriteProductScreen = () => {
         :
         <View className="items-center justify-center flex-1">
           <Text
-            className="text-xl text-center text-black font-mulish-semibold">
+            className="text-center text-black font-mulish-semibold"
+            style={{
+              fontSize:responsiveFontSize(2.5)
+            }}>
             You have no favourites, start adding them by clicking the heart icon
           </Text>
         </View>

@@ -41,7 +41,7 @@ const CartScreen = ({ navigation }) => {
   const { data: cartItems, isLoading } = useQuery({
     queryKey: ['cartItems'],
     queryFn: getItemsFromCartApi,
-    staleTime: Infinity,
+    // staleTime: Infinity,
   })
 
   // For caclculating Total Checkout Amount 
@@ -86,8 +86,6 @@ const CartScreen = ({ navigation }) => {
     }
   })
 
-
-
   return (
     <SafeAreaView className="flex-1 bg-white"
       edges={['right', 'top', 'left']}
@@ -126,11 +124,17 @@ const CartScreen = ({ navigation }) => {
               className="overflow-hidden">
               {cartItems?.cart?.map((product) => {
                 return (
-                  <Fragment key={product?._id}>
+                  <Fragment key={product?.cart_item?._id}>
                     <TouchableOpacity
-                      onPress={() => navigation.navigate("ProductDetails", { product })}
+                      onPress={() => navigation.navigate("ProductDetails",
+                        {
+                          product: {
+                            ...product?.cart_item,
+                            quantity: product?.quantity
+                          }
+                        })}
 
-                      key={product._id}
+                      key={product.cart_item?._id}
                       className=' px-4 py-3 flex-row  '>
                       <Image className="self-center"
                         style={{
@@ -138,7 +142,7 @@ const CartScreen = ({ navigation }) => {
                           height: responsiveHeight(15)
                         }}
                         resizeMode='contain'
-                        source={{ uri: `${IMAGE_URL}${product?.url}` }}
+                        source={{ uri: `${IMAGE_URL}${product?.cart_item?.url}` }}
                       />
 
                       <View className=" pl-4  flex-shrink w-full">
@@ -146,13 +150,13 @@ const CartScreen = ({ navigation }) => {
                         <Text
                           className=" text-black text-xl font-mulish-bold"
                           style={{ fontSize: responsiveFontSize(2.5) }}>
-                          {product?.title}
+                          {product?.cart_item?.title}
                         </Text>
 
                         <Text
                           className=" font-mulish-medium text-slate-500"
                           style={{ fontSize: responsiveFontSize(1.5) }}>
-                          ₹{product?.price} / {product?.unit}
+                          ₹{product?.cart_item?.price} / {product?.cart_item?.unit}
                         </Text>
 
 
@@ -161,23 +165,23 @@ const CartScreen = ({ navigation }) => {
                           <View className="flex-row items-center justify-around w-3/5">
 
                             <TouchableOpacity
-                              disabled={isLoading}
+                              disabled={isLoading || product?.quantity === 1}
                               onPress={() => {
-                                let quantity = product?.quantity + 1
+                                let quantity = product?.cart_item?.quantity + 1
                                 modifyQuantity({
-                                  ...product,
+                                  ...product.cart_item,
                                   quantity: product?.quantity - 1,
-                                  totalPrice: quantity * product?.price,
+                                  // totalPrice: quantity * product?.cart_item?.price,
                                 })
                               }}
                               className={`
-                            ${isPending ? "bg-gray-100" : "bg-white"}
+                            ${isPending || product?.quantity === 1 ? "bg-gray-100" : "bg-white"}
                              border-gray-200  border-2 rounded-2xl p-3 `}
                             >
                               <Minus style={{ color: "black" }} />
                             </TouchableOpacity>
                             <Text
-                              className="text-xl text-black font-mulish-semibold mx-6"
+                              className=" text-black font-mulish-semibold mx-6"
                               style={{
                                 fontSize: responsiveFontSize(2)
                               }}>
@@ -189,9 +193,9 @@ const CartScreen = ({ navigation }) => {
                               onPress={() => {
                                 let quantity = product?.quantity + 1
                                 modifyQuantity({
-                                  ...product,
+                                  ...product.cart_item,
                                   quantity: product?.quantity + 1,
-                                  totalPrice: quantity * product?.price
+                                  // totalPrice: quantity * product?.cart_item?.price
                                 })
                               }}
                               className={`
@@ -208,8 +212,8 @@ const CartScreen = ({ navigation }) => {
                               fontSize: responsiveFontSize(2)
                             }}>
                             {/* ₹{isPending ? "" : product?.totalPrice} */}
-                            ₹ {product?.totalPrice}
-
+                            {/* ₹ {product?.totalPrice} */}
+                            ₹ {(product?.quantity) * (product?.cart_item?.price)}
                           </Text>
 
                         </View>
@@ -217,8 +221,8 @@ const CartScreen = ({ navigation }) => {
                       </View>
 
                       <View className="absolute right-5 top-5 ">
-                        <TouchableOpacity
-                          onPress={() => { removeItem(product?._id) }}
+                        <TouchableOpacity className="p-2"
+                          onPress={() => { removeItem(product?.cart_item?._id) }}
                         >
                           <Close />
                         </TouchableOpacity>
@@ -242,32 +246,33 @@ const CartScreen = ({ navigation }) => {
           </View>
       }
 
-
-      <View className="bottom-5 relative self-center w-full  overflow-hidden  ">
-        <TouchableOpacity
-          disabled={isCheckoutDisabled}
-          onPress={() => navigation.navigate("Checkout")}
-          // bg-[#216239]
-          className={`
-          ${isCheckoutDisabled ? "bg-[#216239]" : "bg-[#53B175]"}
+      {!isCheckoutDisabled &&
+        <View className="bottom-5 relative self-center w-full  overflow-hidden  ">
+          <TouchableOpacity
+            disabled={isCheckoutDisabled}
+            onPress={() => navigation.navigate("Checkout")}
+            // bg-[#216239]
+            className={`
+          ${isCheckoutDisabled && "opacity-60"} bg-[#53B175]
           p-5 rounded-3xl flex-row mx-5 items-center justify-center`}
 
-        >
-          <Text className=' text-white text-xl font-mulish-semibold'
-            style={{ fontSize: responsiveFontSize(3) }}>
-
-            Go to Checkout
-          </Text>
-          <View className="right-5 absolute bg-[#489E67] p-1.5 rounded-xl ">
-
-            <Text className='text-white text-xs font-mulish-semibold'
-              style={{ fontSize: responsiveFontSize(1.5) }}>
-
-              &nbsp;₹ {checkOutAmount}
+          >
+            <Text className=' text-white text-xl font-mulish-semibold'
+              style={{ fontSize: responsiveFontSize(2.5) }}>
+              Go to Checkout
             </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+
+            <View className={`${isCheckoutDisabled && "opacity-50"} right-5 absolute bg-[#489E67] p-1.5 rounded-xl `}>
+
+              <Text className='text-white text-xs font-mulish-semibold'
+                style={{ fontSize: responsiveFontSize(1.5) }}>
+
+                &nbsp;₹ {checkOutAmount}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      }
 
     </SafeAreaView >
   )

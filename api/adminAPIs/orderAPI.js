@@ -1,9 +1,21 @@
 const { API } = require("../config/axios");
 
-
-exports.getPendingProducts = async () => {
+exports.getOrdersByStatus = async (pageParam, status) => {
     try {
-        const { data } = await API.get("adminOrder/getPendingOrders")
+        const { data } = await API.get(`adminOrder/getOrders/${status}/${pageParam}`)
+        console.log("Fetched " + status + " products " + data)
+        return data;
+
+    } catch (error) {
+        console.log("Error in fetching Pending Orders " + error?.response?.data?.message)
+        throw error?.response?.data?.message;
+    }
+}
+
+
+exports.getPendingProducts = async ({ pageParam }) => {
+    try {
+        const { data } = await API.get(`adminOrder/getPendingOrders/${pageParam}`)
         console.log("Fetched pending products " + data)
         return data;
 
@@ -62,7 +74,7 @@ exports.downloadPendingOrders = async () => {
         //     .catch((err) => {
         //       console.log('Download error:', err);
         //     });
-        
+
         // const data = await API.get("adminOrder/downloadPendingOrders")
         // console.log(data)
         // return data;
@@ -72,4 +84,23 @@ exports.downloadPendingOrders = async () => {
         throw error?.response?.data?.message;
 
     }
+}
+
+
+exports.updateOrderApi = async (order) => {
+    try {
+        console.log(order)
+        const { data } = await API.post("adminOrder/updateOrder",
+            { orderId: order?.orderId, status: order?.status })
+        console.log("Order has been updated " + data)
+        return data;
+
+    } catch (error) {
+        console.log(error)
+        console.log("Error in updating order status " + error?.response?.data?.message)
+        throw error?.response?.data?.message
+
+    }
+
+
 }

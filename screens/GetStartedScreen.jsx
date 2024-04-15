@@ -1,14 +1,15 @@
-import { View, Text, ImageBackground, Image, TouchableOpacity, StatusBar } from 'react-native'
+import { View, Text, ImageBackground, Image, TouchableOpacity, StatusBar, BackHandler } from 'react-native'
 import React from 'react'
+import { useFocusEffect } from '@react-navigation/native';
 
 const GetStartedScreen = ({ navigation }) => {
     return (
         <ImageBackground
+            resizeMode='cover'
             source={require("../assets/images/onboarding-background.png")}
             className="flex-1 items-center justify-center">
 
-            <StatusBar animated={true} hidden showHideTransition={true} />
-            
+            {/* <StatusBar backgroundColor={"transparent"} barStyle={'light-content'}/> */}
             <View className=" absolute bottom-0 items-center mb-24 w-full">
 
                 <Image source={require("../assets/images/logo.png")}

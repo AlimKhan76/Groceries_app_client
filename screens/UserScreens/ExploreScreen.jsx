@@ -8,18 +8,23 @@ import { useQuery } from '@tanstack/react-query';
 import { IMAGE_URL } from '@env';
 import RightArrow from "../../assets/icons/account/right_arrow.svg"
 import CategoriesCard from '../components/CategoriesCard'
-import { ActivityIndicator, Divider } from 'react-native-paper'
+import { ActivityIndicator } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-import categoriesCard from '../components/CategoriesCard'
-import { assets } from '../../react-native.config'
 
 const ExploreScreen = ({ navigation, route }) => {
   const inputRef = useRef();
+  const [fromHome, setFromHome] = useState(route?.params?.fromHome !== undefined ? true : false)
   const [searchQuery, setSearchQuery] = useState("")
-  // const { data: categorizedProducts } = route?.params
+
   useFocusEffect(React.useCallback(() => {
-    inputRef.current.focus();
+    console.log(route?.params)
+    console.log(fromHome)
+    if (route?.params?.fromHome === true) {
+      inputRef.current.focus();
+    }
     return () => {
+      navigation.setParams({ fromHome: false });
+      setFromHome(false)
       setSearchQuery("")
     }
   }, []))
@@ -51,8 +56,7 @@ const ExploreScreen = ({ navigation, route }) => {
           Find Products
         </Text>
 
-        {/* <Divider bold /> */}
-        {/* {console.log(categorizedProducts) */}
+     
 
         <View
           className='bg-gray-200 mx-6 my-2 rounded-2xl px-3 flex-row items-center'>
@@ -141,8 +145,8 @@ const ExploreScreen = ({ navigation, route }) => {
 
 
                 {searchQuery === "" &&
-                <CategoriesCard/>
-              }
+                  <CategoriesCard />
+                }
               </View>
 
             </ScrollView>

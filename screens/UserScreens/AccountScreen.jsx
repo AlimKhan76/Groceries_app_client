@@ -1,25 +1,31 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { Fragment } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RightArrow from '../../assets/icons/account/right_arrow.svg'
 import LogOut from '../../assets/icons/account/logout.svg'
 import data from "../components/UserAccountScreenCard"
 import * as SecureStore from "expo-secure-store";
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getUserData } from '../../api/userAPI'
+import { Divider } from 'react-native-paper'
+import { responsiveFontSize } from 'react-native-responsive-dimensions'
+import { moderateScale } from 'react-native-size-matters'
 
 const AccountScreen = ({ navigation }) => {
 
+  const queryClient = useQueryClient()
   const { data: userData } = useQuery({
     queryKey: ['userData'],
     queryFn: getUserData,
     staleTime: Infinity,
   })
 
+
   const logout = async () => {
     try {
       SecureStore.deleteItemAsync('token')
       SecureStore.deleteItemAsync('role').then((res) => {
+        queryClient.invalidateQueries().then(res => console.log(res))
         console.log("User has been logged out successfully")
         navigation.replace("Login")
       })
@@ -51,16 +57,29 @@ const AccountScreen = ({ navigation }) => {
 
       {data?.map((data, index) => {
         return (
-          <TouchableOpacity key={index}
-            className="border-b-gray-300 border-b-2 px-5 flex-row justify-between items-center py-3">
-            <View className="flex-row items-center">
-              {data?.icon}
-              <Text
-                className="text-xl text-black px-3 text-start font-mulish-semibold">
-                {data?.title}</Text>
-            </View>
-            <RightArrow color='black' />
-          </TouchableOpacity>
+          <Fragment key={index} >
+            <TouchableOpacity
+              onPress={() => navigation.navigate(data?.navigation)}
+              className=" flex-row justify-between items-center"
+              style={{
+                paddingHorizontal: moderateScale(20),
+                paddingVertical: moderateScale(15)
+              }}>
+
+              <View className="flex-row items-center">
+                {data?.icon}
+                <Text
+                  className=" text-black px-3 text-start font-mulish-semibold"
+                  style={{
+                    fontSize: moderateScale(15,1)
+                  }}>
+                  {data?.title}</Text>
+              </View>
+              <RightArrow color='black' />
+
+            </TouchableOpacity>
+            <Divider className="mx-3" />
+          </Fragment>
         )
       })}
 

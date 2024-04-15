@@ -10,6 +10,7 @@ import Person from "../assets/icons/tabs/person.svg"
 import HomeScreen from '../screens/UserScreens/HomeScreen';
 import FavouriteProductScreen from '../screens/UserScreens/FavouriteProductScreen';
 import { Badge } from 'react-native-paper';
+import UserRegisterationPage from '../screens/UserRegisterationPage';
 
 export const UserBottomTabs = () => {
     const Tab = createBottomTabNavigator();
@@ -17,6 +18,12 @@ export const UserBottomTabs = () => {
     return (
         <Tab.Navigator initialRouteName='Shop'
             screenOptions={{
+                tabBarStyle: {
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    borderTopWidth: 1,
+                    borderTopColor: "#e2e2e2"
+                },
                 tabBarIconStyle: {
                     marginTop: 5,
                 },

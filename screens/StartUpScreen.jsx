@@ -42,25 +42,26 @@ const StartUpScreen = ({ navigation }) => {
     return (
         <View className="flex-1 items-center justify-center bg-[#53B175] ">
 
-            <StatusBar animated={true} hidden showHideTransition={true} />
+            <StatusBar backgroundColor={"#53B175"} barStyle={'light-content'} />
 
             <View className=" flex-row items-center justify-center">
                 <Image source={logo}
+                resizeMode='cover'
                     style={{
-                        width: responsiveWidth(14),
+                        width: responsiveWidth(15),
                         height: responsiveHeight(8)
                     }} />
 
                 <View className="flex-col items-center px-2">
                     <Text
                         className="text-white font-mulish-semibold"
-                        style={{ fontSize: responsiveFontSize(9) }}>
-                        nectar
+                        style={{ fontSize: responsiveFontSize(4) }}>
+                        Nectar
                     </Text>
 
                     <Text className="text-white flex-col font-mulish-regular"
                         style={{
-                            fontSize: responsiveFontSize(2)
+                            fontSize: responsiveFontSize(1.5)
                         }}>
                         Delivering groceries for your needs
                     </Text>

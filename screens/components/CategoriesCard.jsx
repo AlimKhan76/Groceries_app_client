@@ -72,7 +72,10 @@ const CategoriesCard = () => {
 
 
             <TouchableOpacity
-                // onPress={() => navigation.navigate("ProductDetails")}
+                onPress={() => navigation.navigate("CategoryProducts", {
+                    category: "Fruits"
+                })
+                }
                 className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
                 style={{
                     width: responsiveWidth(45),
@@ -89,7 +92,7 @@ const CategoriesCard = () => {
                     className="pt-2 text-black text-lg text-center font-mulish-extrabold "
                     style={{ fontSize: responsiveFontSize(2.5) }}
                 >
-                    Meat
+                    Exotic Fruits
                 </Text>
 
             </TouchableOpacity>

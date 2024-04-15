@@ -3,12 +3,16 @@
     "version": ">= 7.1.2"
   },
   "build": {
+    "android": {
+      "credentialsSource": "local"
+    },
     "development": {
       "developmentClient": true,
       "distribution": "internal",
       "env": {
         "BASE_URL": "https://groceries-app-server.vercel.app/",
         "IMAGE_URL": "https://github.com/AlimKhan76/Groceries_app_server/blob/master/public/"
+
       }
     },
     "preview": {
@@ -18,6 +22,7 @@
       "env": {
         "BASE_URL": "https://groceries-app-server.vercel.app/",
         "IMAGE_URL": "https://github.com/AlimKhan76/Groceries_app_server/blob/master/public/"
+
       }
     }
   },

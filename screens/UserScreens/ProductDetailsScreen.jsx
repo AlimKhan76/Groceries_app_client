@@ -66,10 +66,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     }
 
 
-
-
-
-
+{console.log(route.params)}
     const { data: userData } = useQuery({
         queryKey: ["userData"],
         queryFn: getUserData,
@@ -100,7 +97,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                 title: "Added to Cart",
                 type: "SUCCESS",
                 textBody: "Add other products to cart too",
-                autoClose: 1000,
+                autoClose: 500,
                 onPress: () => { navigation.navigate("Cart") }
             })
             console.log(data)
@@ -127,25 +124,26 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     })
 
     useEffect(() => {
-        if(!isFetching){
-            checkProductInCart().map(item=>{
-                setQuantity(item.quantity)
+        if (!isFetching) {
+            checkProductInCart().map(item => {
+                setQuantity(item?.quantity)
             })
         }
 
     }, [cartItems])
 
     const checkProductInCart = () => {
+        console.log(cartItems.cart)
         const cart = cartItems?.cart
-        const cartProduct = cart?.filter((item) => item?._id == product?._id)
+        const cartProduct = cart?.filter((item) => item?.cart_item?._id == product?._id)
         return cartProduct;
     }
 
     return (
         <SafeAreaView className="flex-1 bg-white "
-            edges={['right', 'top', 'left']}
-        >
-            <StatusBar backgroundColor={"rgb(243 244 246)"}  />
+            edges={['right', 'top', 'left']}>
+
+            <StatusBar backgroundColor={"rgb(243 244 246)"} />
             <ScrollView className="mb-3">
                 <>
                     <View className="bg-gray-100 rounded-b-3xl  "
@@ -194,8 +192,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
                             <TouchableOpacity
                                 disabled={isPending}
-                                onPress={() => { mutate({ product }) }}
-                            >
+                                onPress={() => { mutate({ productId: product?._id }) }}>
                                 <Heart color={isFavourite ? "red" : "white"} />
                             </TouchableOpacity>
                         </View>
@@ -218,14 +215,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                             <TouchableOpacity
                                                 disabled={item?.quantity === 1}
                                                 onPress={() => lowerQuantity()}
-                                                // onPress={() => {
-                                                //     let quantity = item?.quantity - 1
-                                                //     modifyQuantity({
-                                                //         ...product,
-                                                //         quantity: item?.quantity - 1,
-                                                //         totalPrice: quantity * product?.price,
-                                                //     })
-                                                // }}
                                                 className="border-gray-200 border-2 rounded-2xl p-3  ">
                                                 <Minus style={{ color: "black" }} />
                                             </TouchableOpacity>
@@ -234,9 +223,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
                                             <Text
                                                 className="text-black font-mulish-semibold text-lg items-center px-2.5">
-                                                {isFetching ?
-                                                    <ActivityIndicator size={'small'} /> :
-                                                    // item?.quantity
+                                                {addingToBasket ?
+                                                    <ActivityIndicator size={'small'} color='gray' /> :
                                                     quantity
                                                 }
 
@@ -244,14 +232,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
                                             <TouchableOpacity
                                                 onPress={increaseQuantity}
-                                                // onPress={() => {
-                                                //     let quantity = item?.quantity + 1
-                                                //     modifyQuantity({
-                                                //         ...product,
-                                                //         quantity: item?.quantity + 1,
-                                                //         totalPrice: quantity * product?.price,
-                                                //     })
-                                                // }}
                                                 className="border-gray-200 border-2 rounded-2xl p-3 ">
                                                 <Plus style={{ color: "#53B175" }} />
                                             </TouchableOpacity>
@@ -369,7 +349,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             <View className="bottom-3 relative self-center w-full overflow-hidden ">
                 <TouchableOpacity
                     onPress={
-                        () => addToCartMutate({ ...product, quantity, totalPrice })
+                        () => addToCartMutate({ ...product, quantity })
                     }
                     className="bg-[#53B175] p-5 rounded-3xl mx-5 items-center justify-center ">
 

@@ -4,8 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
-import { getcategorizedProducts, getProductByCategory } from '../../api/productAPI'
-import { BASE_URL } from "@env"
+import { getProductByCategory } from '../../api/productAPI'
 import { IMAGE_URL } from "@env"
 import RightArrow from "../../assets/icons/account/right_arrow.svg"
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -13,12 +12,6 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 
 const AllCategorizedProductScreen = ({ route }) => {
     const navigation = useNavigation();
-    // const { data: categorizedProducts, isLoading: loadingProducts } = useQuery({
-    //     queryKey: ["bestSellingProduct"],
-    //     queryFn: getcategorizedProducts,
-    //     enabled: true,
-    //     staleTime: Infinity
-    // })
 
     const { category } = route.params
     const { data: categorizedProducts, isLoading: loadingProducts } = useQuery({
@@ -83,19 +76,19 @@ const AllCategorizedProductScreen = ({ route }) => {
                                             source={{ uri: `${IMAGE_URL}${product?.url}` }} />
 
                                         <Text
-                                            className="pt-2 text-black text-lg items-center font-mulish-extrabold ">
+                                            className="pt-2 text-black text-lg items-center font-mulish-bold ">
                                             {product?.title}
                                         </Text>
 
                                         <Text
-                                            className="text-base font-mulish-medium text-slate-500">
+                                            className="text-base font-mulish-regular text-slate-500">
                                             {product?.baseQuantity}
                                         </Text>
 
                                         <View
                                             className="flex-row justify-between pt-3 items-center">
                                             <Text
-                                                className="text-black text-lg font-mulish-extrabold">
+                                                className="text-black text-lg font-mulish-bold">
                                                 ₹{product?.price}
                                             </Text>
 

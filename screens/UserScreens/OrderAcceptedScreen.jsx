@@ -9,6 +9,7 @@ const OrderAcceptedScreen = ({ navigation }) => {
             navigation.navigate("Shop");
         }, 3000)
     },[]))
+    
     return (
         <ImageBackground
             source={require("../../assets/images/order_accepted/background-accepted.png")}

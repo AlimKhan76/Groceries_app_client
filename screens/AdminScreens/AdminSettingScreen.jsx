@@ -5,23 +5,24 @@ import RightArrow from '../../assets/icons/account/right_arrow.svg'
 import LogOut from '../../assets/icons/account/logout.svg'
 import data from "../components/AdminAccountScreenCard"
 import { downloadPendingOrders } from '../../api/adminAPIs/orderAPI'
-import { useQuery } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import RNFS from 'react-native-fs';
 import { BASE_URL } from "@env"
 import { IMAGE_URL } from "@env"
 import { Divider } from 'react-native-paper'
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import RNFetchBlob from 'rn-fetch-blob';
 import * as SecureStore from "expo-secure-store";
 
 
 
 const AdminSettingScreen = ({ navigation }) => {
-
+  const queryClient = useQueryClient()
   const logout = async () => {
     try {
       SecureStore.deleteItemAsync('token')
       SecureStore.deleteItemAsync('role').then((res) => {
+        queryClient.invalidateQueries();
         console.log("Admin has been logged out successfully")
         navigation.replace("Login")
       })
@@ -32,6 +33,7 @@ const AdminSettingScreen = ({ navigation }) => {
     }
 
   }
+
   const downloadCSV = async () => {
     RNFetchBlob.config(Platform.select({
       ios: {
@@ -43,6 +45,7 @@ const AdminSettingScreen = ({ navigation }) => {
       },
       android: {
         addAndroidDownloads: {
+          title: `orders-${new Date().toDateString()}.csv`,
           fileCache: true,
           useDownloadManager: true,
           // setting it to true will use the device's native download manager and will be shown in the notification bar.
@@ -79,6 +82,9 @@ const AdminSettingScreen = ({ navigation }) => {
 
   }
 
+
+
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-row py-8 px-4 ">
@@ -89,7 +95,7 @@ const AdminSettingScreen = ({ navigation }) => {
           <Text className="text-black text-xl font-mulish-bold">
             Admin name
           </Text>
-          <Text className="font-mulishr text-black">admin@gmail.com</Text>
+          <Text className="font-mulish-regular text-black">admin@gmail.com</Text>
 
         </View>
       </View>
@@ -113,7 +119,10 @@ const AdminSettingScreen = ({ navigation }) => {
               <View className="flex-row items-center">
                 {data?.icon}
                 <Text
-                  className="text-xl text-black px-3 text-start font-mulishsb">
+                  className=" text-black px-3 text-start font-mulish-semibold"
+                  style={{
+                    fontSize: responsiveFontSize(2)
+                  }}>
                   {data?.title}
                 </Text>
               </View>

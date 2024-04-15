@@ -20,6 +20,11 @@ import OrderConfirmationScreen from '../screens/UserScreens/OrderConfirmationScr
 import AllCategorizedProductScreen from '../screens/UserScreens/AllCategorizedProductScreen';
 import { AdminBottomTabs } from './AdminBottomTabs';
 import { NavigationContainer } from '@react-navigation/native';
+import UserRegisterationPage from '../screens/UserRegisterationPage';
+import AllOrdersScreen from '../screens/UserScreens/AllOrdersScreen';
+import AllCustomerPaymentScreen from '../screens/AdminScreens/AllCustomerPaymentScreen';
+import UserOrderDetails from '../screens/UserScreens/UserOrderDetails';
+import CustomerPaymentDetailsScreen from '../screens/AdminScreens/CustomerPaymentDetailsScreen';
 
 const StackNavigator = () => {
     const Stack = createNativeStackNavigator();
@@ -57,14 +62,23 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name='GetStartedScreen'
                     component={GetStartedScreen}
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }}
                 />
                 <Stack.Screen
                     name='StartUpLoading'
                     component={StartUpScreen}
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }}
                 />
                 <Stack.Screen
                     name='Login'
-                    component={LoginScreen}
+                    component={LandingScreen}
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }}
                 />
                 <Stack.Screen
                     name='SignUp'
@@ -78,7 +92,7 @@ const StackNavigator = () => {
                     }}
                 />
                 <Stack.Screen
-                 name='Admin'
+                    name='Admin'
                     component={AdminBottomTabs}
                     screenOptions={{
                         animation: "slide_from_right"
@@ -87,26 +101,56 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="OrderDetails"
                     component={OrderDetailsScreen}
+                    screenOptions={{
+                        headerShown: false,
+                        animation: "slide_from_right",
+                        animationDuration: 100
+                    }}
                 />
                 <Stack.Screen
                     name='UpdateProduct'
                     component={UpdateProductScreen}
+                    screenOptions={{
+                        headerShown: false,
+                        animation: "slide_from_right",
+                        animationDuration: 100
+                    }}
                 />
                 <Stack.Screen
                     name='AddedToCart'
                     component={AddedToCartPopUp}
+                    screenOptions={{
+                        headerShown: false,
+                        animation: "slide_from_right",
+                        animationDuration: 100
+                    }}
                 />
                 <Stack.Screen
                     name="OrderAccepted"
                     component={OrderAcceptedScreen}
+                    screenOptions={{
+                        headerShown: false,
+                        animation: "slide_from_right",
+                        animationDuration: 100
+                    }}
                 />
                 <Stack.Screen
                     name='ProductDetails'
                     component={ProductDetailsScreen}
+                    screenOptions={{
+                        headerShown: false,
+                        animation: "slide_from_right",
+                        animationDuration: 100
+                    }}
                 />
                 <Stack.Screen
                     name='Landing'
                     component={LandingScreen}
+                    screenOptions={{
+                        headerShown: false,
+                        animation: "slide_from_right",
+                        animationDuration: 100
+                    }}
                 />
                 <Stack.Screen
                     name='ForgotPassword'
@@ -115,6 +159,9 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name='OTPScreen'
                     component={OTPScreen}
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }}
                 />
                 <Stack.Screen
                     name='Checkout'
@@ -127,10 +174,47 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name='OrderConfirmation'
                     component={OrderConfirmationScreen}
-                />
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }} />
                 <Stack.Screen
                     name='CategoryProducts'
                     component={AllCategorizedProductScreen}
+                />
+                <Stack.Screen
+                    name="UserRegsiterationPage"
+                    component={UserRegisterationPage}
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }}
+                />
+                <Stack.Screen
+                    name="AllOrderScreen"
+                    component={AllOrdersScreen}
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }}
+                />
+                <Stack.Screen
+                    name="PaymentRecord"
+                    component={AllCustomerPaymentScreen}
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }}
+                />
+                <Stack.Screen
+                    name="UserOrderDetails"
+                    component={UserOrderDetails}
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }}
+                />
+                <Stack.Screen
+                    name="CustomerPaymentDetailsScreen"
+                    component={CustomerPaymentDetailsScreen}
+                    screenOptions={{
+                        animation: "slide_from_right"
+                    }}
                 />
             </Stack.Navigator>
         </NavigationContainer>

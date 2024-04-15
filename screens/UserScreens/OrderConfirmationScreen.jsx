@@ -49,7 +49,7 @@ const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, 
                     style={{
                         width: responsiveWidth(50),
                         color: "black",
-                        fontSize: responsiveFontSize(2),
+                        fontSize: responsiveFontSize(1.8),
                     }}
                     maxLength={20}
                     placeholderTextColor={"black"}
@@ -61,7 +61,7 @@ const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, 
                     className={`${couponCode?.length === 0 ? "bg-gray-200" : 'bg-white'} border-2 border-gray-300 rounded-2xl p-3`} >
                     <Text
                         style={{
-                            fontSize: responsiveFontSize(2)
+                            fontSize: responsiveFontSize(1.8)
                         }}
                         className="text-black font-mulish-semibold px-2">
                         Submit
@@ -78,7 +78,7 @@ const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, 
 
                     <Text className="text-red-500 font-mulish-regular"
                         style={{
-                            fontSize: responsiveFontSize(1.5)
+                            fontSize: responsiveFontSize(1.8)
                         }}>
                         {error}
                     </Text>
@@ -153,7 +153,7 @@ const OrderConfirmationScreen = () => {
             Dialog.show({
                 type: "DANGER",
                 autoClose: 1000,
-                button: "Ok",
+                button: "OK",
                 title: "Error in placing Order",
                 textBody: "Please try again later ! !"
             })
@@ -161,7 +161,7 @@ const OrderConfirmationScreen = () => {
         onSuccess: () => {
             navigation.navigate("OrderAccepted")
             queryClient.invalidateQueries({
-                queryKey: ['cartItems']
+                queryKey: ['cartItems', "userOrders"]
             })
 
         }
@@ -191,8 +191,9 @@ const OrderConfirmationScreen = () => {
                     }} />
             </Appbar.Header>
             <Divider />
-            {isFetching &&
 
+
+            {isFetching &&
                 <BlurView
                     className="items-center justify-center"
                     style={{
@@ -241,25 +242,39 @@ const OrderConfirmationScreen = () => {
                     <View className="m-3 ">
                         {/* <EntypoIcon name="address" size={20} color="black" /> */}
                         <View>
+                            <Text className='text-black font-mulish-regular mb-1 ' style={{
+                                fontSize: responsiveFontSize(1.8)
+                            }}>
+                                Phone no: {userData?.contactNo}
+                            </Text>
 
-                            <Text className='text-black font-mulish-regular text-base'>
+                            <Text className='text-black font-mulish-regular '
+                                style={{
+                                    fontSize: responsiveFontSize(1.8)
+                                }}>
                                 {address?.line1}
                             </Text>
-                            <Text className='text-black font-mulish-regular text-base'>
+                            <Text className='text-black font-mulish-regular' style={{
+                                fontSize: responsiveFontSize(1.8)
+                            }}>
 
                                 {address?.line2}
                             </Text>
-                            <Text className='text-black font-mulish-regular text-base'>
+                            <Text className='text-black font-mulish-regular ' style={{
+                                fontSize: responsiveFontSize(1.8)
+                            }}>
 
                                 {address?.pincode}
                             </Text>
-                            <Text className='text-black font-mulish-regular text-base'>
 
-                                {address?.landmark}
-                            </Text>
-                            <Text className='text-black font-mulish-regular text-base'>
-                                Phone no: {userData?.contactNo}
-                            </Text>
+                            {address?.landmark.length > 0 &&
+                                <Text className='text-black font-mulish-regular ' style={{
+                                    fontSize: responsiveFontSize(1.8)
+                                }}>
+                                    Landmark: {address?.landmark}
+                                </Text>
+                            }
+
                         </View>
 
                     </View>
@@ -309,17 +324,24 @@ const OrderConfirmationScreen = () => {
                     <DataTable>
                         <DataTable.Header>
                             <DataTable.Title>
-                                <Text className="text-black text-base font-mulish-bold">
-                                    Item Name
+                                <Text className="text-black text-base font-mulish-bold"
+                                    style={{
+                                        fontSize: responsiveFontSize(1.8)
+                                    }}>
+                                    Item
                                 </Text>
                             </DataTable.Title>
                             <DataTable.Title numeric >
-                                <Text className="text-black text-base font-mulish-bold">
+                                <Text className="text-black text-base font-mulish-bold" style={{
+                                    fontSize: responsiveFontSize(1.8)
+                                }}>
                                     Quantity
                                 </Text>
                             </DataTable.Title>
                             <DataTable.Title numeric >
-                                <Text className="text-black text-base font-mulish-bold">
+                                <Text className="text-black text-base font-mulish-bold" style={{
+                                    fontSize: responsiveFontSize(1.8)
+                                }}>
                                     Price
                                 </Text>
                             </DataTable.Title>
@@ -329,17 +351,23 @@ const OrderConfirmationScreen = () => {
                             return (
                                 <DataTable.Row key={product?._id}>
                                     <DataTable.Cell >
-                                        <Text className="text-base text-gray-700 font-mulish-regular">
+                                        <Text className="text-base text-gray-700 font-mulish-regular" style={{
+                                            fontSize: responsiveFontSize(1.8)
+                                        }}>
                                             {product?.title}
                                         </Text>
                                     </DataTable.Cell>
                                     <DataTable.Cell numeric>
-                                        <Text className="text-base text-gray-700 font-mulish-regular">
+                                        <Text className="text-base text-gray-700 font-mulish-regular" style={{
+                                            fontSize: responsiveFontSize(1.8)
+                                        }}>
                                             {product?.quantity} {product?.unit}
                                         </Text>
                                     </DataTable.Cell>
                                     <DataTable.Cell numeric>
-                                        <Text className="text-base text-gray-700 font-mulish-regular">
+                                        <Text className=" text-gray-700 font-mulish-regular" style={{
+                                            fontSize: responsiveFontSize(1.8)
+                                        }}>
                                             ₹ {product?.totalPrice}
                                         </Text>
                                     </DataTable.Cell>
@@ -350,13 +378,18 @@ const OrderConfirmationScreen = () => {
 
                         <DataTable.Row>
                             <DataTable.Cell >
-                                <Text className="text-base font-mulish-bold text-black">
+                                <Text className=" font-mulish-bold text-black"
+                                    style={{
+                                        fontSize: responsiveFontSize(1.8)
+                                    }}>
                                     Sub Total :
                                 </Text>
                             </DataTable.Cell>
                             <DataTable.Cell></DataTable.Cell>
                             <DataTable.Cell numeric>
-                                <Text className="text-base font-mulish-bold text-black">
+                                <Text className=" font-mulish-bold text-black" style={{
+                                    fontSize: responsiveFontSize(1.8)
+                                }}>
                                     ₹ {subTotal}
                                 </Text>
                             </DataTable.Cell>
@@ -368,13 +401,17 @@ const OrderConfirmationScreen = () => {
                                 height: responsiveHeight(8),
                             }}>
                                 <DataTable.Cell >
-                                    <Text className="text-base font-mulish-semibold text-black">
+                                    <Text className="font-mulish-semibold text-black" style={{
+                                        fontSize: responsiveFontSize(1.5)
+                                    }}>
                                         Discount :({couponDetails?.code})
                                     </Text>
                                 </DataTable.Cell>
                                 <DataTable.Cell></DataTable.Cell>
                                 <DataTable.Cell numeric>
-                                    <Text className="text-base font-mulish-semibold text-black">
+                                    <Text className=" font-mulish-semibold text-black" style={{
+                                        fontSize: responsiveFontSize(1.5)
+                                    }}>
                                         - ₹ {couponDetails?.value}
                                     </Text>
                                 </DataTable.Cell>
@@ -386,13 +423,17 @@ const OrderConfirmationScreen = () => {
 
                         <DataTable.Row>
                             <DataTable.Cell >
-                                <Text className="text-base font-mulish-bold text-black">
+                                <Text className="font-mulish-bold text-black" style={{
+                                    fontSize: responsiveFontSize(1.8)
+                                }}>
                                     Total Price :
                                 </Text>
                             </DataTable.Cell>
                             <DataTable.Cell></DataTable.Cell>
                             <DataTable.Cell numeric>
-                                <Text className="text-base font-mulish-bold text-black">
+                                <Text className="text-base font-mulish-bold text-black" style={{
+                                    fontSize: responsiveFontSize(1.8)
+                                }}>
                                     ₹ {totalPrice}
                                 </Text>
                             </DataTable.Cell>
@@ -404,7 +445,6 @@ const OrderConfirmationScreen = () => {
 
 
             </ScrollView>
-
 
 
             <View

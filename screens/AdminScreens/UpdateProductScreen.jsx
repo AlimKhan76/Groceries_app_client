@@ -5,48 +5,43 @@ import LeftArrow from "../../assets/icons/account/left_arrow.svg"
 import RightArrow from "../../assets/icons/account/right_arrow.svg"
 import Search from "../../assets/icons/commons/search.svg"
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import { Appbar, DataTable, Divider } from 'react-native-paper'
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
+import { moderateScale, scale } from 'react-native-size-matters'
 
 
 const UpdateProductScreen = ({ navigation }) => {
 
-    const tableData = {
-        tableHead: ['Crypto Name', 'Value', 'Mkt Cap'],
-        tableData: [
-            ['Bitcoin', '₹44,331', '₹839,702,328,904'],
-            ['Ethereum', '₹3000.9', '₹359,080,563,225'],
-            ['Tether', '₹1', '₹79,470,820,738'],
-            ['BNB', '₹413.44', '₹69,446,144,361'],
-            ['USD Coin', '₹1', '₹53,633,260,549'],
-        ],
-    };
-
-    const [data, setData] = useState(tableData);
-
-    const rightArrow = (value) => {
-        return (
-            <>
-                <TouchableOpacity>
-                    <RightArrow />
-
-                </TouchableOpacity>
-            </>
-        )
-
-
-    }
 
     return (
-        <SafeAreaView className="flex-1 bg-white px-2">
-            <View className="border-b-2 border-b-gray-300 py-5 ">
-                <TouchableOpacity
-                    onPress={() => navigation.navigate("AdminSetting")}
-                    className="flex-row gap-2 items-center">
-                    <LeftArrow />
-                    <Text className='text-xl text-black font-mulish-regular'>
-                        Back to Settings
-                    </Text>
-                </TouchableOpacity>
-            </View>
+
+        <SafeAreaView className="flex-1 bg-white px-2 "
+            edges={["right", "left", "top"]}>
+
+            <Appbar.Header mode='center-aligned'
+                style={{
+                    backgroundColor: 'white',
+                    height: responsiveHeight(10),
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                }}
+                statusBarHeight={0} >
+                <Appbar.BackAction
+                    iconColor="black"
+                    onPress={() => navigation.goBack()} />
+
+                <Appbar.Content
+                    title="Update Products "
+                    titleStyle={{
+                        fontFamily: "Mulish-SemiBold",
+                        color: "black",
+                        fontSize: responsiveFontSize(3),
+                    }} />
+            </Appbar.Header>
+            <Divider />
+            {/* <ScrollView> */}
+
 
 
             <View
@@ -55,140 +50,1326 @@ const UpdateProductScreen = ({ navigation }) => {
 
                 <TextInput
                     maxLength={25}
-                    className="text-black text-lg font-mulish-semibold p-1.5"
-                    placeholder='Search Products' />
+                    className="text-black font-mulish-semibold p-1.5 w-full"
+                    style={{
+                        fontSize: moderateScale(12.5)
+                    }}
+                    placeholder='Search Products'
+                    placeholderTextColor={"black"} />
             </View>
 
 
-            {/* <View
-                className="flex-row fixed bg-gray-300 p-3 m-0.5 rounded-2xl justify-around items-center">
-                <Text className="text-black text-base font-mulish-extrabold">Item Name</Text>
-                <Text className="text-black text-base font-mulish-extrabold">Quantity</Text>
-                <Text className="text-black text-base font-mulish-extrabold">Price</Text>
-                <Text></Text>
-            </View> */}
+            <DataTable
+                className="bg-white border-2 border-gray-300 rounded-2xl my-2  h-4/6">
 
 
+                <DataTable.Header>
+                    <DataTable.Title
+                        textStyle={{
+                            color: "black",
+                            // fontSize: responsiveFontSize(1.8),
+                            fontSize: moderateScale(12.5),
+                            fontFamily: "Mulish-Bold",
+                        }}>
+                        Name
+                    </DataTable.Title>
 
-            <Table
-                className=" "
-            >
+                    <DataTable.Title
+                        textStyle={{
+                            color: "black",
+                            // fontSize: responsiveFontSize(1.8),
+                            fontSize: moderateScale(12.5),
 
-                <Row
-                    data={['Sr', 'Items', 'Quantity', "Price", ""]}
-                    className="bg-gray-200 p-3 rounded-2xl"
-                    flexArr={[0.5, 1.5, 1, 1, 0.5]}
-                    textStyle={{
-                        textAlign: "center",
-                        color: "black", fontFamily: "Mulish-Bold",
-                        fontSize: 16
-                    }}
-                />
-                <ScrollView className="">
+                            fontFamily: "Mulish-Bold",
+                        }}>
+                        Quantity
+                    </DataTable.Title>
 
-                    <>
+                    <DataTable.Title
+                        textStyle={{
+                            color: "black",
+                            fontSize: moderateScale(12.5),
+                            fontFamily: "Mulish-Bold",
+                        }}>
+                        Price
+                    </DataTable.Title>
+                </DataTable.Header>
 
-                        <Rows
-                            className="bg-white p-3 border-b-2 border-gray-300 "
-                            flexArr={[0.5, 1.5, 1, 1, 0.5]}
-                            data={[
-                                ["1", "Banana", "7pcs", '₹20', rightArrow(1)], 
-                                ["2", "Apple", "1kg", "₹500", <RightArrow />]
-                                // , ["2", "Apple", "1kg", "₹500", <RightArrow />], ["2", "Apple", "1kg", "₹500", <RightArrow />]
+                <ScrollView className=" pb-4 ">
 
-                            ]}
+                    <DataTable.Row>
+                        <DataTable.Cell
                             textStyle={{
-                                textAlign: "center",
-                                color: "black", fontFamily: "Mulish-Bold",
-                                fontSize: 15
-                            }}
-                        />
-                    </>
+                                color: "black",
+                                fontSize: moderateScale(12.5),
+                                fontFamily: "Mulish-Regular",
+                            }}>
+                            1.  Apple
+                            {/* {product?.title} */}
+                        </DataTable.Cell>
+
+                        <DataTable.Cell
+                            textStyle={{
+                                color: "black",
+                                fontSize: moderateScale(12.5),
+                                fontFamily: "Mulish-Regular",
+                            }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+                                style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular"
+                                    style={{
+                                        fontSize: moderateScale(12.5),
+                                    }}>
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+                            font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={
+                                        {
+                                            fontSize: moderateScale(12.5),
+                                        }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
+
+                    <DataTable.Row >
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}>
+
+                            2.  Banana
+                            {/* {product?.title} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell textStyle={{
+                            color: "black",
+                            fontSize: responsiveFontSize(1.8),
+                            fontFamily: "Mulish-Regular",
+                        }}  >
+                            {/* <Text className=" text-gray-700 font-mulish-regular text-start "
+        style={{ fontSize: responsiveFontSize(1.8) }}> */}
+                            1kg
+                            {/* {product?.quantity} {product?.unit} */}
+                            {/* </Text> */}
+                        </DataTable.Cell>
+                        <DataTable.Cell >
+                            <View
+                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                <Text className="text-black font-mulish-regular">
+                                    ₹
+                                </Text>
+                                <TextInput
+                                    className=" text-gray-700 px-2 w-full py-1 items-center
+    font-mulish-regular"
+                                    maxLength={5}
+                                    keyboardType='numeric'
+                                    style={{ fontSize: responsiveFontSize(1.8) }}
+                                    placeholder='400'
+                                    placeholderTextColor={"black"}>
+
+
+                                    {/* ₹ {product?.totalPrice} */}
+                                </TextInput>
+                            </View>
+                        </DataTable.Cell>
+                    </DataTable.Row>
+
+
 
                 </ScrollView>
 
-            </Table>
+            </DataTable>
 
 
 
 
-
-
-            {/* <View className="gap-2">
-
-
-                <View
-                    className="flex-row border-gray-300 border-2 p-3 rounded-2xl justify-around items-center">
-                    <View>
-
-                        <Text
-                            className="text-black text-base font-mulish-regular text-start">
-                            Organic Banana
-                        </Text>
-                    </View>
-                    <Text className="text-black text-base font-mulish-regular text-center" >7pcs</Text>
-                    <Text className="text-black text-base font-mulish-regular text-center">₹400</Text>
-                    <RightArrow />
-
-                </View>
-
-                <View
-                    className="flex-row border-gray-300 border-2 p-3 rounded-2xl justify-around items-center">
-                    <View>
-
-                        <Text
-                            className="text-black text-base font-mulish-regular text-center">
-                            Apple
-                        </Text>
-                    </View>
-                    <View>
-                        <Text
-                            className="text-black text-base font-mulish-regular text-center">
-                            1kg
-                        </Text>
-
-                    </View>
-                    <Text
-                        className="text-black text-base font-mulish-regular text-center">
-                        ₹400
+            <View className="items-center w-full ">
+                <TouchableOpacity
+                    // disabled={isCheckoutDisabled}
+                    onPress={() => navigation.navigate("Checkout")}
+                    // bg-[#216239]
+                    className=" bg-[#53B175] w-3/4 p-5 rounded-3xl mx-5 items-center justify-center">
+                    <Text className=' text-white  font-mulish-semibold'
+                        style={{ fontSize: moderateScale(18.5) }}>
+                        Save
                     </Text>
-                    <RightArrow />
 
-                </View>
-
-
-                <View
-                    className="flex-row border-gray-300 border-2 p-3 rounded-2xl justify-between items-center">
-                    <Text className="text-black text-base">Organic Banana</Text>
-                    <Text className="text-black text-base">Quantity</Text>
-                    <Text className="text-black text-base">400</Text>
-                    <RightArrow />
-
-                </View>
-
-
-            </View> */}
-
+                </TouchableOpacity>
+            </View>
 
         </SafeAreaView>
+
     )
 }
 
 export default UpdateProductScreen
 
-const styles = StyleSheet.create({
-    container:
-    {
-        flex: 1, padding: 10, justifyContent: 'center', backgroundColor: '#fff'
-    }
-    ,
-    head: {
-        height: 44, backgroundColor: 'darkblue'
-    },
-    headText: {
-        fontSize: 20, fontWeight: 'bold', textAlign: 'center', color: 'white'
-    },
-    text: {
-        fontSize: 16, fontWeight: 'bold', textAlign: 'center',
-    },
-})

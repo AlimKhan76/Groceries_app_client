@@ -16,31 +16,24 @@ import { getUserData } from '../../api/userAPI';
 import { IMAGE_URL } from '@env';
 import { ActivityIndicator } from 'react-native-paper';
 import { useNetInfoInstance } from "@react-native-community/netinfo";
+import { moderateScale } from 'react-native-size-matters';
 // import fs from 'fs';
 
 
 const HomeScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false)
-    const { netInfo: { type, isConnected } } = useNetInfoInstance();
-    // console.log( isConnected)
-
-    // const get = async (url) => {
-    //     console.log(process.cwd())
-    //     // let usersPath = path.join(process.cwd(), url);
-    //     const file = await fs.readFile(url);
-    //     console.log(file)
-
-    //     return file
-    // }
 
 
-
-    const { data: bestSellingProducts, isLoading: loadingProducts } = useQuery({
-        queryKey: ["bestSellingProduct"],
-        queryFn: getBestSellingProducts,
-        enabled: true,
-        staleTime: Infinity
-    })
+    const { data: bestSellingProducts,
+        isLoading: loadingProducts,
+        isError,
+        error,
+        refetch } = useQuery({
+            queryKey: ["bestSellingProduct"],
+            queryFn: getBestSellingProducts,
+            enabled: true,
+            staleTime: Infinity
+        })
 
     const { data: userData } = useQuery({
         queryKey: ['userData'],
@@ -49,25 +42,15 @@ const HomeScreen = ({ navigation }) => {
     })
 
 
-    useEffect(() => {
-        setTimeout(() => {
-            setModalVisible(false)
-
-        }, 500);
-    }, [modalVisible])
-
-
-
     return (
         <SafeAreaView className=' bg-white flex-1 '
-            edges={['right', 'top', 'left']}
+            edges={['right', 'top', 'left']}>
 
-        >
-            {modalVisible === true ?
+            {/* { true ?
                 <AddedToCartPopUp visible={true} />
                 :
                 <></>
-            }
+            } */}
             <View className=" justify-center items-center "
                 style={{ marginVertical: responsiveHeight(2.5) }}>
                 <Image
@@ -108,7 +91,7 @@ const HomeScreen = ({ navigation }) => {
 
 
                 <View className="flex-row flex-wrap gap-2 justify-center  "
-                    style={{ paddingBottom: responsiveHeight(2) }}>
+                    style={{ paddingBottom: responsiveHeight(2.5) }}>
                     <View className="items-center pb-2 ">
                         <Image source={require("../../assets/images/home_screen/banner.png")}
                             resizeMode='contain'
@@ -124,7 +107,7 @@ const HomeScreen = ({ navigation }) => {
 
                     <View className='flex-row  px-6 py-1 w-full justify-between'>
                         <Text className="text-black font-mulish-semibold"
-                            style={{ fontSize: responsiveFontSize(2.5) }}>
+                            style={{ fontSize: responsiveFontSize(2.2) }}>
                             Best Selling Products
                         </Text>
                         <TouchableOpacity
@@ -133,7 +116,7 @@ const HomeScreen = ({ navigation }) => {
                             })}>
                             <Text
                                 className='text-[#53B175] '
-                                style={{ fontSize: responsiveFontSize(2.5) }}>
+                                style={{ fontSize: responsiveFontSize(2.2) }}>
                                 View All
                             </Text>
 
@@ -142,85 +125,108 @@ const HomeScreen = ({ navigation }) => {
 
                     {loadingProducts ?
 
+
                         <View className="flex-1 justify-center items-center pt-32">
                             <ActivityIndicator animating={true} size={'large'}
                                 color={'#53B175'} />
                         </View>
                         :
-                        bestSellingProducts?.map((product, index) => {
-                            if (index < 5) {
-                                return (
-                                    <TouchableOpacity
-                                        key={product?._id}
-                                        onPress={() => navigation.navigate("ProductDetails", { product })}
-                                        className='border-gray-100 border-2 px-4 py-4 rounded-2xl'
-                                        style={{ width: responsiveWidth(45) }}>
+                        isError ?
+                            <View className="flex-1 justify-center items-center pt-32  ">
+                                <Text className="text-black font-mulish-semibold text-center"
+                                    style={{
+                                        fontSize: moderateScale(15)
+                                    }}>
+                                    Products cannot be fetched, {"\n"}
+                                    Please try again later
+                                </Text>
+                                <TouchableOpacity
+                                    onPress={refetch}
+                                    className="border-2 p-2.5 m-2 border-gray-300 rounded-2xl"
+                                >
+                                    <Text className="text-black font-mulish-semibold"
+                                        style={{
+                                            fontSize: moderateScale(15)
+                                        }}>
+                                        Retry
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            :
+                            bestSellingProducts?.map((product, index) => {
+                                if (index < 5) {
+                                    return (
+                                        <TouchableOpacity
+                                            key={product?._id}
+                                            onPress={() => navigation.navigate("ProductDetails", { product })}
+                                            className='border-gray-100 border-2 px-4 py-4 rounded-2xl'
+                                            style={{ width: responsiveWidth(45) }}>
 
-                                        <Image
-                                            className="items-center bg-center self-center w-full "
-                                            resizeMode='contain'
-                                            source={{ uri: `${IMAGE_URL}${product?.url}` }}
-                                            style={{ height: responsiveHeight(15) }} />
+                                            <Image
+                                                className="items-center bg-center self-center w-full "
+                                                resizeMode='contain'
+                                                source={{ uri: `${IMAGE_URL}${product?.url}` }}
+                                                style={{ height: responsiveHeight(15) }} />
 
-                                        <Text
-                                            className="pt-2 text-black items-center font-mulish-extrabold "
-                                            style={{ fontSize: responsiveFontSize(2.5) }}
-                                        >
-                                            {product?.title}
-                                        </Text>
-                                        <Text
-                                            className=" font-mulish-medium text-slate-500"
-                                            style={{ fontSize: responsiveFontSize(2) }}
-                                        >
-                                            {product?.baseQuantity}
-                                        </Text>
-
-                                        <View
-                                            className="flex-row justify-between pt-3 items-center">
                                             <Text
-                                                className="text-black font-mulish-extrabold"
-                                                style={{ fontSize: responsiveFontSize(2.5) }}
+                                                className="pt-2 text-black items-center font-mulish-bold "
+                                                style={{ fontSize: responsiveFontSize(2) }}
                                             >
-                                                ₹{product?.price}
+                                                {product?.title}
+                                            </Text>
+                                            <Text
+                                                className=" font-mulish-medium text-slate-500"
+                                                style={{ fontSize: responsiveFontSize(1.5) }}
+                                            >
+                                                {product?.baseQuantity}
                                             </Text>
 
                                             <View
-                                                // onPress={() => setModalVisible(true)}
-                                                className="bg-[#53B175] rounded-2xl p-4 text-center">
-                                                <RightArrow style={{ color: "white" }} />
-                                            </View>
+                                                className="flex-row justify-between pt-3 items-center">
+                                                <Text
+                                                    className="text-black font-mulish-bold"
+                                                    style={{ fontSize: responsiveFontSize(2) }}
+                                                >
+                                                    ₹{product?.price}
+                                                </Text>
 
-                                        </View>
-                                    </TouchableOpacity>
-                                )
-                            }
-                            else {
-                                return null;
-                            }
-                        })
+                                                <View
+                                                    // onPress={() => setModalVisible(true)}
+                                                    className="bg-[#53B175] rounded-2xl p-4 text-center">
+                                                    <RightArrow style={{ color: "white" }} />
+                                                </View>
+
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                }
+                                else {
+                                    return null;
+                                }
+                            })
+
+
 
                     }
 
-                    {!loadingProducts &&
+                    {!loadingProducts || isError &&
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("CategoryProducts",{category:"Best-Selling"})}
+                            onPress={() => navigation.navigate("CategoryProducts", { category: "Best-Selling" })}
                             className='border-gray-100 border-2 px-4 py-4 rounded-2xl justify-center items-center'
                             style={{ width: responsiveWidth(45) }}>
 
-                            <View
-                                className="bg-[#53B175] rounded-full p-10 text-center items-center">
-                                <RightArrow style={{ color: "white" }} />
-                            </View>
-
 
                             <View
-                                className="flex-row justify-between pt-5 items-center">
+                                className="flex-row justify-between py-5 items-center">
                                 <Text
-                                    className="text-black font-mulish-extrabold"
-                                    style={{ fontSize: responsiveFontSize(2.5) }}
-                                >
-                                    View All Products
+                                    className="text-black font-mulish-bold text-center"
+                                    style={{ fontSize: responsiveFontSize(2.5) }}>
+                                    View All Best Selling Products
                                 </Text>
+                            </View>
+                            <View
+                                className="bg-[#53B175] rounded-2xl p-5 text-center items-center">
+                                <RightArrow style={{ color: "white" }} />
                             </View>
                         </TouchableOpacity>
                     }
