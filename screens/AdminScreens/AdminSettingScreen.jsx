@@ -1,23 +1,28 @@
-import React, { Fragment } from 'react'
-import { View, Text, Image, TouchableOpacity, BackHandler } from 'react-native'
+import React, { Fragment, useState } from 'react'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import RightArrow from '../../assets/icons/account/right_arrow.svg'
-import LogOut from '../../assets/icons/account/logout.svg'
+
 import data from "../components/AdminAccountScreenCard"
-import { downloadPendingOrders } from '../../api/adminAPIs/orderAPI'
-import { useQueryClient } from '@tanstack/react-query'
+import { downloadPendingOrders, markAllPackedOrdersAsDeliveredApi } from '../../api/adminAPIs/orderAPI'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import RNFS from 'react-native-fs';
 import { BASE_URL } from "@env"
 import { IMAGE_URL } from "@env"
-import { Divider } from 'react-native-paper'
+import { ActivityIndicator, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import RNFetchBlob from 'rn-fetch-blob';
+import Feather from "react-native-vector-icons/Feather"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import * as SecureStore from "expo-secure-store";
+import { BlurView } from '@react-native-community/blur'
+import { Toast } from 'react-native-alert-notification'
 
 
 
 const AdminSettingScreen = ({ navigation }) => {
+  const [confirmation, setConfirmation] = useState(false)
   const queryClient = useQueryClient()
+
   const logout = async () => {
     try {
       SecureStore.deleteItemAsync('token')
@@ -35,6 +40,7 @@ const AdminSettingScreen = ({ navigation }) => {
   }
 
   const downloadCSV = async () => {
+    const token = await SecureStore.getItemAsync("token")
     RNFetchBlob.config(Platform.select({
       ios: {
         fileCache: true,
@@ -68,9 +74,10 @@ const AdminSettingScreen = ({ navigation }) => {
 
       .fetch("GET",
         `${BASE_URL}adminOrder/downloadPendingOrders`,
-        // "http://192.168.0.106:5000/adminOrder/downloadPendingOrders",
+        // "http://192.168.0.101:5000/adminOrder/downloadPendingOrders",
         {
-          //some headers ..
+          Authorization: token
+
         })
       .then((res) => {
         // the temp file path
@@ -84,6 +91,21 @@ const AdminSettingScreen = ({ navigation }) => {
 
 
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: markAllPackedOrdersAsDeliveredApi,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["order"]
+      })
+      Toast.show({
+        type: "SUCCESS",
+        title: "Marked all packed orders as delivered",
+        autoClose: 2000,
+      })
+      setConfirmation(false)
+    }
+  })
+
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -93,9 +115,9 @@ const AdminSettingScreen = ({ navigation }) => {
           source={(require("../../assets/images/profile.png"))} />
         <View className="px-5">
           <Text className="text-black text-xl font-mulish-bold">
-            Admin name
+            Admin
           </Text>
-          <Text className="font-mulish-regular text-black">admin@gmail.com</Text>
+          <Text className="font-mulish-regular text-black">Admin</Text>
 
         </View>
       </View>
@@ -108,10 +130,16 @@ const AdminSettingScreen = ({ navigation }) => {
 
             <TouchableOpacity
               key={index}
+              style={{
+                paddingHorizontal: responsiveWidth(5),
+                paddingVertical: responsiveHeight(1.75)
+              }}
               onPress={() => {
                 data?.title === "Download Pending Orders" ?
-                  downloadCSV()
-                  : navigation.navigate(data?.navigation)
+                  downloadCSV() :
+                  data?.title === "Mark all packed orders as delivered" ?
+                    setConfirmation(true) :
+                    navigation.navigate(data?.navigation)
               }
               }
 
@@ -126,7 +154,9 @@ const AdminSettingScreen = ({ navigation }) => {
                   {data?.title}
                 </Text>
               </View>
-              <RightArrow color="black" />
+              <Feather
+                name="chevron-right"
+                color="black" size={responsiveHeight(3.5)} />
             </TouchableOpacity>
             <Divider style={{
               marginVertical: responsiveHeight(0.5),
@@ -138,6 +168,64 @@ const AdminSettingScreen = ({ navigation }) => {
       })}
 
 
+      {confirmation &&
+        <BlurView
+          className="items-center justify-center"
+          style={{
+            width: responsiveWidth(100),
+            height: responsiveHeight(100),
+            zIndex: 9999999,
+            position: 'absolute',
+            right: 0,
+            left: 0,
+            top: 0,
+            bottom: 0,
+          }}
+          blurType="materialLight"
+          blurAmount={5}
+        // reducedTransparencyFallbackColor="white"
+        >
+
+          <View className=" flex-1 items-center bg-transparent justify-center ">
+
+            {isPending ?
+              <ActivityIndicator size={"large"} color='#53B175' />
+              :
+              <View className="bg-white p-5 rounded-2xl border-2 border-gray-300  w-[85%]">
+                <Text className="text-black text-center font-mulish-semibold"
+                  style={{
+                    fontSize: responsiveFontSize(2.15)
+                  }}>
+                  Marking all packed orders as delivered. Proceed ?
+                </Text>
+                <View className="flex-row justify-around mt-7 ">
+                  <TouchableOpacity
+                    disabled={isPending}
+                    onPress={mutate}
+                    className="py-3 px-5 bg-[#53B175] rounded-xl">
+                    <Text className="text-white font-mulish-semibold" style={{
+                      fontSize: responsiveFontSize(1.85)
+                    }}>
+                      Proceed
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => setConfirmation(false)}
+                    className="py-3 px-5 bg-red-400 rounded-xl">
+                    <Text className="text-white font-mulish-semibold" style={{
+                      fontSize: responsiveFontSize(1.85)
+                    }}>
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            }
+          </View>
+        </BlurView>
+      }
+
       <View
         className='absolute overflow-hidden bottom-5 self-center w-full  '>
 
@@ -146,10 +234,12 @@ const AdminSettingScreen = ({ navigation }) => {
           className="bg-gray-200 mx-5 p-5 rounded-2xl ">
           <View className="flex-row items-center justify-center ">
             <View className="absolute left-0">
-              <LogOut />
+              <MaterialIcons name="logout" color="#53B175" size={responsiveHeight(3.5)} />
             </View>
             <Text
-              className="text-[#53B175] text-xl font-mulishsb">
+              className="text-[#53B175] font-mulish-semibold" style={{
+                fontSize: responsiveFontSize(2.5)
+              }}>
               Log Out
             </Text>
 
@@ -157,6 +247,10 @@ const AdminSettingScreen = ({ navigation }) => {
           </View>
         </TouchableOpacity>
       </View>
+
+
+
+
     </SafeAreaView>
   )
 }

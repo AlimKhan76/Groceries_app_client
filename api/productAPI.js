@@ -37,3 +37,17 @@ exports.getProductByCategory = async (category) => {
         throw error.response.data.message
     }
 }
+
+exports.getAllProductApi = async () => {
+    try {
+        const { data } = await API.get("product/getAll")
+        console.log("All the products are fetched successfully " + data)
+        return data;
+
+    } catch (error) {
+        console.log(error)
+        console.log("Error in getting all products " + error?.response?.data?.message)
+        throw error?.response?.data?.message
+
+    }
+}

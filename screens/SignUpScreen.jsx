@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, ImageBackground, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Button } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { regitserUser } from '../api/userAPI'
+import { registerUserAPI } from '../api/userAPI'
 import { Formik } from 'formik'
 import { object, string, shape } from 'yup'
 import { Dialog } from 'react-native-alert-notification'
@@ -29,7 +29,7 @@ const SignUpScreen = ({ navigation }) => {
 
     // Function that will run on the submission of the form
     // const registerUserHandler = (data) => {
-    //     regitserUser(data).then((res) => {
+    //     registerUserAPI(data).then((res) => {
     //         Dialog.show({
     //             type: 'SUCCESS',
     //             title: 'Verification',
@@ -58,7 +58,7 @@ const SignUpScreen = ({ navigation }) => {
 
     const { mutate, isError, isPending, error } = useMutation({
         mutationKey: ['register'],
-        mutationFn: regitserUser,
+        mutationFn: registerUserAPI,
         onSuccess: () => {
             Dialog.show({
                 type: 'SUCCESS',

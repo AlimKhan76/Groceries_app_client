@@ -6,9 +6,8 @@ import { useNavigation } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
 import { getProductByCategory } from '../../api/productAPI'
 import { IMAGE_URL } from "@env"
-import RightArrow from "../../assets/icons/account/right_arrow.svg"
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-
+import Feather from "react-native-vector-icons/Feather"
 
 const AllCategorizedProductScreen = ({ route }) => {
     const navigation = useNavigation();
@@ -48,15 +47,15 @@ const AllCategorizedProductScreen = ({ route }) => {
 
 
             <ScrollView
-                className=" py-3 "
+                className=" py-3 my-2.5"
                 horizontal={false}   >
 
 
-                <View className="flex-row flex-wrap gap-2 justify-center pb-8 ">
+                <View className="flex-row flex-wrap gap-2 justify-center pb-8  ">
 
                     {loadingProducts ?
 
-                        <View className="flex-1 justify-center items-center pt-32">
+                        <View className="flex-1 justify-center items-center pt-[50%]">
                             <ActivityIndicator animating={true} size={'large'}
                                 color={'#53B175'} />
                         </View>
@@ -76,25 +75,36 @@ const AllCategorizedProductScreen = ({ route }) => {
                                             source={{ uri: `${IMAGE_URL}${product?.url}` }} />
 
                                         <Text
-                                            className="pt-2 text-black text-lg items-center font-mulish-bold ">
+                                            className="pt-2 text-black items-center font-mulish-semibold"
+                                            style={{
+                                                fontSize: responsiveFontSize(2)
+                                            }}>
                                             {product?.title}
                                         </Text>
 
                                         <Text
-                                            className="text-base font-mulish-regular text-slate-500">
+                                            className="text-base font-mulish-regular text-slate-500"
+                                            style={{
+                                                fontSize: responsiveFontSize(1.5)
+                                            }}>
                                             {product?.baseQuantity}
                                         </Text>
 
                                         <View
                                             className="flex-row justify-between pt-3 items-center">
                                             <Text
-                                                className="text-black text-lg font-mulish-bold">
+                                                className="text-black font-mulish-semibold"
+                                                style={{
+                                                    fontSize: responsiveFontSize(2)
+                                                }}>
                                                 ₹{product?.price}
                                             </Text>
 
                                             <View
-                                                className="bg-[#53B175] rounded-2xl p-4  text-center">
-                                                <RightArrow style={{ color: "white" }} />
+                                                className="bg-[#53B175] rounded-2xl p-3 text-center">
+                                                <Feather
+                                                    name="chevron-right"
+                                                    color="white" size={responsiveHeight(2.5)} />
                                             </View>
 
                                         </View>

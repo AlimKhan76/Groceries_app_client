@@ -12,46 +12,6 @@ exports.getOrdersByStatus = async (pageParam, status) => {
     }
 }
 
-
-exports.getPendingProducts = async ({ pageParam }) => {
-    try {
-        const { data } = await API.get(`adminOrder/getPendingOrders/${pageParam}`)
-        console.log("Fetched pending products " + data)
-        return data;
-
-    } catch (error) {
-        console.log("Error in fetching Pending Orders " + error?.response?.data?.message)
-        throw error?.response?.data?.message;
-
-    }
-}
-
-exports.getProcessedProducts = async () => {
-    try {
-        const { data } = await API.get("adminOrder/getProcessedOrders")
-        console.log("Fetched Processed products " + data)
-        return data;
-
-    } catch (error) {
-        console.log("Error in fetching Processed Orders " + error?.response?.data?.message)
-        throw error?.response?.data?.message;
-
-    }
-}
-
-exports.getPackedProducts = async () => {
-    try {
-        const { data } = await API.get("adminOrder/getPackedOrders")
-        console.log("Fetched packed products " + data)
-        return data;
-
-    } catch (error) {
-        console.log("Error in fetching packed Orders " + error?.response?.data?.message)
-        throw error?.response?.data?.message;
-
-    }
-}
-
 exports.downloadPendingOrders = async () => {
     try {
         // const url = 'https://http://192.168.0.106:3000/adminOrder/downloadPendingOrders';
@@ -103,4 +63,32 @@ exports.updateOrderApi = async (order) => {
     }
 
 
+}
+
+
+exports.getOrdersByCustomerName = async (pageParam, customerName) => {
+    try {
+        const { data } = await API.get(`adminOrder/getCustomerOrder/${customerName}/${pageParam}`)
+        console.log(`Orders of ${customerName} are fetched successfully ` + data)
+        return data;
+    } catch (error) {
+        console.log(error)
+        console.log("Error in fetching order by customer name " + error?.response?.data?.message)
+        throw error?.response?.data?.message
+
+    }
+}
+
+
+exports.markAllPackedOrdersAsDeliveredApi = async () => {
+    try {
+        const { data } = await API.post("adminOrder/markAllPackedAsDelivered")
+        console.log("All Packed Orders are marked as delivered " + data)
+        return data;
+    } catch (error) {
+        console.log(error)
+        console.log("Error in marking all packed orders as Deliverd " + error?.response?.data?.message)
+        throw error?.response?.data?.message
+
+    }
 }

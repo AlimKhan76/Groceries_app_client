@@ -2,9 +2,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AdminSettingScreen from "../screens/AdminScreens/AdminSettingScreen"
 import CompletedOrderScreen from "../screens/AdminScreens/CompletedOrderScreen"
 import PendingOrderScreen from "../screens/AdminScreens/PendingOrderScreen"
-import Order from "../assets/icons/tabs/order.svg"
-import History from "../assets/icons/tabs/history.svg"
-import Setting from "../assets/icons/tabs/setting.svg"
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -16,10 +13,18 @@ export const AdminBottomTabs = () => {
     return (
         <Tab.Navigator initialRouteName='PendingOrders'
             screenOptions={{
+                tabBarStyle: {
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    borderTopWidth: responsiveWidth(0.5),
+                    borderTopColor: "#e2e2e2"
+                },
                 tabBarIconStyle: {
                     marginTop: 5,
                 },
-                tabBarLabelStyle: { fontSize: responsiveFontSize(1.5), fontFamily: 'Mulish-SemiBold' },
+                tabBarLabelStyle: { fontSize: responsiveFontSize(1.25), fontFamily: 'Mulish-Medium' },
                 headerShown: false,
                 tabBarActiveTintColor: "#53B175",
                 tabBarInactiveTintColor: "black",

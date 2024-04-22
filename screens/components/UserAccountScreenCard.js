@@ -1,18 +1,12 @@
-import Orders from '../../assets/icons/account/orders.svg'
-import PersonalDetails from '../../assets/icons/account/personal_card.svg'
-import Pin from '../../assets/icons/account/pin.svg'
-import Payment from '../../assets/icons/account/payment.svg'
-import Ticket from '../../assets/icons/account/ticket.svg'
-import Bell from '../../assets/icons/account/bell.svg'
-import Help from '../../assets/icons/account/help.svg'
-import About from '../../assets/icons/account/about.svg'
-
+import { responsiveHeight } from 'react-native-responsive-dimensions'
+import Feather from "react-native-vector-icons/Feather"
+import AntDesign from "react-native-vector-icons/AntDesign"
 
 const data = [
     {
-        "icon": <Orders />,
+        "icon": <Feather name="shopping-bag" color="black" size={responsiveHeight(3)} />,
         "title": "Orders",
-        "navigation":"AllOrderScreen"
+        "navigation": "AllOrderScreen"
 
     },
     // {
@@ -20,7 +14,7 @@ const data = [
     //     "title": "My Details"
     // },
     {
-        "icon": <Pin />,
+        "icon": <Feather name="map-pin" color="black" size={responsiveHeight(3)} />,
         "title": "Delivery Address",
     },
     // {
@@ -36,11 +30,12 @@ const data = [
     //     "title": "Notifications"
     // },
     {
-        'icon': <Help />,
+        'icon': <AntDesign name="questioncircleo" color="black" size={responsiveHeight(3)} />,
         'title': "Help"
     },
     {
-        'icon': <About />,
+
+        'icon': <Feather name="info" color="black" size={responsiveHeight(3)} />,
         'title': 'About'
     }
 ]

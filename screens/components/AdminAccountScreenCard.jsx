@@ -1,20 +1,14 @@
-import Orders from '../../assets/icons/account/orders.svg'
-import PersonalDetails from '../../assets/icons/account/personal_card.svg'
-import Payment from '../../assets/icons/account/payment.svg'
-import Ticket from '../../assets/icons/account/ticket.svg'
-import Bell from '../../assets/icons/account/bell.svg'
-import Help from '../../assets/icons/account/help.svg'
-import About from '../../assets/icons/account/about.svg'
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { responsiveHeight } from 'react-native-responsive-dimensions'
-import { moderateScale } from 'react-native-size-matters'
 
 
 
 const data = [
     {
-        "icon": <Orders />,
+        "icon": <Feather name="shopping-bag" color="black" size={responsiveHeight(3)} />,
         "navigation": "UpdateProduct",
         "title": "Update Products",
     },
@@ -27,15 +21,15 @@ const data = [
     //     "title": "Delivery Address",
     // },
     {
-        "icon": <Payment />,
+        "icon": <MaterialIcons name='payment' size={responsiveHeight(3)} color='black' />,
         "title": "Payment Records",
         "navigation": "PaymentRecord"
     },
-    {
-        "icon": <Ticket />,
-        "title": "Promo Card",
-        "navigation": "CouponCodeScreen"
-    },
+    // {
+    //     "icon": <Ticket />,
+    //     "title": "Promo Card",
+    //     "navigation": "CouponCodeScreen"
+    // },
     // {
     //     "icon": <Bell />,
     //     "title": "Notifications"
@@ -45,15 +39,15 @@ const data = [
         "title": "Download Pending Orders"
     },
     {
-        "icon": <Ionicons name="checkmark-done-sharp" size={moderateScale(20)} color="black" />,
+        "icon": <Ionicons name="checkmark-done-sharp" size={responsiveHeight(3)} color="black" />,
         "title": "Mark all packed orders as delivered"
     },
     {
-        'icon': <Help />,
+        'icon': <AntDesign name="questioncircleo" color="black" size={responsiveHeight(3)} />,
         'title': "Help"
     },
     {
-        'icon': <About />,
+        'icon': <Feather name="info" color="black" size={responsiveHeight(3)} />,
         'title': 'About'
     }
 ]

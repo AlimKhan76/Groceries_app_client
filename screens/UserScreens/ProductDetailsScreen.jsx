@@ -1,10 +1,7 @@
 import { View, Text, TouchableOpacity, Dimensions, ScrollView, Image, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import LeftArrow from "../../assets/icons/account/left_arrow.svg"
 import Heart from "../../assets/icons/tabs/heart.svg"
-import Minus from "../../assets/icons/commons/minus.svg"
-import Plus from "../../assets/icons/commons/plus.svg"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { changeFavouriteProduct } from '../../api/productAPI'
 import { getUserData } from '../../api/userAPI'
@@ -14,19 +11,15 @@ import { IMAGE_URL } from "@env";
 import { Toast } from 'react-native-alert-notification'
 import { ActivityIndicator, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
+import Feather from "react-native-vector-icons/Feather"
 
 const ProductDetailsScreen = ({ route, navigation }) => {
-    const { product } = route.params
-
+    const { product } = route?.params
     const queryClient = useQueryClient()
-
     const [isFavourite, setIsFavourite] = useState(false)
-
     const [quantity, setQuantity] = useState(1)
-
     const [totalPrice, setTotalPrice] = useState(product?.price)
-
-
+    const [isInCart, setIsInCart] = useState(false)
 
     const lowerQuantity = () => {
         if (quantity <= 2) {
@@ -41,16 +34,19 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         setQuantity(quantity => quantity + 1)
     }
 
+    // Rendering  the price with cange in quantity
     useEffect(() => {
         setTotalPrice(quantity * product?.price)
     }, [quantity])
 
 
+    // Checking if the product is in favourties
     const checkFavourite = () => {
-
         if (userData?.favourite?.length > 0) {
             for (let i = 0; i < userData?.favourite?.length; i++) {
-                if (userData?.favourite[i]._id === product?._id) {
+                console.log(userData?.favourite[i]?._id === product?._id)
+                if (userData?.favourite[i]?._id === product?._id) {
+                    console.log("hdshfgdsg")
                     setIsFavourite(true);
                     break;
                 }
@@ -66,22 +62,16 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     }
 
 
-{console.log(route.params)}
     const { data: userData } = useQuery({
         queryKey: ["userData"],
         queryFn: getUserData,
         staleTime: Infinity,
     })
 
-    useFocusEffect(React.useCallback(() => {
-        checkFavourite();
-    }, [userData]))
 
-
-    const { mutate, isPending } = useMutation({
+    const { mutate, isPending: addingToFavourites } = useMutation({
         mutationFn: changeFavouriteProduct,
-        onSuccess: (data) => {
-            console.log(data)
+        onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ['userData'],
             })
@@ -92,7 +82,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     const { mutate: addToCartMutate, isSuccess, isPending: addingToBasket } = useMutation({
         mutationKey: ["addToCart", product],
         mutationFn: addToCartApi,
-        onSuccess: (data) => {
+        onSuccess: () => {
             Toast.show({
                 title: "Added to Cart",
                 type: "SUCCESS",
@@ -100,9 +90,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                 autoClose: 500,
                 onPress: () => { navigation.navigate("Cart") }
             })
-            console.log(data)
             queryClient.invalidateQueries({
-                queryKey: ['cartItems'],
+                queryKey: ['cartItems']
             })
         }
     })
@@ -114,36 +103,41 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     })
 
 
-    const { mutate: modifyQuantity, isPending: modifyingCart } = useMutation({
-        mutationFn: addToCartApi,
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['cartItems']
-            })
-        }
-    })
-
-    useEffect(() => {
-        if (!isFetching) {
-            checkProductInCart().map(item => {
-                setQuantity(item?.quantity)
-            })
-        }
-
-    }, [cartItems])
+    // const { mutate: modifyQuantity, isPending: modifyingCart } = useMutation({
+    //     mutationFn: addToCartApi,
+    //     onSuccess: () => {
+    //         queryClient.invalidateQueries({
+    //             queryKey: ['cartItems']
+    //         })
+    //     }
+    // })
 
     const checkProductInCart = () => {
-        console.log(cartItems.cart)
-        const cart = cartItems?.cart
-        const cartProduct = cart?.filter((item) => item?.cart_item?._id == product?._id)
-        return cartProduct;
+        const userCart = cartItems?.cart
+        const productInCart = userCart?.filter((item) => item?.cart_item?._id == product?._id)
+        if (productInCart?.length > 0) {
+            setQuantity(productInCart[0]?.quantity)
+            setIsInCart(true)
+        }
+        else {
+            setIsInCart(false)
+        }
     }
+
+
+    useFocusEffect(React.useCallback(() => {
+        checkFavourite();
+        checkProductInCart();
+        return (() => {
+            setIsInCart(false)
+        })
+    }, [userData, cartItems]))
 
     return (
         <SafeAreaView className="flex-1 bg-white "
             edges={['right', 'top', 'left']}>
-
             <StatusBar backgroundColor={"rgb(243 244 246)"} />
+
             <ScrollView className="mb-3">
                 <>
                     <View className="bg-gray-100 rounded-b-3xl  "
@@ -151,12 +145,11 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
                         <View className="flex-row">
                             <TouchableOpacity
-                                // hitSlop={4}
                                 style={{
-                                    padding: responsiveWidth(6)
+                                    padding: responsiveWidth(5)
                                 }}
                                 onPress={() => navigation.goBack()}>
-                                <LeftArrow color="black" />
+                                <Feather name="chevron-left" color="black" size={responsiveHeight(3.5)} />
                             </TouchableOpacity>
                         </View>
                         <View className="flex-1 justify-center ">
@@ -168,33 +161,34 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                 className="self-center "
                                 resizeMode='contain'
                                 source={{ uri: `${IMAGE_URL}${product?.url}` }}
-                            // source={{ uri: `http://192.168.0.106:3000/${product?.url}` }}
                             />
                         </View>
 
                     </View>
 
-                    <View className="m-5 p">
+                    <View className="m-5 ">
                         <View
                             className="flex-row justify-between items-center ">
 
                             <View className="gap-y-1">
                                 <Text
                                     className="text-black font-mulish-bold"
-                                    style={{ fontSize: responsiveFontSize(3.5) }}>
+                                    style={{ fontSize: responsiveFontSize(3) }}>
                                     {product?.title}
                                 </Text>
                                 <Text className="text-[#7C7C7C] font-mulish-semibold"
-                                    style={{ fontSize: responsiveFontSize(2) }}>
+                                    style={{ fontSize: responsiveFontSize(1.85) }}>
                                     ₹{product?.price} / {product?.unit}
                                 </Text>
                             </View>
 
+
                             <TouchableOpacity
-                                disabled={isPending}
+                                disabled={addingToFavourites}
                                 onPress={() => { mutate({ productId: product?._id }) }}>
                                 <Heart color={isFavourite ? "red" : "white"} />
                             </TouchableOpacity>
+
                         </View>
 
 
@@ -203,7 +197,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
 
 
-                        {checkProductInCart()?.length > 0 ?
+                        {/* {checkProductInCart()?.length > 0 ?
                             checkProductInCart()?.map((item) => {
                                 return (
                                     <View
@@ -211,7 +205,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                         className="flex-row items-center justify-between pt-5 ">
                                         <View
                                             className="flex-row items-center">
-
                                             <TouchableOpacity
                                                 disabled={item?.quantity === 1}
                                                 onPress={() => lowerQuantity()}
@@ -246,31 +239,33 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                                 // item?.totalPrice
                                                 totalPrice
                                             }
-                                            {/* {item?.totalPrice} */}
                                         </Text>
                                     </View>
 
                                 )
                             })
-                            :
+                            : */}
+                        <View
+                            className="flex-row items-center justify-between pt-5 ">
+
                             <View
-                                className="flex-row items-center justify-between pt-5 ">
+                                className="flex-row items-center">
 
-                                <View
-                                    className="flex-row items-center">
-
-                                    <TouchableOpacity
-                                        onPress={lowerQuantity}
-                                        className="border-gray-200 border-2 rounded-2xl p-3  ">
-                                        <Minus style={{ color: "black" }} />
-                                    </TouchableOpacity>
-
+                                <TouchableOpacity
+                                    disabled={quantity === 1}
+                                    onPress={lowerQuantity}
+                                    className="border-gray-200 border-2 rounded-2xl p-3 ">
+                                    <Feather name="minus" size={responsiveHeight(2.5)}
+                                        color="black" />
+                                </TouchableOpacity>
 
 
-                                    <Text
-                                        className="text-black font-mulish-semibold text-lg items-center">
+
+                                {/* <Text
+                                        className="text-black font-mulish-semibold items-center"
+                                        style={{ fontSize: responsiveFontSize(2.25) }}>
                                         {isFetching ? <ActivityIndicator /> :
-                                            cartItems?.cart?.map(item => {
+                                            cartItems?.cart.cart_item_?.map(item => {
                                                 if (item?._id === product?._id)
                                                     return item?.quantity;
                                                 else
@@ -278,41 +273,45 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                             })
                                         }
 
-                                    </Text>
+                                    </Text> */}
 
-                                    <Text className=" text-black text-xl items-center px-3"
-                                    >
-                                        {quantity}
-                                    </Text>
-
-                                    <TouchableOpacity
-                                        onPress={increaseQuantity}
-                                        className="border-gray-200 border-2 rounded-2xl p-3 ">
-                                        <Plus style={{ color: "#53B175" }} />
-                                    </TouchableOpacity>
-                                </View>
-                                <Text
-                                    className="text-black font-mulish-bold"
-                                    style={{ fontSize: responsiveFontSize(3.5) }}>
-                                    ₹{totalPrice}
+                                <Text className=" text-black items-center px-3"
+                                    style={{ fontSize: responsiveFontSize(2.25) }}>
+                                    {isFetching ? <ActivityIndicator color='#53B175' /> :
+                                        quantity
+                                    }
                                 </Text>
+
+                                <TouchableOpacity
+                                    onPress={increaseQuantity}
+                                    className="border-gray-200 border-2 rounded-2xl p-3 ">
+                                    <Feather name="plus" color="#53B175" size={responsiveHeight(2.5)} />
+                                </TouchableOpacity>
                             </View>
-                        }
+                            <Text
+                                className="text-black font-mulish-bold"
+                                style={{ fontSize: responsiveFontSize(2.75) }}>
+                                {isFetching ? <ActivityIndicator color='#53B175' /> :
+                                    "₹" + totalPrice
+                                }
+                            </Text>
+                        </View>
+                        {/* } */}
 
 
 
                         <Divider style={{
-                            marginVertical: responsiveHeight(2)
+                            marginVertical: responsiveHeight(2.5)
                         }} />
 
-                        <View className="pt-2">
+                        <View className="">
                             <Text className="text-black font-mulish-bold"
-                                style={{ fontSize: responsiveFontSize(2.5) }}>
-                                Product Detail
+                                style={{ fontSize: responsiveFontSize(2.25) }}>
+                                Product Description
                             </Text>
 
                             <Text className=" text-[#7C7C7C] py-1 font-mulish-medium"
-                                style={{ fontSize: responsiveFontSize(2) }}>
+                                style={{ fontSize: responsiveFontSize(1.85) }}>
                                 {product?.description}
                             </Text>
                         </View>
@@ -348,17 +347,23 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
             <View className="bottom-3 relative self-center w-full overflow-hidden ">
                 <TouchableOpacity
+                    disabled={addingToBasket}
                     onPress={
                         () => addToCartMutate({ ...product, quantity })
                     }
                     className="bg-[#53B175] p-5 rounded-3xl mx-5 items-center justify-center ">
 
-                    {addingToBasket ?
-                        <ActivityIndicator color='white' /> :
-
+                    {addingToBasket || isFetching ?
+                        <ActivityIndicator color='white' style={{ paddingVertical: responsiveHeight(0.5) }} /> :
                         <Text
-                            className=' text-white text-xl font-mulish-semibold'>
-                            {isSuccess ? 'Added to Basket' : 'Add To Basket'}
+                            className=' text-white font-mulish-semibold'
+                            style={{
+                                fontSize: responsiveFontSize(2.25)
+                            }}>
+                            {/* {isFetching ? <ActivityIndicator color='white' /> : */}
+                            {isInCart ? "Update Basket" :
+                                isSuccess ? 'Added to Basket' : 'Add To Basket'
+                            }
                         </Text>
                     }
 

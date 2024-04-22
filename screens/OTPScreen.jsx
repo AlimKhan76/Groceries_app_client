@@ -1,20 +1,24 @@
-import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, ImageBackground, StatusBar, Keyboard, BackHandler } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import LeftArrow from '../assets/icons/account/left_arrow.svg'
-import RightArrow from '../assets/icons/account/right_arrow.svg'
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
+import { View, Text, TouchableOpacity, ImageBackground, Keyboard, BackHandler } from 'react-native'
+import React, { useState } from 'react'
+import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-import { loginUser } from '../api/userAPI'
-import { useMutation } from '@tanstack/react-query'
+import { getUserData, loginUserAPI } from '../api/userAPI'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Dialog } from 'react-native-alert-notification'
 import * as SecureStore from 'expo-secure-store';
 import { ActivityIndicator, Appbar } from 'react-native-paper'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { BlurView } from '@react-native-community/blur'
 import { OtpInput } from "react-native-otp-entry";
+import { LogBox } from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 
 const OTPScreen = ({ navigation }) => {
+
+    LogBox.ignoreLogs([
+        'Non-serializable values were found in the navigation state',
+    ]);
     const [code, setCode] = useState("");
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState(null)
@@ -23,8 +27,7 @@ const OTPScreen = ({ navigation }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-            const subscription = BackHandler.addEventListener(
-                'hardwareBackPress',
+            const subscription = BackHandler.addEventListener('hardwareBackPress',
                 () => {
                     navigation.replace("Landing")
                     return true;
@@ -34,16 +37,19 @@ const OTPScreen = ({ navigation }) => {
         }, [])
     );
 
-    console.log(params?.phoneNumber)
+    // const { data: userData } = useQuery({
+    //     queryKey: ['userData'],
+    //     queryFn: getUserData,
+    //     staleTime: Infinity,
+    // })
+
 
     const { mutate, isPending: loggingIn, isError, error: appError } = useMutation({
         mutationKey: ["login"],
-        mutationFn: loginUser,
+        mutationFn: loginUserAPI,
         onSuccess: async (data) => {
-            console.log(data)
             await SecureStore.setItemAsync("token", data?.token)
             await SecureStore.setItemAsync("role", data?.role)
-
             Dialog.show({
                 type: 'SUCCESS',
                 title: 'Welcome Back',
@@ -54,19 +60,23 @@ const OTPScreen = ({ navigation }) => {
             if (data?.role === "admin") {
                 navigation.replace("Admin")
                 setLoading(false)
-
             }
             else {
                 navigation.replace('Main')
             }
         },
+
         onError: (error) => {
             console.log(error)
+            let user = auth().currentUser;
+            user.delete()
+                .then(() => console.log("User deleted"))
+                .catch((error) => console.log(error));
             Dialog.show({
                 type: 'DANGER',
                 title: 'Error',
                 autoClose: 1000,
-                textBody: "Please try again",
+                textBody: "Please try again later",
                 button: 'Close',
             })
         }
@@ -79,7 +89,6 @@ const OTPScreen = ({ navigation }) => {
             setLoading(true)
             const result = await params?.confirmation?.confirm(code)
             console.log(result?.additionalUserInfo?.isNewUser)
-            // if (isError) setLoading(false)
             if (result?.additionalUserInfo?.isNewUser === true) {
                 navigation.replace("UserRegsiterationPage", params?.phoneNumber)
                 setLoading(false)
@@ -98,11 +107,11 @@ const OTPScreen = ({ navigation }) => {
     }
 
     return (
-
         <ImageBackground
             resizeMode='cover'
             source={require("../assets/images/sign/background-top.png")}
             className='flex-1 px-5 '>
+            {/* {console.log(userData)} */}
 
             <Appbar.Header
                 mode='center-aligned'
@@ -113,18 +122,18 @@ const OTPScreen = ({ navigation }) => {
                     justifyContent: "center",
                     textAlign: "center",
                 }}>
+
                 <Appbar.BackAction
                     iconColor='black'
                     onPress={() => navigation.replace("Login")} />
+
                 <Appbar.Content title="Confirm OTP"
                     titleStyle={{
                         fontFamily: "Mulish-Bold",
                         fontSize: responsiveFontSize(3),
                         color: "black"
-
                     }} />
             </Appbar.Header>
-            {/* {console.log(appError)} */}
 
             {loggingIn && !isError &&
                 <BlurView
@@ -138,7 +147,6 @@ const OTPScreen = ({ navigation }) => {
                         left: 0,
                         right: 0,
                         bottom: 0,
-
                     }}
                     blurType="dark"
                     blurAmount={5}
@@ -158,13 +166,13 @@ const OTPScreen = ({ navigation }) => {
                 extraHeight={responsiveHeight(20)}>
 
 
-
                 <View className='items-center justify-center'>
 
                     <View style={{
                         marginVertical: responsiveHeight(20)
                     }}>
                         <View className="flex-row items-center">
+
                             <OtpInput
                                 className="text-black"
                                 numberOfDigits={6}
@@ -173,7 +181,11 @@ const OTPScreen = ({ navigation }) => {
                                 focusStickBlinkingDuration={500}
                                 theme={{
                                     pinCodeContainerStyle: { borderColor: "#c2c2c2" },
-                                    pinCodeTextStyle: { color: "black" },
+                                    pinCodeTextStyle: {
+                                        color: "black",
+                                        fontSize: responsiveFontSize(2.5),
+                                        fontFamily: "Mulish-SemiBold"
+                                    },
                                 }}
                                 onTextChange={(e) => setCode(e)}
                             />
@@ -191,13 +203,15 @@ const OTPScreen = ({ navigation }) => {
                     <TouchableOpacity
                         disabled={isLoading || code.length < 6}
                         onPress={() => confirmCode()}
-                        className={`${isLoading || code.length < 6 && "opacity-50"} bg-[#53B175] rounded-full px-6 py-5 items-center`}
+                        className={`${isLoading || code.length < 6 && "opacity-50"} bg-[#53B175] rounded-full px-5 py-4 items-center`}
                         style={{ width: responsiveWidth(60) }}>
 
-                        {isLoading && !isError ? <ActivityIndicator color='white' />
+                        {isLoading && !isError ?
+                            <ActivityIndicator color='white'
+                                style={{ paddingVertical: responsiveHeight(0.5) }} />
                             :
                             <Text className="text-white font-mulish-semibold"
-                                style={{ fontSize: responsiveFontSize(2.5) }}>
+                                style={{ fontSize: responsiveFontSize(2.25) }}>
                                 Verify
                             </Text>
                         }

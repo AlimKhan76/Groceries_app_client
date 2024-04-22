@@ -12,10 +12,9 @@ const queryClient = new QueryClient()
 function App() {
 
   const [isConnected, setConnected] = useState(true);
-  console.log(isConnected)
+
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log(state)
       setConnected(state.isConnected);
       if (!state.isConnected) {
         showAlert();
@@ -36,13 +35,24 @@ function App() {
     })
   };
 
-  
+
   return (
     <>
       <QueryClientProvider client={queryClient}>
         <PaperProvider>
 
           <AlertNotificationRoot theme='light'
+            toastConfig={{
+              titleStyle: {
+                fontFamily: "Mulish-SemiBold",
+                textAlign: "center",
+
+              },
+              textBodyStyle: {
+                fontFamily: "Mulish-SemiBold",
+                textAlign: "center"
+              }
+            }}
             colors={[
               {
                 card: "white",

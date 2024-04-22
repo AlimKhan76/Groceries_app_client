@@ -1,6 +1,6 @@
 import { API } from "./config/axios"
 
-export const regitserUser = async (registerationData) => {
+export const registerUserAPI = async (registerationData) => {
     try {
         // console.log(registerationData)
         const { data } = await API.post("user/register", registerationData)
@@ -12,7 +12,7 @@ export const regitserUser = async (registerationData) => {
     }
 }
 
-export const loginUser = async (loginData) => {
+export const loginUserAPI = async (loginData) => {
     try {
         console.log(loginData)
         const { data } = await API.post("user/login", loginData)

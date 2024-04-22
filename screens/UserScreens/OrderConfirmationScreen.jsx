@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Appbar, DataTable, Divider } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getUserData } from '../../api/userAPI'
@@ -17,12 +16,12 @@ import { useCouponApi } from '../../api/adminAPIs/couponAPI'
 import { BlurView } from "@react-native-community/blur";
 
 
-const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, error, isError }) => {
+const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, error, isError, status }) => {
     const [height] = useState(new Animated.Value(0));
 
     useEffect(() => {
         Animated.timing(height, {
-            toValue: !expanded ? responsiveHeight(15) : 0,
+            toValue: !expanded ? responsiveHeight(13) : 0,
             duration: 150,
             useNativeDriver: false
         }).start();
@@ -42,14 +41,14 @@ const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, 
                 className='py-3 rounded-b-2xl flex-row justify-between items-center'>
 
                 <TextInput
-                    className={`${isError ? `border-red-400` : `border-gray-200`} px-5 border-2  rounded-xl font-mulish-semibold`}
+                    className={`${status === "error" ? `border-red-400` : status === "success" ? `border-[#53B175]` : 'border-gray-200'} px-4 border-2 rounded-xl font-mulish-semibold`}
                     placeholder='Enter Code'
                     value={couponCode}
                     onChangeText={(e) => setCouponCode(e)}
                     style={{
                         width: responsiveWidth(50),
                         color: "black",
-                        fontSize: responsiveFontSize(1.8),
+                        fontSize: responsiveFontSize(1.75),
                     }}
                     maxLength={20}
                     placeholderTextColor={"black"}
@@ -58,10 +57,10 @@ const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, 
                 <TouchableOpacity
                     disabled={couponCode?.length === 0 ? true : false}
                     onPress={refetch}
-                    className={`${couponCode?.length === 0 ? "bg-gray-200" : 'bg-white'} border-2 border-gray-300 rounded-2xl p-3`} >
+                    className={`${couponCode?.length === 0 ? "opacity-50" : 'opacity-100'} border-2 border-gray-300 rounded-2xl p-3`} >
                     <Text
                         style={{
-                            fontSize: responsiveFontSize(1.8)
+                            fontSize: responsiveFontSize(1.75)
                         }}
                         className="text-black font-mulish-semibold px-2">
                         Submit
@@ -70,7 +69,8 @@ const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, 
 
             </View>
 
-            {isError &&
+            {console.log(status)}
+            {status !== "pending" && status === "error" &&
                 <View className="flex-row items-center gap-x-1 ">
                     <MaterialIcons
                         name="error-outline"
@@ -78,9 +78,24 @@ const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, 
 
                     <Text className="text-red-500 font-mulish-regular"
                         style={{
-                            fontSize: responsiveFontSize(1.8)
+                            fontSize: responsiveFontSize(1.45)
                         }}>
                         {error}
+                    </Text>
+                </View>
+            }
+
+            {status !== "pending" && status === "success" &&
+
+                <View className="flex-row items-center gap-x-1 ">
+                    <MaterialIcons
+                        name="error-outline"
+                        size={responsiveHeight(2)} color="#53B175" />
+                    <Text className="text-[#53B175] font-mulish-regular"
+                        style={{
+                            fontSize: responsiveFontSize(1.45)
+                        }}>
+                        Coupon applied Successfully
                     </Text>
                 </View>
             }
@@ -104,19 +119,21 @@ const OrderConfirmationScreen = () => {
     const [isExpanded, setIsExpanded] = useState(true);
 
 
-    const { data: couponDetails, refetch, error, isError, isFetching } = useQuery({
-        queryKey: ["couponCode"],
-        queryFn: () => useCouponApi(couponCode),
+    const { data: couponDetails, refetch, error, isError, isFetching, status } = useQuery({
+        queryKey: ["couponCode", couponCode],
+        queryFn: ({ queryKey }) => useCouponApi(queryKey[1]),
         enabled: false,
-        refetchOnMount: true,
+        // refetchOnMount: false,
         retry: 1,
+        // staleTime: 100000,
     })
 
 
     useFocusEffect(React.useCallback(() => {
         let amount = 0;
         for (let i = 0; i < cartItems?.cart?.length; i++) {
-            amount = amount + Number(cartItems?.cart[i]?.totalPrice);
+            const sumPrice = cartItems?.cart[i]?.cart_item?.price * cartItems?.cart[i]?.quantity
+            amount = amount + Number(sumPrice);
         }
         if (couponDetails !== undefined) {
             setTotalPrice(amount - couponDetails?.value)
@@ -124,10 +141,8 @@ const OrderConfirmationScreen = () => {
         else setTotalPrice(amount);
 
         setSubTotal(amount)
+
         return (() => {
-            queryClient.invalidateQueries({
-                queryKey: ['couponCode']
-            })
             setSubTotal(0)
             setTotalPrice(0)
         })
@@ -146,7 +161,6 @@ const OrderConfirmationScreen = () => {
         staleTime: Infinity,
     })
 
-    { console.log(error) }
     const { mutate: placeOrder, isPending } = useMutation({
         mutationFn: placeOrderApi,
         onError: () => {
@@ -159,10 +173,17 @@ const OrderConfirmationScreen = () => {
             })
         },
         onSuccess: () => {
-            navigation.navigate("OrderAccepted")
             queryClient.invalidateQueries({
-                queryKey: ['cartItems', "userOrders"]
+                queryKey: ['cartItems']
             })
+            queryClient.invalidateQueries({
+                queryKey: ['userOrders']
+            })
+            setCouponCode("")
+            queryClient.invalidateQueries({
+                queryKey: ['couponCode']
+            })
+            navigation.navigate("OrderAccepted")
 
         }
     })
@@ -170,9 +191,11 @@ const OrderConfirmationScreen = () => {
 
 
     return (
-        <SafeAreaView className="flex-1  ">
+        <SafeAreaView className="flex-1"
+            edges={['right', 'top', 'left']}>
 
-            <Appbar.Header mode='center-aligned'
+            <Appbar.Header
+                mode='center-aligned'
                 style={{
                     backgroundColor: 'white',
                     height: responsiveHeight(10),
@@ -180,14 +203,15 @@ const OrderConfirmationScreen = () => {
                     justifyContent: "center",
                     textAlign: "center",
                 }}>
-                <Appbar.BackAction iconColor='black'
+                <Appbar.BackAction
+                    iconColor='black'
                     onPress={() => navigation.goBack()} />
-                <Appbar.Content title="Confirm Order"
+                <Appbar.Content
+                    title="Confirm Order"
                     titleStyle={{
                         fontFamily: "Mulish-Bold",
                         fontSize: responsiveFontSize(3),
                         color: "black"
-
                     }} />
             </Appbar.Header>
             <Divider />
@@ -213,12 +237,13 @@ const OrderConfirmationScreen = () => {
                     <ActivityIndicator style={{
                         height: responsiveHeight(100),
                     }}
-                        size={"large"} color='rgb(83 177 117)' />
+                        size={"large"}
+                        color='rgb(83 177 117)' />
                 </BlurView>
             }
 
 
-            <ScrollView className="m-3  overflow-hidden mb-8"
+            <ScrollView className="m-3 overflow-hidden mb-8"
                 style={{
 
                 }}>
@@ -228,10 +253,13 @@ const OrderConfirmationScreen = () => {
                 <View className="border-2 border-gray-100 bg-white rounded-2xl p-3 my-2">
 
                     <View className="mx-3 flex-row gap-x-2 items-center">
-                        <MaterialCommunityIcons name="truck-delivery-outline" size={30} color="black" />
+                        <MaterialCommunityIcons
+                            name="truck-delivery-outline"
+                            size={responsiveHeight(3.5)}
+                            color="black" />
                         <Text
                             className='text-black font-mulish-semibold text-lg'
-                            style={{ fontSize: responsiveFontSize(2.5) }}>
+                            style={{ fontSize: responsiveFontSize(2.25) }}>
                             Shipping to {userData?.name}
                         </Text>
                     </View>
@@ -243,34 +271,36 @@ const OrderConfirmationScreen = () => {
                         {/* <EntypoIcon name="address" size={20} color="black" /> */}
                         <View>
                             <Text className='text-black font-mulish-regular mb-1 ' style={{
-                                fontSize: responsiveFontSize(1.8)
+                                fontSize: responsiveFontSize(1.75)
                             }}>
                                 Phone no: {userData?.contactNo}
                             </Text>
 
                             <Text className='text-black font-mulish-regular '
                                 style={{
-                                    fontSize: responsiveFontSize(1.8)
+                                    fontSize: responsiveFontSize(1.75)
                                 }}>
                                 {address?.line1}
                             </Text>
-                            <Text className='text-black font-mulish-regular' style={{
-                                fontSize: responsiveFontSize(1.8)
-                            }}>
+                            <Text className='text-black font-mulish-regular'
+                                style={{
+                                    fontSize: responsiveFontSize(1.75)
+                                }}>
 
                                 {address?.line2}
                             </Text>
-                            <Text className='text-black font-mulish-regular ' style={{
-                                fontSize: responsiveFontSize(1.8)
-                            }}>
-
+                            <Text className='text-black font-mulish-regular '
+                                style={{
+                                    fontSize: responsiveFontSize(1.75)
+                                }}>
                                 {address?.pincode}
                             </Text>
 
                             {address?.landmark.length > 0 &&
-                                <Text className='text-black font-mulish-regular ' style={{
-                                    fontSize: responsiveFontSize(1.8)
-                                }}>
+                                <Text className='text-black font-mulish-regular'
+                                    style={{
+                                        fontSize: responsiveFontSize(1.75)
+                                    }}>
                                     Landmark: {address?.landmark}
                                 </Text>
                             }
@@ -293,13 +323,14 @@ const OrderConfirmationScreen = () => {
                     onPress={() => setIsExpanded(!isExpanded)}>
 
                     <View className="flex-row gap-x-1 items-center">
-                        <MaterialIcons name="discount"
-                            size={responsiveHeight(2.5)}
+                        <MaterialIcons
+                            name="discount"
+                            size={responsiveHeight(2.25)}
                             color="black" />
 
                         <Text className="text-black font-mulish-semibold"
                             style={{
-                                fontSize: responsiveFontSize(2.5)
+                                fontSize: responsiveFontSize(2.25)
                             }}>
                             Promo Code
                         </Text>
@@ -308,7 +339,7 @@ const OrderConfirmationScreen = () => {
 
                     <AntDesign
                         name={`${isExpanded ? "down" : "up"}`}
-                        size={responsiveHeight(2.5)}
+                        size={responsiveHeight(2.25)}
                         color="black" />
 
                 </TouchableOpacity>
@@ -318,80 +349,104 @@ const OrderConfirmationScreen = () => {
                     couponCode={couponCode}
                     setCouponCode={setCouponCode}
                     error={error}
-                    isError={isError} />
+                    isError={isError}
+                    status={status} />
 
-                <View className=" bg-white rounded-2xl p-3 my-2">
+                <View className=" bg-white rounded-2xl px-1.5 my-2">
                     <DataTable>
                         <DataTable.Header>
-                            <DataTable.Title>
-                                <Text className="text-black text-base font-mulish-bold"
-                                    style={{
-                                        fontSize: responsiveFontSize(1.8)
-                                    }}>
-                                    Item
-                                </Text>
-                            </DataTable.Title>
-                            <DataTable.Title numeric >
-                                <Text className="text-black text-base font-mulish-bold" style={{
-                                    fontSize: responsiveFontSize(1.8)
+                            <DataTable.Title
+                                textStyle={{
+                                    fontSize: responsiveFontSize(1.75),
+                                    fontFamily: "Mulish-Bold",
+                                    color: "black"
                                 }}>
-                                    Quantity
-                                </Text>
+
+                                Item
                             </DataTable.Title>
-                            <DataTable.Title numeric >
-                                <Text className="text-black text-base font-mulish-bold" style={{
-                                    fontSize: responsiveFontSize(1.8)
+
+                            <DataTable.Title
+                                numeric
+                                textStyle={{
+                                    fontSize: responsiveFontSize(1.75),
+                                    fontFamily: "Mulish-Bold",
+                                    color: "black"
                                 }}>
-                                    Price
-                                </Text>
+                                Quantity
                             </DataTable.Title>
+
+                            <DataTable.Title
+                                numeric
+                                textStyle={{
+                                    fontSize: responsiveFontSize(1.75),
+                                    fontFamily: "Mulish-Bold",
+                                    color: "black"
+                                }} >
+                                Price
+                            </DataTable.Title>
+
                         </DataTable.Header>
                         <Divider bold />
+
                         {cartItems?.cart?.map((product) => {
                             return (
-                                <DataTable.Row key={product?._id}>
-                                    <DataTable.Cell >
-                                        <Text className="text-base text-gray-700 font-mulish-regular" style={{
-                                            fontSize: responsiveFontSize(1.8)
+                                <DataTable.Row key={product?.cart_item?._id}>
+                                    <DataTable.Cell
+                                        textStyle={{
+                                            fontSize: responsiveFontSize(1.75),
+                                            fontFamily: "Mulish-Medium",
+                                            color: "black"
                                         }}>
-                                            {product?.title}
+                                        <Text className="text-black flex-wrap" style={{
+                                            fontSize: responsiveFontSize(1.75)
+                                        }}>
+                                            {product?.cart_item?.title}
+
                                         </Text>
                                     </DataTable.Cell>
-                                    <DataTable.Cell numeric>
-                                        <Text className="text-base text-gray-700 font-mulish-regular" style={{
-                                            fontSize: responsiveFontSize(1.8)
+                                    <DataTable.Cell numeric
+                                        textStyle={{
+                                            fontSize: responsiveFontSize(1.5),
+                                            fontFamily: "Mulish-Medium",
+                                            color: "black",
                                         }}>
-                                            {product?.quantity} {product?.unit}
-                                        </Text>
+                                        {product?.quantity} {product?.cart_item?.unit}
                                     </DataTable.Cell>
-                                    <DataTable.Cell numeric>
-                                        <Text className=" text-gray-700 font-mulish-regular" style={{
-                                            fontSize: responsiveFontSize(1.8)
+
+                                    <DataTable.Cell numeric
+                                        textStyle={{
+                                            fontSize: responsiveFontSize(1.75),
+                                            fontFamily: "Mulish-Medium",
+                                            color: "black"
                                         }}>
-                                            ₹ {product?.totalPrice}
-                                        </Text>
+                                        ₹ {product?.quantity * product?.cart_item?.price}
                                     </DataTable.Cell>
+
                                 </DataTable.Row>
 
                             )
                         })}
 
                         <DataTable.Row>
-                            <DataTable.Cell >
-                                <Text className=" font-mulish-bold text-black"
-                                    style={{
-                                        fontSize: responsiveFontSize(1.8)
-                                    }}>
-                                    Sub Total :
-                                </Text>
+                            <DataTable.Cell
+                                textStyle={{
+                                    fontSize: responsiveFontSize(1.75),
+                                    fontFamily: "Mulish-Bold",
+                                    color: "black"
+                                }} >
+
+                                Sub Total :
                             </DataTable.Cell>
+
                             <DataTable.Cell></DataTable.Cell>
-                            <DataTable.Cell numeric>
-                                <Text className=" font-mulish-bold text-black" style={{
-                                    fontSize: responsiveFontSize(1.8)
+
+                            <DataTable.Cell numeric
+                                textStyle={{
+                                    fontSize: responsiveFontSize(1.75),
+                                    fontFamily: "Mulish-Bold",
+                                    color: "black"
                                 }}>
-                                    ₹ {subTotal}
-                                </Text>
+                                ₹ {subTotal}
                             </DataTable.Cell>
                         </DataTable.Row>
 
@@ -400,20 +455,30 @@ const OrderConfirmationScreen = () => {
                             <DataTable.Row style={{
                                 height: responsiveHeight(8),
                             }}>
-                                <DataTable.Cell >
-                                    <Text className="font-mulish-semibold text-black" style={{
-                                        fontSize: responsiveFontSize(1.5)
+                                <DataTable.Cell textStyle={{
+                                    fontSize: responsiveFontSize(1.5),
+                                    fontFamily: "Mulish-Medium",
+                                    color: "black"
+                                }} >
+                                    <Text style={{
+                                        fontSize: responsiveFontSize(1.5),
+                                        fontFamily: "Mulish-Medium",
+                                        color: "black"
                                     }}>
+
                                         Discount :({couponDetails?.code})
                                     </Text>
                                 </DataTable.Cell>
+
                                 <DataTable.Cell></DataTable.Cell>
-                                <DataTable.Cell numeric>
-                                    <Text className=" font-mulish-semibold text-black" style={{
-                                        fontSize: responsiveFontSize(1.5)
-                                    }}>
-                                        - ₹ {couponDetails?.value}
-                                    </Text>
+
+                                <DataTable.Cell numeric textStyle={{
+                                    fontSize: responsiveFontSize(1.5),
+                                    fontFamily: "Mulish-SemiBold",
+                                    color: "black"
+                                }}>
+
+                                    - ₹ {couponDetails?.value}
                                 </DataTable.Cell>
                             </DataTable.Row>
 
@@ -422,20 +487,22 @@ const OrderConfirmationScreen = () => {
 
 
                         <DataTable.Row>
-                            <DataTable.Cell >
-                                <Text className="font-mulish-bold text-black" style={{
-                                    fontSize: responsiveFontSize(1.8)
-                                }}>
-                                    Total Price :
-                                </Text>
+                            <DataTable.Cell textStyle={{
+                                fontSize: responsiveFontSize(1.85),
+                                fontFamily: "Mulish-Bold",
+                                color: "black"
+                            }}>
+
+                                Total Price :
                             </DataTable.Cell>
                             <DataTable.Cell></DataTable.Cell>
-                            <DataTable.Cell numeric>
-                                <Text className="text-base font-mulish-bold text-black" style={{
-                                    fontSize: responsiveFontSize(1.8)
-                                }}>
-                                    ₹ {totalPrice}
-                                </Text>
+                            <DataTable.Cell numeric textStyle={{
+                                fontSize: responsiveFontSize(1.85),
+                                fontFamily: "Mulish-Bold",
+                                color: "black"
+                            }}>
+
+                                ₹ {totalPrice}
                             </DataTable.Cell>
                         </DataTable.Row>
 
@@ -448,8 +515,9 @@ const OrderConfirmationScreen = () => {
 
 
             <View
-                className="bottom-5 relative self-center w-full overflow-hidden  ">
+                className="bottom-2.5 relative self-center w-full overflow-hidden  ">
                 <TouchableOpacity
+                    disabled={isPending}
                     onPress={() => {
                         placeOrder({
                             items: cartItems?.cart,
@@ -466,7 +534,9 @@ const OrderConfirmationScreen = () => {
                     {isPending ?
                         <ActivityIndicator color='white' /> :
                         <Text
-                            className='text-white text-xl font-mulish-semibold'>
+                            className='text-white font-mulish-semibold'
+                            style={{ fontSize: responsiveFontSize(2.25) }}
+                        >
                             Place Order
                         </Text>
                     }

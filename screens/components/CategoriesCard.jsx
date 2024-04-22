@@ -11,7 +11,7 @@ const CategoriesCard = () => {
 
     const navigation = useNavigation()
     return (
-        <View className="flex-row flex-wrap gap-2 justify-center">
+        <View className="flex-row flex-wrap gap-2 justify-center pb-5">
             <TouchableOpacity
                 onPress={() => {
                     navigation.navigate("CategoryProducts", {
@@ -33,8 +33,8 @@ const CategoriesCard = () => {
                     }}
                     source={require("../../assets/images/product_categories/beverages.png")} />
                 <Text
-                    className="pt-2 text-black text-lg text-center font-mulish-extrabold "
-                    style={{ fontSize: responsiveFontSize(2.5) }}
+                    className="pt-2 text-black text-center font-mulish-bold "
+                    style={{ fontSize: responsiveFontSize(2.35) }}
                 >
                     Beverages and drinks
                 </Text>
@@ -62,8 +62,8 @@ const CategoriesCard = () => {
                     resizeMode='contain'
                     source={require("../../assets/images/product_categories/fruits.png")} />
                 <Text
-                    className="pt-2 text-black text-lg text-center font-mulish-extrabold "
-                    style={{ fontSize: responsiveFontSize(2.5) }}
+                    className="pt-2 text-black text-lg text-center font-mulish-bold "
+                    style={{ fontSize: responsiveFontSize(2.35) }}
                 >
                     Fresh fruits and vegetables
                 </Text>
@@ -89,8 +89,8 @@ const CategoriesCard = () => {
                     resizeMode='contain'
                     source={require("../../assets/images/product_categories/meat.png")} />
                 <Text
-                    className="pt-2 text-black text-lg text-center font-mulish-extrabold "
-                    style={{ fontSize: responsiveFontSize(2.5) }}
+                    className="pt-2 text-black text-lg text-center font-mulish-bold "
+                    style={{ fontSize: responsiveFontSize(2.35) }}
                 >
                     Exotic Fruits
                 </Text>
@@ -114,8 +114,8 @@ const CategoriesCard = () => {
                     resizeMode='contain'
                     source={require("../../assets/images/product_categories/dairy.png")} />
                 <Text
-                    className="pt-2 text-black text-center font-mulish-extrabold "
-                    style={{ fontSize: responsiveFontSize(2.5) }}>
+                    className="pt-2 text-black text-center font-mulish-bold "
+                    style={{ fontSize: responsiveFontSize(2.35) }}>
                     Dairy & Eggs
                 </Text>
             </TouchableOpacity>
@@ -133,8 +133,8 @@ const CategoriesCard = () => {
                     resizeMode='contain'
                     source={require("../../assets/images/product_categories/oil.png")} />
                 <Text
-                    className="pt-2 text-black text-center font-mulish-extrabold "
-                    style={{ fontSize: responsiveFontSize(2.5) }}>
+                    className="pt-2 text-black text-center font-mulish-bold "
+                    style={{ fontSize: responsiveFontSize(2.35) }}>
                     Cooking Oil & Ghee
                 </Text>
 
@@ -155,8 +155,8 @@ const CategoriesCard = () => {
                     resizeMode='contain'
                     source={require("../../assets/images/product_categories/bakery.png")} />
                 <Text
-                    className="pt-2 text-black text-center font-mulish-extrabold "
-                    style={{ fontSize: responsiveFontSize(2.5) }}>
+                    className="pt-2 text-black text-center font-mulish-bold "
+                    style={{ fontSize: responsiveFontSize(2.35) }}>
 
                     Bakery
                 </Text>

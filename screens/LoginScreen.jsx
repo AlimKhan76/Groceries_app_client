@@ -2,17 +2,14 @@ import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import { View, Text, ImageBackground, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { loginUser } from '../api/userAPI'
+import { loginUserAPI } from '../api/userAPI'
 import { Formik } from 'formik'
 import { object, string } from 'yup'
 import { Dialog } from 'react-native-alert-notification'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { ActivityIndicator } from 'react-native-paper'
-import { CommonActions } from '@react-navigation/native';
 
-
-
+// Not in use
 const LoginScreen = ({ navigation }) => {
     const [scrollHeight, setScrollHeight] = useState(0)
 
@@ -29,7 +26,7 @@ const LoginScreen = ({ navigation }) => {
 
     const { mutate, isPending: loggingIn } = useMutation({
         mutationKey: ["login"],
-        mutationFn: loginUser,
+        mutationFn: loginUserAPI,
         onSuccess: async (data) => {
             console.log(data)
             await SecureStore.setItemAsync("token", data?.token)

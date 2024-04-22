@@ -1,15 +1,14 @@
 import { View, Text, TextInput, ScrollView, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Search from "../../assets/icons/commons/search.svg"
 import { useFocusEffect } from '@react-navigation/native'
 import { searchApi } from '../../api/searchAPI'
 import { useQuery } from '@tanstack/react-query';
 import { IMAGE_URL } from '@env';
-import RightArrow from "../../assets/icons/account/right_arrow.svg"
 import CategoriesCard from '../components/CategoriesCard'
 import { ActivityIndicator } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
+import Feather from "react-native-vector-icons/Feather"
 
 const ExploreScreen = ({ navigation, route }) => {
   const inputRef = useRef();
@@ -47,28 +46,36 @@ const ExploreScreen = ({ navigation, route }) => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <SafeAreaView className="flex-1 bg-white px-2 "
-        edges={['right', 'top', 'left']}
-      >
+        edges={['right', 'top', 'left']}>
 
-        <Text
-          className=" font-mulish-bold text-black text-center my-6"
-          style={{ fontSize: responsiveFontSize(3) }}>
-          Find Products
-        </Text>
+        <View className="items-center flex-row justify-center"
+          style={{ height: responsiveHeight(10) }}>
 
-     
+          <Text
+            className="py-6 text-black font-mulish-bold"
+            style={{
+              fontSize: responsiveFontSize(3)
+            }}>
+            Find Products
+          </Text>
+
+        </View>
+
 
         <View
-          className='bg-gray-200 mx-6 my-2 rounded-2xl px-3 flex-row items-center'>
-          <Search />
+          className='bg-gray-200 mx-4 my-2 rounded-2xl px-3 flex-row items-center'>
+          <Feather name="search" color="black" size={responsiveHeight(2.5)} />
           <TextInput
             ref={inputRef}
             maxLength={20}
             value={searchQuery}
             onChangeText={e => setSearchQuery(e)}
-            className='px-2.5 py-3.5 text-base font-mulish-semibold w-full text-black'
+            className='px-2.5 py-3.5 font-mulish-semibold w-full text-black'
+            style={{
+              fontSize: responsiveFontSize(1.85)
+            }}
             placeholder='Search store'
-            placeholderTextColor={'gray'}
+            placeholderTextColor={'black'}
           />
         </View>
 
@@ -82,16 +89,17 @@ const ExploreScreen = ({ navigation, route }) => {
           :
           data !== undefined && data?.length === 0 && searchQuery !== "" ?
             <View
-              className="flex-1 items-center mt-20 ">
+              className="flex-1 items-center mt-24 ">
               <Text
-                className="text-black text-2xl font-mulish-semibold">
-                No Products ! ! !
+                className="text-black text-2xl font-mulish-semibold"
+                style={{ fontSize: responsiveFontSize(3) }}>
+                No Product Found
               </Text>
             </View>
 
             :
             <ScrollView
-              className='py-2'
+              className='py-3'
               horizontal={false} >
 
               <View className="flex-row flex-wrap gap-2 justify-center  "
@@ -113,26 +121,32 @@ const ExploreScreen = ({ navigation, route }) => {
                           source={{ uri: `${IMAGE_URL}${product?.url}` }} />
 
                         <Text
-                          className="pt-2 text-black text-lg items-center font-mulish-extrabold ">
+                          className="pt-2 text-black items-center font-mulish-bold "
+                          style={{ fontSize: responsiveFontSize(2) }}>
                           {product?.title}
                         </Text>
 
                         <Text
-                          className="text-base font-mulish-medium text-slate-500">
+                          className=" font-mulish-regular text-slate-500"
+                          style={{ fontSize: responsiveFontSize(1.75) }}>
                           {product?.baseQuantity}
                         </Text>
 
                         <View
                           className="flex-row justify-between pt-3 items-center">
                           <Text
-                            className="text-black text-lg font-mulish-extrabold">
+                            className="text-black font-mulish-bold"
+                            style={{
+                              fontSize: responsiveFontSize(2)
+                            }}>
                             ₹{product?.price}
                           </Text>
 
                           <View
-                            // onPress={() => setModalVisible(true)}
-                            className="bg-[#53B175] rounded-2xl p-4 text-center">
-                            <RightArrow style={{ color: "white" }} />
+                            className="bg-[#53B175] rounded-2xl p-3 text-center">
+                            <Feather
+                              name="chevron-right"
+                              color="white" size={responsiveHeight(2.5)} />
                           </View>
 
                         </View>

@@ -1,39 +1,31 @@
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     responsiveHeight,
     responsiveWidth,
     responsiveFontSize
 } from "react-native-responsive-dimensions";
-// import Plus from "../../assets/icons/commons/plus.svg"
-import RightArrow from "../../assets/icons/account/right_arrow.svg"
-import Search from "../../assets/icons/commons/search.svg"
-import AddedToCartPopUp from '../components/AddedToCartPopUp';
 import { useQuery } from '@tanstack/react-query';
 import { getBestSellingProducts } from '../../api/productAPI';
 import { getUserData } from '../../api/userAPI';
 import { IMAGE_URL } from '@env';
 import { ActivityIndicator } from 'react-native-paper';
-import { useNetInfoInstance } from "@react-native-community/netinfo";
-import { moderateScale } from 'react-native-size-matters';
-// import fs from 'fs';
-
+import Feather from "react-native-vector-icons/Feather"
 
 const HomeScreen = ({ navigation }) => {
-    const [modalVisible, setModalVisible] = useState(false)
 
-
-    const { data: bestSellingProducts,
+    const {
+        data: bestSellingProducts,
         isLoading: loadingProducts,
         isError,
-        error,
-        refetch } = useQuery({
-            queryKey: ["bestSellingProduct"],
-            queryFn: getBestSellingProducts,
-            enabled: true,
-            staleTime: Infinity
-        })
+        refetch
+    } = useQuery({
+        queryKey: ["bestSellingProduct"],
+        queryFn: getBestSellingProducts,
+        enabled: true,
+        staleTime: Infinity
+    })
 
     const { data: userData } = useQuery({
         queryKey: ['userData'],
@@ -41,16 +33,10 @@ const HomeScreen = ({ navigation }) => {
         staleTime: Infinity,
     })
 
-
     return (
         <SafeAreaView className=' bg-white flex-1 '
             edges={['right', 'top', 'left']}>
 
-            {/* { true ?
-                <AddedToCartPopUp visible={true} />
-                :
-                <></>
-            } */}
             <View className=" justify-center items-center "
                 style={{ marginVertical: responsiveHeight(2.5) }}>
                 <Image
@@ -60,35 +46,24 @@ const HomeScreen = ({ navigation }) => {
                         height: responsiveHeight(7),
                     }}
                     source={require("../../assets/images/logo-colour.png")} />
-                {/* <View className="py-2 flex-row items-center ">
-                    <Location />
-                    <Text className="text-xl px-2 text-black font-mulishsb">
-                        Parel, Mumbai
-                    </Text>
-                </View> */}
             </View>
-            <View
-                className='bg-gray-200 mx-6 my-3 rounded-2xl px-3 flex-row items-center'
-                style={{
+            <TouchableOpacity
+                onPress={() => navigation.navigate("Explore")}
+                activeOpacity={0.8}
+                className='bg-gray-200 mx-6 my-3.5 rounded-2xl flex-row items-center px-2.5 py-3.5 '>
 
-                }}>
-                <Search />
-                <TouchableOpacity
-                    onPress={() => navigation.navigate("Explore", { fromHome: true })}
-                    className='px-2.5 py-3.5 w-full '>
-                    <Text
-                        className=" text-base font-mulish-semibold  text-black">
-                        Search Store
-                    </Text>
-
-                </TouchableOpacity>
-
-            </View>
+                <Feather name="search" color="black" size={responsiveHeight(2.5)} />
+                <Text
+                    className="font-mulish-semibold text-black px-2"
+                    style={{
+                        fontSize: responsiveFontSize(1.85)
+                    }}>
+                    Search Store
+                </Text>
+            </TouchableOpacity>
 
             <ScrollView
-                className="  "
-                horizontal={false}   >
-
+                horizontal={false}>
 
                 <View className="flex-row flex-wrap gap-2 justify-center  "
                     style={{ paddingBottom: responsiveHeight(2.5) }}>
@@ -100,14 +75,13 @@ const HomeScreen = ({ navigation }) => {
                                 borderColor: "#53B175",
                                 borderWidth: 1.5,
                                 borderRadius: 20,
-
                             }}
                         />
                     </View>
 
-                    <View className='flex-row  px-6 py-1 w-full justify-between'>
+                    <View className='flex-row px-6 py-1 w-full justify-between'>
                         <Text className="text-black font-mulish-semibold"
-                            style={{ fontSize: responsiveFontSize(2.2) }}>
+                            style={{ fontSize: responsiveFontSize(2.10) }}>
                             Best Selling Products
                         </Text>
                         <TouchableOpacity
@@ -115,8 +89,8 @@ const HomeScreen = ({ navigation }) => {
                                 category: "Best-Selling"
                             })}>
                             <Text
-                                className='text-[#53B175] '
-                                style={{ fontSize: responsiveFontSize(2.2) }}>
+                                className='text-[#53B175] font-mulish-semibold '
+                                style={{ fontSize: responsiveFontSize(2.10) }}>
                                 View All
                             </Text>
 
@@ -124,8 +98,6 @@ const HomeScreen = ({ navigation }) => {
                     </View>
 
                     {loadingProducts ?
-
-
                         <View className="flex-1 justify-center items-center pt-32">
                             <ActivityIndicator animating={true} size={'large'}
                                 color={'#53B175'} />
@@ -135,18 +107,18 @@ const HomeScreen = ({ navigation }) => {
                             <View className="flex-1 justify-center items-center pt-32  ">
                                 <Text className="text-black font-mulish-semibold text-center"
                                     style={{
-                                        fontSize: moderateScale(15)
+                                        fontSize: responsiveFontSize(2)
                                     }}>
                                     Products cannot be fetched, {"\n"}
                                     Please try again later
                                 </Text>
                                 <TouchableOpacity
+                                    disabled={loadingProducts}
                                     onPress={refetch}
-                                    className="border-2 p-2.5 m-2 border-gray-300 rounded-2xl"
-                                >
+                                    className="border-2 px-5 py-3 m-2 items-center border-gray-300 rounded-2xl">
                                     <Text className="text-black font-mulish-semibold"
                                         style={{
-                                            fontSize: moderateScale(15)
+                                            fontSize: responsiveFontSize(2)
                                         }}>
                                         Retry
                                     </Text>
@@ -170,14 +142,12 @@ const HomeScreen = ({ navigation }) => {
 
                                             <Text
                                                 className="pt-2 text-black items-center font-mulish-bold "
-                                                style={{ fontSize: responsiveFontSize(2) }}
-                                            >
+                                                style={{ fontSize: responsiveFontSize(2) }}>
                                                 {product?.title}
                                             </Text>
                                             <Text
                                                 className=" font-mulish-medium text-slate-500"
-                                                style={{ fontSize: responsiveFontSize(1.5) }}
-                                            >
+                                                style={{ fontSize: responsiveFontSize(1.5) }}>
                                                 {product?.baseQuantity}
                                             </Text>
 
@@ -185,15 +155,15 @@ const HomeScreen = ({ navigation }) => {
                                                 className="flex-row justify-between pt-3 items-center">
                                                 <Text
                                                     className="text-black font-mulish-bold"
-                                                    style={{ fontSize: responsiveFontSize(2) }}
-                                                >
+                                                    style={{ fontSize: responsiveFontSize(1.85) }}>
                                                     ₹{product?.price}
                                                 </Text>
 
                                                 <View
-                                                    // onPress={() => setModalVisible(true)}
-                                                    className="bg-[#53B175] rounded-2xl p-4 text-center">
-                                                    <RightArrow style={{ color: "white" }} />
+                                                    className="bg-[#53B175] rounded-2xl p-3 text-center">
+                                                    <Feather
+                                                        name="chevron-right"
+                                                        color="white" size={responsiveHeight(2.5)} />
                                                 </View>
 
                                             </View>
@@ -204,29 +174,27 @@ const HomeScreen = ({ navigation }) => {
                                     return null;
                                 }
                             })
-
-
-
                     }
 
-                    {!loadingProducts || isError &&
+                    {!isError && !loadingProducts &&
                         <TouchableOpacity
                             onPress={() => navigation.navigate("CategoryProducts", { category: "Best-Selling" })}
                             className='border-gray-100 border-2 px-4 py-4 rounded-2xl justify-center items-center'
                             style={{ width: responsiveWidth(45) }}>
 
-
                             <View
                                 className="flex-row justify-between py-5 items-center">
                                 <Text
-                                    className="text-black font-mulish-bold text-center"
-                                    style={{ fontSize: responsiveFontSize(2.5) }}>
+                                    className="text-black font-mulish-semibold text-center"
+                                    style={{ fontSize: responsiveFontSize(2.25) }}>
                                     View All Best Selling Products
                                 </Text>
                             </View>
                             <View
-                                className="bg-[#53B175] rounded-2xl p-5 text-center items-center">
-                                <RightArrow style={{ color: "white" }} />
+                                className="bg-[#53B175] rounded-2xl p-4 text-center items-center">
+                                <Feather
+                                    name="chevron-right"
+                                    color="white" size={responsiveHeight(3)} />
                             </View>
                         </TouchableOpacity>
                     }

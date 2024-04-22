@@ -1,23 +1,20 @@
-import { View, Text, TouchableOpacity, ScrollView, Image, StatusBar } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native'
 import React, { Fragment, useState } from 'react'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
-import Plus from "../../assets/icons/commons/plus.svg"
-import Minus from "../../assets/icons/commons/minus.svg"
-import Close from "../../assets/icons/commons/cross.svg"
-import Cart from "../../assets/icons/tabs/cart.svg"
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getcartItems } from '../../api/userAPI'
 import { IMAGE_URL } from "@env";
 import { useFocusEffect } from '@react-navigation/native'
 import { addToCartApi, getItemsFromCartApi, removeFromCart } from '../../api/cartAPI'
 import { ActivityIndicator, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-
+import Feather from "react-native-vector-icons/Feather"
+import Ionicons from "react-native-vector-icons/Ionicons"
 
 const CartScreen = ({ navigation }) => {
 
   const [checkOutAmount, setCheckOutAmount] = useState(0)
   const [isCheckoutDisabled, setIsCheckoutDisable] = useState(false)
+  const [idOfUpdatingProduct, setIdOfUpdatingProduct] = useState("")
   const queryClient = useQueryClient()
 
 
@@ -41,21 +38,25 @@ const CartScreen = ({ navigation }) => {
   const { data: cartItems, isLoading } = useQuery({
     queryKey: ['cartItems'],
     queryFn: getItemsFromCartApi,
-    // staleTime: Infinity,
+    staleTime: Infinity,
   })
 
-  // For caclculating Total Checkout Amount 
+  // For calculating Total Checkout Amount 
   useFocusEffect(React.useCallback(() => {
     let amount = 0;
     for (let i = 0; i < cartItems?.cart?.length; i++) {
-      amount = amount + Number(cartItems.cart[i].totalPrice);
+      const sumPrice = cartItems?.cart[i]?.cart_item?.price * cartItems?.cart[i]?.quantity
+      amount = amount + Number(sumPrice);
     }
+
     setCheckOutAmount(amount);
+    setIdOfUpdatingProduct("")
     return (() => {
+      setIdOfUpdatingProduct("")
       setCheckOutAmount(0)
     })
-
   }, [cartItems]))
+
 
   useFocusEffect(React.useCallback(() => {
     if (cartItems?.cart?.length > 0) {
@@ -64,11 +65,10 @@ const CartScreen = ({ navigation }) => {
     else {
       setIsCheckoutDisable(true)
     }
-
   }, [cartItems]))
 
 
-  const { mutate: removeItem } = useMutation({
+  const { mutate: removeItem, isPending: removingFromCart } = useMutation({
     mutationFn: removeFromCart,
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -88,22 +88,24 @@ const CartScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white"
-      edges={['right', 'top', 'left']}
+      edges={['right', 'top', 'left']}>
 
-    >
-      <View className="items-center flex-row justify-center">
+      <View
+        className="items-center flex-row justify-center"
+        style={{ height: responsiveHeight(10) }}>
 
         <Text
-          className=" py-6 text-black font-mulish-bold"
+          className="text-black font-mulish-bold"
           style={{ fontSize: responsiveFontSize(3) }}>
           My Cart
         </Text>
+
         <View
-          className='flex-row absolute right-5 items-center rounded-2xl border-gray-200 border-2 p-2.5'>
-          <Cart color="black" />
+          className='flex-row absolute right-5 items-center rounded-2xl border-gray-200 border-2 p-2.5 '>
+          <Feather name="shopping-cart" size={responsiveHeight(3)} color="black" />
           <Text
-            className="text-xl text-black font-mulish-medium px-1"
-            style={{ fontSize: responsiveFontSize(2.5) }}>
+            className="text-xl text-black font-mulish-medium px-1 "
+            style={{ fontSize: responsiveFontSize(2) }}>
             {cartItems?.cart?.length}
           </Text>
         </View>
@@ -111,13 +113,12 @@ const CartScreen = ({ navigation }) => {
       <Divider style={{
         marginVertical: responsiveHeight(0.5)
       }} />
+
       {isLoading ?
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator animating={true} size={'large'}
-            color={'#53B175'} />
+          <ActivityIndicator animating={true} size={'large'} color={'#53B175'} />
         </View>
         :
-
         cartItems?.cart?.length > 0 ?
           (
             <ScrollView horizontal={false}
@@ -134,7 +135,7 @@ const CartScreen = ({ navigation }) => {
                           }
                         })}
 
-                      key={product.cart_item?._id}
+                      key={product?.cart_item?._id}
                       className=' px-4 py-3 flex-row  '>
                       <Image className="self-center"
                         style={{
@@ -145,20 +146,19 @@ const CartScreen = ({ navigation }) => {
                         source={{ uri: `${IMAGE_URL}${product?.cart_item?.url}` }}
                       />
 
-                      <View className=" pl-4  flex-shrink w-full">
+                      <View className=" px-3  flex-shrink w-full">
 
                         <Text
-                          className=" text-black text-xl font-mulish-bold"
+                          className=" text-black text-xl font-mulish-semibold"
                           style={{ fontSize: responsiveFontSize(2.5) }}>
                           {product?.cart_item?.title}
                         </Text>
 
                         <Text
-                          className=" font-mulish-medium text-slate-500"
-                          style={{ fontSize: responsiveFontSize(1.5) }}>
+                          className=" font-mulish-regular text-slate-500"
+                          style={{ fontSize: responsiveFontSize(1.35) }}>
                           ₹{product?.cart_item?.price} / {product?.cart_item?.unit}
                         </Text>
-
 
 
                         <View className='flex-row py-4 justify-between items-center'>
@@ -168,30 +168,38 @@ const CartScreen = ({ navigation }) => {
                               disabled={isLoading || product?.quantity === 1}
                               onPress={() => {
                                 let quantity = product?.cart_item?.quantity + 1
+                                setIdOfUpdatingProduct(product?.cart_item?._id)
                                 modifyQuantity({
-                                  ...product.cart_item,
+                                  ...product?.cart_item,
                                   quantity: product?.quantity - 1,
                                   // totalPrice: quantity * product?.cart_item?.price,
                                 })
-                              }}
+                              }} 
+                              // ${isPending || product?.quantity === 1 ? "opacity-40 bg-gray-200" : "opacity-100"}
                               className={`
-                            ${isPending || product?.quantity === 1 ? "bg-gray-100" : "bg-white"}
-                             border-gray-200  border-2 rounded-2xl p-3 `}
-                            >
-                              <Minus style={{ color: "black" }} />
+                             border-gray-200  border-2 rounded-2xl p-2.5 `}>
+                              <Feather name="minus" size={responsiveHeight(2.5)}
+                                color="black" />
+
                             </TouchableOpacity>
-                            <Text
-                              className=" text-black font-mulish-semibold mx-6"
-                              style={{
-                                fontSize: responsiveFontSize(2)
-                              }}>
-                              {/* {isPending ? "" : product?.quantity} */}
-                              {product?.quantity}
-                            </Text>
+
+                            {idOfUpdatingProduct === product?.cart_item?._id ?
+                              <ActivityIndicator size={"small"} color='black'
+                                style={{ marginHorizontal: responsiveWidth(2)}} /> 
+                                :
+                              <Text
+                                className=" text-black font-mulish-semibold mx-4"
+                                style={{
+                                  fontSize: responsiveFontSize(2)
+                                }}>
+                                {product?.quantity}
+                              </Text>
+                            }
                             <TouchableOpacity
-                              // disabled={isPending}
+                              disabled={isPending}
                               onPress={() => {
                                 let quantity = product?.quantity + 1
+                                setIdOfUpdatingProduct(product?.cart_item?._id)
                                 modifyQuantity({
                                   ...product.cart_item,
                                   quantity: product?.quantity + 1,
@@ -199,10 +207,9 @@ const CartScreen = ({ navigation }) => {
                                 })
                               }}
                               className={`
-                            ${isPending ? "bg-gray-100" : "bg-white"}
-                             border-gray-200  border-2 rounded-2xl p-3 `}
-                            >
-                              <Plus style={{ color: "#53B175" }} />
+                             border-gray-200 border-2 rounded-2xl p-3 `}>
+                              <Feather name="plus" size={responsiveHeight(2.5)}
+                                color="#53B175" />
                             </TouchableOpacity>
                           </View>
 
@@ -220,11 +227,12 @@ const CartScreen = ({ navigation }) => {
 
                       </View>
 
-                      <View className="absolute right-5 top-5 ">
-                        <TouchableOpacity className="p-2"
-                          onPress={() => { removeItem(product?.cart_item?._id) }}
-                        >
-                          <Close />
+                      <View className="absolute right-3.5 top-2.5 ">
+                        <TouchableOpacity className="p-2 "
+                          disabled={removingFromCart}
+                          onPress={() => { removeItem(product?.cart_item?._id) }}>
+
+                          <Ionicons name="close-outline" color="black" size={responsiveHeight(3.5)} />
                         </TouchableOpacity>
                       </View>
 
@@ -240,14 +248,15 @@ const CartScreen = ({ navigation }) => {
           ) :
           <View className="items-center justify-center flex-1 mx-3">
             <Text
-              className="text-xl text-center text-black font-mulish-semibold">
+              className="text-center text-black font-mulish-semibold"
+              style={{ fontSize: responsiveFontSize(2.5) }}>
               You have no items in Cart, Start adding them Now
             </Text>
           </View>
       }
 
       {!isCheckoutDisabled &&
-        <View className="bottom-5 relative self-center w-full  overflow-hidden  ">
+        <View className="bottom-2.5 relative self-center w-full overflow-hidden  ">
           <TouchableOpacity
             disabled={isCheckoutDisabled}
             onPress={() => navigation.navigate("Checkout")}
@@ -258,16 +267,15 @@ const CartScreen = ({ navigation }) => {
 
           >
             <Text className=' text-white text-xl font-mulish-semibold'
-              style={{ fontSize: responsiveFontSize(2.5) }}>
+              style={{ fontSize: responsiveFontSize(2.25) }}>
               Go to Checkout
             </Text>
 
             <View className={`${isCheckoutDisabled && "opacity-50"} right-5 absolute bg-[#489E67] p-1.5 rounded-xl `}>
 
-              <Text className='text-white text-xs font-mulish-semibold'
-                style={{ fontSize: responsiveFontSize(1.5) }}>
-
-                &nbsp;₹ {checkOutAmount}
+              <Text className='text-white font-mulish-semibold px-1'
+                style={{ fontSize: responsiveFontSize(1.35) }}>
+                ₹ {checkOutAmount}
               </Text>
             </View>
           </TouchableOpacity>

@@ -2,13 +2,12 @@ import { View, Text, TouchableOpacity, TextInput, ImageBackground, TouchableWith
 import React, { useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-import { loginUser } from '../api/userAPI'
+import { loginUserAPI } from '../api/userAPI'
 import { useMutation } from '@tanstack/react-query'
 import { Dialog } from 'react-native-alert-notification'
 import * as SecureStore from 'expo-secure-store';
 import { ActivityIndicator, Appbar } from 'react-native-paper'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { isPending } from '@reduxjs/toolkit'
 
 const UserRegisterationPage = () => {
     const navigation = useNavigation()
@@ -19,7 +18,7 @@ const UserRegisterationPage = () => {
 
     const { mutate, isPending: loggingIn, error, isError } = useMutation({
         mutationKey: ["login"],
-        mutationFn: loginUser,
+        mutationFn: loginUserAPI,
         onSuccess: async (data) => {
             console.log(data)
             await SecureStore.setItemAsync("token", data?.token)
@@ -74,7 +73,7 @@ const UserRegisterationPage = () => {
                     title="Enter your Name"
                     titleStyle={{
                         fontFamily: "Mulish-Bold",
-                        fontSize: responsiveFontSize(2),
+                        fontSize: responsiveFontSize(3),
                         color: "black"
                     }} />
 
@@ -139,7 +138,7 @@ const UserRegisterationPage = () => {
                             {loggingIn ? <ActivityIndicator color='white' />
                                 :
                                 <Text className="text-white font-mulish-semibold"
-                                    style={{ fontSize: responsiveFontSize(2.5) }}>
+                                    style={{ fontSize: responsiveFontSize(2.25) }}>
                                     Submit
                                 </Text>
                             }

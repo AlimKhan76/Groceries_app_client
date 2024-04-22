@@ -3,11 +3,24 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { moderateScale, moderateVerticalScale, scale, verticalScale } from 'react-native-size-matters'
 import AntDesign from "react-native-vector-icons/AntDesign"
-import { useNavigation } from "@react-navigation/native"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import { Appbar, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
+import { useQuery } from '@tanstack/react-query'
+import { getCustomerPayment } from '../../api/adminAPIs/paymentAPI'
 const CustomerPaymentDetailsScreen = () => {
   const navigation = useNavigation()
+  const { params } = useRoute()
+  console.log(params)
+
+  const { data: paymentDetails } = useQuery({
+    queryKey: ["customerPaymentDetails", params?.customer?.customerId],
+    queryFn: ({ queryKey }) => getCustomerPayment(queryKey[1])
+
+  })
+
+
   return (
     // <SafeAreaView>
     //     <StatusBar backgroundColor={"#c2c2c2"} />
@@ -95,11 +108,11 @@ const CustomerPaymentDetailsScreen = () => {
         statusBarHeight={0} >
         <Appbar.BackAction
           iconColor="black"
-        // onPress={() => navigation.goBack()} 
+          onPress={() => navigation.goBack()}
         />
-
+        {console.log(params?.customer)}
         <Appbar.Content
-          title="Alim Khan "
+          title={params?.customer?.customerName}
           titleStyle={{
             fontFamily: "Mulish-SemiBold",
             color: "black",
@@ -108,31 +121,122 @@ const CustomerPaymentDetailsScreen = () => {
           }} />
       </Appbar.Header>
       <Divider />
-      
-      <View className="flex-row items-center justify-evenly my-2.5">
 
-        <TouchableOpacity className="p-5  rounded-2xl items-center">
-          <View className="p-2.5 bg-gray-200 rounded-2xl items-center">
-            <AntDesign name="pluscircleo" size={moderateVerticalScale(20)} color="black" />
+      <View className="flex-row items-center justify-around my-2.5 bg-[#53B175] mx-2 rounded-2xl">
+
+        <TouchableOpacity className="p-5 rounded-2xl items-center gap-y-2">
+          <View className="p-2.5 border-2 border-white rounded-2xl items-center">
+            <AntDesign name="pluscircleo" size={responsiveHeight(2)} color="white" />
 
           </View>
 
-          <Text className="text-black font-mulish-semibold">Add</Text>
+          <Text className="text-white text-base font-mulish-semibold">Add</Text>
         </TouchableOpacity>
 
 
-        <TouchableOpacity className="p-5  rounded-2xl items-center">
-          <View className="p-2.5 bg-gray-200 rounded-2xl items-center">
-            <AntDesign name="minuscircleo" size={moderateVerticalScale(20)} color="black" />
+        <View className="items-center justify-center">
+          <Text className="text-white text-center text-xl font-mulish-semibold">
+            Balance :
+          </Text>
+          <Text className="text-white text-center text-xl font-mulish-semibold">
+            ₹{params?.customer?.balance}
+
+          </Text>
+
+
+        </View>
+
+        <TouchableOpacity className="p-5  rounded-2xl items-center gap-y-2 ">
+          <View className="p-2.5 border-2 border-white rounded-2xl items-center">
+            <AntDesign name="minuscircleo" size={responsiveHeight(2.25)} color="white" />
 
           </View>
 
-          <Text className="text-black font-mulish-semibold">Less</Text>
+          <Text className="text-white font-mulish-semibold">
+            Less
+          </Text>
         </TouchableOpacity>
 
 
 
       </View>
+
+
+      <View className=" mx-2 my-2.5 border-2 border-gray-300 rounded-2xl p-2">
+        <Text className="text-black text-xl font-mulish-semibold">
+          Transactions
+        </Text>
+      </View>
+      <ScrollView>
+
+        {paymentDetails?.map((transaction) => {
+          return (
+            <View key={transaction?._id}
+              className="flex-row gap-x-3 mx-2 py-4 my-2 justify-between items-center border-2 border-gray-300 rounded-2xl">
+
+
+              <View className="flex-row items-center gap-x-2 ">
+
+                <View className="border-2 border-gray-300 rounded-xl p-2 items-center">
+                  <MaterialCommunityIcons
+                    name={`${transaction?.type === "Purchase" ? "call-made" : "call-received"}`}
+                    size={responsiveHeight(2)} color="black" />
+                </View>
+
+                <View>
+                  <Text className="text-black text-xl">
+                    {/* 25/05/2024 */}
+                    {transaction?.dateOfTransaction.split(" ")[0]}
+                  </Text>
+                </View>
+
+              </View>
+
+
+              <View className="items-center mx-2">
+                <Text className="text-[#53B175] font-mulish-semibold text-xl">
+                  {transaction?.type === "Purchase" ? "+ " : "-"} ₹ {transaction.amount}
+                </Text>
+              </View>
+
+
+            </View>
+
+          )
+        })}
+
+      </ScrollView>
+
+
+      {/* <View
+        className="flex-row gap-x-3 mx-2 py-4 my-2 justify-between items-center border-2 border-gray-300 rounded-2xl">
+
+        <View className="flex-row items-center gap-x-2 ">
+
+          <View className="border-2 border-gray-300 rounded-xl p-2 items-center">
+            <MaterialCommunityIcons name="call-received" size={moderateScale(20)} color="black" />
+          </View>
+
+          <View>
+            <Text className="text-black text-xl">
+              25/05/2024
+            </Text>
+          </View>
+
+        </View>
+
+
+        <View className="items-center mx-2">
+          <Text className="text-red-300 font-mulish-semibold text-xl">
+            - 200
+          </Text>
+        </View>
+
+
+      </View> */}
+
+
+
     </SafeAreaView>
   )
 }

@@ -2,15 +2,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ExploreScreen from '../screens/UserScreens/ExploreScreen';
 import CartScreen from '../screens/UserScreens/CartScreen';
 import AccountScreen from '../screens/UserScreens/AccountScreen';
-import Shop from "../assets/icons/tabs/shop.svg"
-import Explore from "../assets/icons/tabs/explore-search.svg"
-import Cart from "../assets/icons/tabs/cart.svg"
-import Favourite from "../assets/icons/tabs/favourite.svg"
-import Person from "../assets/icons/tabs/person.svg"
 import HomeScreen from '../screens/UserScreens/HomeScreen';
 import FavouriteProductScreen from '../screens/UserScreens/FavouriteProductScreen';
-import { Badge } from 'react-native-paper';
 import UserRegisterationPage from '../screens/UserRegisterationPage';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import Ionicons from "react-native-vector-icons/Ionicons"
 
 export const UserBottomTabs = () => {
     const Tab = createBottomTabNavigator();
@@ -19,32 +17,33 @@ export const UserBottomTabs = () => {
         <Tab.Navigator initialRouteName='Shop'
             screenOptions={{
                 tabBarStyle: {
+                    alignItems: "center",
+                    justifyContent: "center",
                     borderTopLeftRadius: 10,
                     borderTopRightRadius: 10,
-                    borderTopWidth: 1,
+                    borderTopWidth: responsiveWidth(0.5),
                     borderTopColor: "#e2e2e2"
                 },
                 tabBarIconStyle: {
-                    marginTop: 5,
+                    marginTop: responsiveHeight(0.5),
                 },
-                tabBarLabelStyle: { fontSize: 13, fontFamily: 'Mulish-SemiBold' },
+                tabBarLabelStyle: { fontSize: responsiveFontSize(1.25), fontFamily: 'Mulish-Medium' },
                 headerShown: false,
                 tabBarActiveTintColor: "#53B175",
                 tabBarInactiveTintColor: "black",
             }}>
 
             <Tab.Screen
-
                 name="Shop"
                 component={HomeScreen}
                 options={{
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <Shop color="#53B175" className="pt-1" />
+                            <MaterialIcons name="storefront" color="#53B175" size={responsiveHeight(3)} />
                         )
                             :
                             (
-                                <Shop color="black" />
+                                <MaterialIcons name="storefront" color="black" size={responsiveHeight(3)} />
                             )
                 }}
             />
@@ -55,28 +54,27 @@ export const UserBottomTabs = () => {
                 options={{
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <Explore color="#53B175" />
-                        )
+                            <MaterialCommunityIcons
+                                name="store-search-outline" color="#53B175" size={responsiveHeight(3)} />)
                             :
                             (
-                                <Explore color="black" />
+                                <MaterialCommunityIcons
+                                    name="store-search-outline" color="black" size={responsiveHeight(3)} />
                             )
                 }} />
             <Tab.Screen
                 name="Cart"
                 component={CartScreen}
                 options={{
-
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-
-                            <Cart color="#53B175" />
-
-
+                            <MaterialIcons
+                                name="shopping-cart-checkout" color="#53B175" size={responsiveHeight(3)} />
                         )
                             :
                             (
-                                <Cart color="black" />
+                                <MaterialIcons
+                                    name="shopping-cart-checkout" color="black" size={responsiveHeight(3)} />
                             )
                 }} />
 
@@ -86,11 +84,11 @@ export const UserBottomTabs = () => {
                 options={{
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <Favourite color="#53B175" />
+                            <MaterialCommunityIcons name="cards-heart-outline" color="#53B175" size={responsiveHeight(3)} />
                         )
                             :
                             (
-                                <Favourite color="black" />
+                                <MaterialCommunityIcons name="cards-heart-outline" color="black" size={responsiveHeight(3)} />
                             )
                 }} />
 
@@ -100,11 +98,11 @@ export const UserBottomTabs = () => {
                 options={{
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <Person color="#53B175" />
+                            <Ionicons name="person-outline" color="#53B175" size={responsiveHeight(3)} />
                         )
                             :
                             (
-                                <Person color="black" />
+                                <Ionicons name="person-outline" color="black" size={responsiveHeight(3)} />
                             )
                 }} />
         </Tab.Navigator>

@@ -6,9 +6,19 @@ import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-di
 import { useNavigation } from '@react-navigation/native'
 import { moderateScale, moderateVerticalScale, scale } from 'react-native-size-matters'
 import AntDesign from "react-native-vector-icons/AntDesign"
+import { useQuery } from '@tanstack/react-query'
+import { getAllCustomerPayment } from '../../api/adminAPIs/paymentAPI'
 
 const AllCustomerPaymentScreen = () => {
   const navigation = useNavigation()
+
+
+  const { data: allCustomerPayments } = useQuery({
+    queryKey: ["allPaymentDetails"],
+    queryFn: getAllCustomerPayment,
+    staleTime: Infinity,
+  })
+
   return (
     <SafeAreaView className="flex-1 bg-white">
 
@@ -91,8 +101,7 @@ const AllCustomerPaymentScreen = () => {
             <DataTable.Title
               textStyle={{
                 color: "black",
-                // fontSize: responsiveFontSize(1.8),
-                fontSize: moderateScale(12.5),
+                fontSize: responsiveFontSize(1.75),
                 fontFamily: "Mulish-Bold",
               }}>
               Name
@@ -101,9 +110,7 @@ const AllCustomerPaymentScreen = () => {
             <DataTable.Title numeric
               textStyle={{
                 color: "black",
-                // fontSize: responsiveFontSize(1.8),
-                fontSize: moderateScale(12.5),
-
+                fontSize: responsiveFontSize(1.75),
                 fontFamily: "Mulish-Bold",
               }}>
               Balance
@@ -112,7 +119,7 @@ const AllCustomerPaymentScreen = () => {
             <DataTable.Title
               textStyle={{
                 color: "black",
-                fontSize: moderateScale(12.5),
+                // fontSize: moderateScale(12.5),
                 fontFamily: "Mulish-Bold",
               }}>
             </DataTable.Title>
@@ -120,35 +127,52 @@ const AllCustomerPaymentScreen = () => {
 
           <ScrollView className=" pb-4 ">
 
-            <DataTable.Row 
-            // className="px-2 py-4"
-              onPress={() => navigation.navigate("CustomerPaymentDetailsScreen")}
-            >
-              <DataTable.Cell
-                textStyle={{
-                  color: "black",
-                  fontSize: moderateScale(12.5),
-                  fontFamily: "Mulish-Regular",
-                }}>
-                1.  Alim Khan
-                {/* {product?.title} */}
-              </DataTable.Cell>
+            {allCustomerPayments?.map((transaction, index) => {
+              console.log(transaction?._id)
+              return (
 
-              <DataTable.Cell numeric
-                textStyle={{
-                  color: "black",
-                  fontSize: moderateScale(12.5),
-                  fontFamily: "Mulish-Regular",
-                }}  >
-                5000
-                {/* {product?.quantity} {product?.unit} */}
-              </DataTable.Cell>
+                <DataTable.Row
+                  key={transaction?._id}
+                  // className="px-2 py-4"
+                  onPress={() => navigation.navigate("CustomerPaymentDetailsScreen",
+                    {
+                      customer: {
+                        customerId: transaction?._id,
+                        balance: transaction?.balance,
+                        customerName: transaction?.customerName
+                      }
+                    })}
+                >
+                  <DataTable.Cell
+                    textStyle={{
+                      color: "black",
+                      // fontSize: moderateScale(12.5),
+                      fontSize: responsiveFontSize(1.75),
 
-              <DataTable.Cell numeric>
-                <AntDesign name="right" size={moderateVerticalScale(15)} color="black" />
-              </DataTable.Cell>
+                      fontFamily: "Mulish-SemiBold",
+                    }}>
+                    {index + 1}.  {transaction?.customerName}
+                    {/* {product?.title} */}
+                  </DataTable.Cell>
 
-            </DataTable.Row>
+                  <DataTable.Cell numeric
+                    textStyle={{
+                      color: "black",
+                      fontSize: responsiveFontSize(1.75),
+                      fontFamily: "Mulish-SemiBold",
+                    }}  >
+                    ₹ {transaction?.balance}
+                    {/* {product?.quantity} {product?.unit} */}
+                  </DataTable.Cell>
+
+                  <DataTable.Cell numeric>
+                    <AntDesign name="right" size={responsiveHeight(2)} color="black" />
+                  </DataTable.Cell>
+
+                </DataTable.Row>
+              )
+            })}
+
           </ScrollView>
         </DataTable>
       </View>

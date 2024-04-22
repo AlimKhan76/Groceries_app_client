@@ -1,20 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Dropdown } from 'react-native-element-dropdown'
-import LeftArrow from "../../assets/icons/account/left_arrow.svg"
-import Pin from "../../assets/icons/account/pin.svg"
-import Person from "../../assets/icons/tabs/person.svg"
-import Phone from "../../assets/icons/admin/phone.svg"
-import { Appbar, DataTable, Divider } from 'react-native-paper'
+import { ActivityIndicator, Appbar, DataTable, Divider } from 'react-native-paper'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-import { moderateScale, moderateVerticalScale, verticalScale } from 'react-native-size-matters'
-import { scale } from 'react-native-size-matters'
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { cancelOrderApi, placeOrderApi, reOrderApi } from '../../api/orderAPI'
+import { cancelOrderApi, reOrderApi } from '../../api/orderAPI'
 import { Dialog } from 'react-native-alert-notification'
-
+import EvilIcons from "react-native-vector-icons/EvilIcons"
+import moment from "moment-timezone";
 
 const UserOrderDetails = ({ navigation, route }) => {
     const { order } = route?.params;
@@ -45,7 +40,7 @@ const UserOrderDetails = ({ navigation, route }) => {
 
     })
 
-    const { mutate: placeOrderAgain, isPending } = useMutation({
+    const { mutate: placeOrderAgain, isPending: orderingAgain } = useMutation({
         mutationFn: reOrderApi,
         onError: () => {
             Dialog.show({
@@ -75,7 +70,6 @@ const UserOrderDetails = ({ navigation, route }) => {
         <SafeAreaView className=" flex-1 "
             edges={["right", "left", "top"]}>
 
-
             <Appbar.Header mode='center-aligned'
                 style={{
                     backgroundColor: 'white',
@@ -92,7 +86,7 @@ const UserOrderDetails = ({ navigation, route }) => {
                 <Appbar.Content
                     title="Order Details "
                     titleStyle={{
-                        fontFamily: "Mulish-SemiBold",
+                        fontFamily: "Mulish-Bold",
                         color: "black",
                         fontSize: responsiveFontSize(3),
                     }} />
@@ -106,12 +100,12 @@ const UserOrderDetails = ({ navigation, route }) => {
                 <View className='flex-row pb-5 items-center'>
                     <Text
                         className=" font-mulish-regular text-slate-700"
-                        style={{ fontSize: moderateScale(25) }}>
+                        style={{ fontSize: responsiveFontSize(2.5) }}>
                         Order&nbsp;
                     </Text>
                     <Text
                         className=" text-black font-mulish-semibold"
-                        style={{ fontSize: moderateScale(25) }}>
+                        style={{ fontSize: responsiveFontSize(2.25) }}>
                         #{order?.orderNo}
                     </Text>
                 </View>
@@ -124,21 +118,22 @@ const UserOrderDetails = ({ navigation, route }) => {
                         className=" flex-row justify-between items-center py-2 ">
                         <View>
                             <Text
-                                className='text-xl text-black font-mulish-semibold'
-                                style={{ fontSize: moderateScale(20) }}>
+                                className='text-black font-mulish-semibold'
+                                style={{ fontSize: responsiveFontSize(2.25) }}>
                                 Order Details
                             </Text>
                             <Text
                                 className="text-black py-2 font-mulish-regular"
-                                style={{ fontSize: moderateScale(11) }}>
+                                style={{ fontSize: responsiveFontSize(1.5) }}>
+                                {moment.tz(order?.orderedDate, "Asia/Kolkata").format("DD-MM-YYYY hh:mm A")}
 
-                                {order?.orderedDate.replace(" ", " at ")}
+                                {/* {order?.orderedDate.replace(" ", " at ")} */}
                             </Text>
 
                         </View>
                         <Text
                             className="font-mulish-semibold text-black"
-                            style={{ fontSize: moderateScale(15) }}>
+                            style={{ fontSize: responsiveFontSize(2.25) }}>
 
                             Total : ₹ {order?.totalPrice}
                         </Text>
@@ -148,31 +143,31 @@ const UserOrderDetails = ({ navigation, route }) => {
                     <View
                         className="py-2 gap-2 justify-center">
 
-                        <View className="flex-row gap-x-1">
-                            <Pin style={{ color: "black" }} />
+                        <View className="flex-row gap-x-0.5">
+                            <EvilIcons name="location" color="black" size={responsiveHeight(3)} />
                             <View className='flex-shrink '>
                                 <Text
                                     className="text-black font-mulish-regular "
-                                    style={{ fontSize: moderateScale(15) }}>
+                                    style={{ fontSize: responsiveFontSize(1.75) }}>
                                     {order?.address?.line1}
                                 </Text>
 
                                 <Text
                                     className="text-black font-mulish-regular "
-                                    style={{ fontSize: moderateScale(15) }}>
+                                    style={{ fontSize: responsiveFontSize(1.75) }}>
                                     {order?.address?.line2}
                                 </Text>
 
                                 <Text
                                     className="text-black font-mulish-regular "
-                                    style={{ fontSize: moderateScale(15) }}>
-                                    Pincode: {order?.address?.pincode}
+                                    style={{ fontSize: responsiveFontSize(1.75) }}>
+                                    {order?.address?.pincode}
                                 </Text>
 
-                                {order?.address?.landmark.length > 0 &&
+                                {order?.address?.landmark?.length > 0 &&
                                     <Text
                                         className="text-black font-mulish-regular "
-                                        style={{ fontSize: moderateScale(15) }}>
+                                        style={{ fontSize: responsiveFontSize(1.75) }}>
                                         Landmark : {order?.address?.landmark}
                                     </Text>
                                 }
@@ -204,20 +199,20 @@ const UserOrderDetails = ({ navigation, route }) => {
                         <DataTable.Header>
                             <DataTable.Title>
                                 <Text className="text-black font-mulish-bold"
-                                    style={{ fontSize: moderateScale(15) }}>
+                                    style={{ fontSize: responsiveFontSize(1.65) }}>
                                     Item Name
                                 </Text>
                             </DataTable.Title>
                             <DataTable.Title numeric >
                                 <Text className="text-black font-mulish-bold"
-                                    style={{ fontSize: moderateScale(15) }}>
+                                    style={{ fontSize: responsiveFontSize(1.65) }}>
 
                                     Quantity
                                 </Text>
                             </DataTable.Title>
                             <DataTable.Title numeric >
                                 <Text className="text-black  font-mulish-bold"
-                                    style={{ fontSize: moderateScale(15) }}>
+                                    style={{ fontSize: responsiveFontSize(1.65) }}>
                                     Price
                                 </Text>
                             </DataTable.Title>
@@ -229,26 +224,34 @@ const UserOrderDetails = ({ navigation, route }) => {
                             return (
                                 <DataTable.Row key={product?._id}>
                                     <DataTable.Cell >
-                                        <Text className=" text-gray-700 font-mulish-regular"
-                                            style={{ fontSize: moderateScale(15) }}>
-                                            {product?.title}
+                                        <Text className=" text-black font-mulish-medium"
+                                            style={{ fontSize: responsiveFontSize(1.65) }}>
+                                            {product?.cart_item?.title}
+
                                         </Text>
                                     </DataTable.Cell>
 
 
-                                    <DataTable.Cell numeric>
-                                        <Text className=" text-gray-700 font-mulish-regular"
-                                            style={{ fontSize: moderateScale(15) }}>
-                                            {product?.quantity} {product?.unit}
-                                        </Text>
+                                    <DataTable.Cell numeric
+                                        textStyle={{
+                                            fontSize: responsiveFontSize(1.5),
+                                            color: "black",
+                                            fontFamily: "Mulish-Medium"
+
+                                        }}>
+
+                                        {product?.quantity} {product?.cart_item?.unit}
                                     </DataTable.Cell>
 
 
-                                    <DataTable.Cell numeric>
-                                        <Text className=" text-gray-700 font-mulish-regular"
-                                            style={{ fontSize: moderateScale(15) }}>
-                                            ₹ {product?.totalPrice}
-                                        </Text>
+                                    <DataTable.Cell numeric
+                                        textStyle={{
+                                            fontSize: responsiveFontSize(1.65),
+                                            color: "black",
+                                            fontFamily: "Mulish-Medium"
+
+                                        }}>
+                                        ₹ {product?.cart_item?.price * product?.quantity}
                                     </DataTable.Cell>
 
 
@@ -267,10 +270,10 @@ const UserOrderDetails = ({ navigation, route }) => {
                 <View className="p-3 rounded-2xl bg-white mb-3 ">
                     <View
                         className=" py-2 flex-row items-center  gap-x-2">
-                        <MaterialIcons name='payment' size={moderateScale(20)} color='black' />
+                        <MaterialIcons name='payment' size={responsiveFontSize(2.5)} color='black' />
                         <Text
                             className="font-mulish-bold text-black "
-                            style={{ fontSize: moderateScale(18) }}>
+                            style={{ fontSize: responsiveFontSize(2.25) }}>
                             Payment Details
                         </Text>
                     </View>
@@ -283,14 +286,14 @@ const UserOrderDetails = ({ navigation, route }) => {
                             <DataTable.Row numeric>
                                 <DataTable.Cell>
                                     <Text className=' text-black font-mulish-medium'
-                                        style={{ fontSize: moderateScale(15) }}>
+                                        style={{ fontSize: responsiveFontSize(1.85) }}>
                                         Sub Total :
                                     </Text>
                                 </DataTable.Cell>
 
                                 <DataTable.Cell numeric>
                                     <Text className=' text-black font-mulish-medium'
-                                        style={{ fontSize: moderateScale(15) }}>
+                                        style={{ fontSize: responsiveFontSize(1.85) }}>
                                         ₹ {order?.subTotal}
                                     </Text>
                                 </DataTable.Cell>
@@ -303,14 +306,14 @@ const UserOrderDetails = ({ navigation, route }) => {
                                     <DataTable.Row numeric>
                                         <DataTable.Cell>
                                             <Text className=' text-black font-mulish-medium'
-                                                style={{ fontSize: moderateScale(15) }}>
+                                                style={{ fontSize: responsiveFontSize(1.65) }}>
                                                 Discount  : ({order?.couponCode})
                                             </Text>
                                         </DataTable.Cell>
 
                                         <DataTable.Cell numeric>
                                             <Text className=' text-black font-mulish-regular'
-                                                style={{ fontSize: moderateScale(15) }}>
+                                                style={{ fontSize: responsiveFontSize(1.65) }}>
                                                 - ₹ {order?.discount}
                                             </Text>
                                         </DataTable.Cell>
@@ -323,14 +326,14 @@ const UserOrderDetails = ({ navigation, route }) => {
                             <DataTable.Row numeric>
                                 <DataTable.Cell>
                                     <Text className=' text-black font-mulish-bold'
-                                        style={{ fontSize: moderateScale(15) }}>
+                                        style={{ fontSize: responsiveFontSize(1.85) }}>
                                         Final Total :
                                     </Text>
                                 </DataTable.Cell>
 
                                 <DataTable.Cell numeric>
                                     <Text className=' text-black font-mulish-bold'
-                                        style={{ fontSize: moderateScale(15) }}>
+                                        style={{ fontSize: responsiveFontSize(1.85) }}>
                                         ₹ {order?.totalPrice}
                                     </Text>
                                 </DataTable.Cell>
@@ -349,39 +352,51 @@ const UserOrderDetails = ({ navigation, route }) => {
             {/* Bottom button */}
             {order?.status === "Pending"
                 ?
-                <View className="relative bottom-5 items-center">
+                <View className="relative bottom-2.5 items-center">
                     <TouchableOpacity className='bg-red-400 p-5 rounded-2xl '
                         disabled={cancelling}
                         onPress={() => cancelOrder(order?._id)}
-                        style={{ width: scale(300) }}>
+                        style={{ width: responsiveWidth(90) }}>
 
-                        <View
-                            className="flex-row items-center justify-center gap-2">
+                        {cancelling ?
+                            <ActivityIndicator
+                                color='white'
+                                style={{
+                                    paddingVertical: responsiveHeight(0.5)
+                                }} />
+
+                            :
                             <Text
                                 className="text-white text-center font-mulish-semibold"
-                                style={{ fontSize: moderateScale(20) }}>
+                                style={{ fontSize: responsiveFontSize(2.5) }}>
                                 Cancel Order
                             </Text>
-                        </View>
+                        }
 
                     </TouchableOpacity>
                 </View>
                 :
-                <View className="relative bottom-5 items-center">
+                <View className="relative bottom-2.5 items-center">
                     <TouchableOpacity className='bg-[#53B175] p-5 rounded-2xl '
-                        disabled={isPending}
+                        disabled={orderingAgain}
                         onPress={() => placeOrderAgain({
                             items: order?.items
                         })}
-                        style={{ width: scale(300) }}>
+                        style={{ width: responsiveWidth(90) }}>
 
-                        <View className="flex-row items-center justify-center gap-2">
+                        {orderingAgain ?
+                            <ActivityIndicator
+                                color='white'
+                                style={{
+                                    paddingVertical: responsiveHeight(0.5)
+                                }} />
+                            :
                             <Text
                                 className="text-white text-center font-mulish-semibold"
-                                style={{ fontSize: scale(20) }}>
+                                style={{ fontSize: responsiveFontSize(2.5) }}>
                                 Order Again
                             </Text>
-                        </View>
+                        }
 
                     </TouchableOpacity>
                 </View>

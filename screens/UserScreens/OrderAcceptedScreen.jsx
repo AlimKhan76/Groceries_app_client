@@ -28,7 +28,7 @@ const OrderAcceptedScreen = ({ navigation }) => {
                 <Text
                     className="text-black pb-6 text-center font-mulish-semibold"
                     style={{
-                        fontSize: responsiveFontSize(3.5)
+                        fontSize: responsiveFontSize(3)
                     }}>
 
                     Your Order has been placed
@@ -36,7 +36,7 @@ const OrderAcceptedScreen = ({ navigation }) => {
                 <Text
                     className="text-gray-600 text-center font-mulish-medium"
                     style={{
-                        fontSize: responsiveFontSize(2)
+                        fontSize: responsiveFontSize(1.85)
                     }}>
                     Your order has been placed and is on it's way to being processed
                 </Text>
@@ -45,10 +45,10 @@ const OrderAcceptedScreen = ({ navigation }) => {
 
             <TouchableOpacity
                 onPress={() => navigation.navigate("Shop")}
-                className="bg-[#53B175] w-full p-5 rounded-2xl mt-14">
+                className="bg-[#53B175] w-full p-4 rounded-2xl mt-14">
                 <Text className="text-white text-center text-xl font-mulish-medium"
                     style={{
-                        fontSize: responsiveFontSize(2.5)
+                        fontSize: responsiveFontSize(2.25)
                     }}>
                     Back to home
                 </Text>

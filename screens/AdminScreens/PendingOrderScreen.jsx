@@ -1,15 +1,10 @@
-import { View, Text, TouchableOpacity, RefreshControl, FlatList } from 'react-native'
-import React, { memo, useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, FlatList } from 'react-native'
+import React, {  useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Cart from "../../assets/icons/tabs/cart.svg"
-import Person from "../../assets/icons/tabs/person.svg"
-import Phone from "../../assets/icons/admin/phone.svg"
-import Time from "../../assets/icons/admin/time.svg"
 import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
-import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getOrdersByStatus, getPendingProducts, getProcessedProducts } from '../../api/adminAPIs/orderAPI'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { getOrdersByStatus } from '../../api/adminAPIs/orderAPI'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
-import { moderateScale } from 'react-native-size-matters'
 import AdminOrderCard from '../components/AdminOrderCard'
 
 const PendingOrderScreen = ({ navigation }) => {
@@ -35,14 +30,14 @@ const PendingOrderScreen = ({ navigation }) => {
     queryFn: ({ queryKey, pageParam }) => getOrdersByStatus(pageParam, queryKey[1]),
     staleTime: Infinity,
     initialPageParam: 1,
-    getNextPageParam: (lastPage, pages) => lastPage?.nextPage
+    getNextPageParam: (lastPage, pages) => lastPage?.nextPage,
   })
 
 
 
-  useEffect(() => {
-    refetch(1, orderStatus)
-  }, [orderStatus])
+  // useEffect(() => {
+  //   refetch(1, orderStatus)
+  // }, [orderStatus])
 
 
 
@@ -50,21 +45,25 @@ const PendingOrderScreen = ({ navigation }) => {
     <SafeAreaView className="flex-1 bg-white "
       edges={["right", "top", "left"]}>
 
-      <Appbar.Header mode='center-aligned' style={{
-        backgroundColor: 'white',
-        height: responsiveHeight(10),
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-      }}
+      <Appbar.Header
+        mode='center-aligned'
+        style={{
+          backgroundColor: 'white',
+          height: responsiveHeight(10),
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+        }}
         statusBarHeight={0} >
-        <Appbar.Content title=" Orders"
+
+        <Appbar.Content
+          title=" Orders"
           titleStyle={{
             fontFamily: "Mulish-SemiBold",
             color: "black",
             fontSize: responsiveFontSize(3.5),
-
           }} />
+
         <Appbar.Action icon="dots-vertical" color='black' />
 
       </Appbar.Header>
@@ -76,7 +75,9 @@ const PendingOrderScreen = ({ navigation }) => {
           onPress={() => { setOrderStatus("Pending") }}
 
           className={`p-3 ${orderStatus === "Pending" ? " bg-gray-200 border-gray-300" : " border-gray-200 bg-white"}  border-2 rounded-2xl `}>
-          <Text className="text-black font-mulish-bold">Pending</Text>
+          <Text className="text-black font-mulish-bold">
+            Pending
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -101,6 +102,7 @@ const PendingOrderScreen = ({ navigation }) => {
             Orders cannot be fetched
           </Text>
           <TouchableOpacity
+            disabled={isRefetching}
             onPress={refetch}
             className="p-3 border-2 rounded-xl border-gray-400">
             <Text className="text-black font-mulish-medium"
@@ -153,7 +155,7 @@ const PendingOrderScreen = ({ navigation }) => {
             <View className=" flex-1 justify-center items-center">
               <Text className="text-black font-mulish-semibold"
                 style={{
-                  fontSize: moderateScale(25)
+                  fontSize: responsiveFontSize(2.5)
                 }}>
 
                 No {orderStatus === "Pending" ? "Pending" : "Packed"} Orders
