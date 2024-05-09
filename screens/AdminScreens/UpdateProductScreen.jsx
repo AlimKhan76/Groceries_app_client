@@ -7,30 +7,37 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import { moderateScale } from 'react-native-size-matters'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getAllProductApi } from '../../api/productAPI'
-import { updatePriceOfProductApi } from '../../api/adminAPIs/productUpdationAPI'
+import { getAllProductsPricesByCategoryApi, updatePriceOfProductApi } from '../../api/adminAPIs/productUpdationAPI'
 import { Dialog } from 'react-native-alert-notification'
 import Feather from "react-native-vector-icons/Feather"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useWindowDimensions } from 'react-native';
+import { useRoute } from '@react-navigation/native'
 // import useKeyboardHeight from 'react-native-use-keyboard-height'
 
 
 const UpdateProductScreen = ({ navigation }) => {
+    const { params } = useRoute()
     // State that will hold all the updated Products
     const [updatedProduct, setUpdatedProduct] = useState([])
 
     const queryClient = useQueryClient();
-
+    console.log(params)
     // Query for fetching all the products
+    // const { data: allProducts, isLoading: isLoadingAllProducts, status, isRefetching } = useQuery({
+    //     queryKey: ["allProducts"],
+    //     queryFn: getAllProductApi,
+    //     staleTime: Infinity,
+    // })
+
     const { data: allProducts, isLoading: isLoadingAllProducts, status, isRefetching } = useQuery({
-        queryKey: ["allProducts"],
-        queryFn: getAllProductApi,
+        queryKey: ["allProducts", params],
+        queryFn: ({ queryKey }) => getAllProductsPricesByCategoryApi(queryKey[1]),
         staleTime: Infinity,
     })
 
-
     // Mutate function for updating the price of the products
-    const { mutate: updatePrice, isPending: isMutating } = useMutation({
+    const { mutate: updatePrice, isPending: isUpdating } = useMutation({
         mutationFn: updatePriceOfProductApi,
         onSuccess: () => {
             queryClient.invalidateQueries({
@@ -53,26 +60,46 @@ const UpdateProductScreen = ({ navigation }) => {
     })
 
     // Adding the product that the user is updating to the array 
+    // const handleUpdationOfProduct = (_id, price) => {
+    //     if (updatedProduct?.length > 0) {
+    //         for (let i = 0; i < updatedProduct?.length; i++) {
+    //             if (price == "") {
+    //                 if (updatedProduct[i]._id === _id) {
+    //                     const newUpdatedProduct = [...updatedProduct]
+    //                     updatedProduct[i].price = price
+    //                     setUpdatedProduct(newUpdatedProduct)
+    //                 }
+    //             }
+    //             else {
+    //                 setUpdatedProduct([...updatedProduct, { _id, price }])
+    //             }
+    //         }
+    //     }
+    //     else {
+    //         setUpdatedProduct([...updatedProduct, { _id, price }])
+    //     }
+
+    // }
+
     const handleUpdationOfProduct = (_id, price) => {
-        if (updatedProduct.length > 0) {
-            for (let i = 0; i < updatedProduct?.length; i++) {
-                if (updatedProduct[i]._id === _id) {
-                    const newUpdatedProduct = [...updatedProduct]
-                    updatedProduct[i].price = price
-                    setUpdatedProduct(newUpdatedProduct)
-                }
-                else {
-                    setUpdatedProduct([...updatedProduct, { _id, price }])
-                }
+        if (price === "") {
+            // Remove the product from the array if the price is empty
+            const newUpdatedProduct = updatedProduct.filter(product => product._id !== _id);
+            setUpdatedProduct(newUpdatedProduct);
+        } else {
+            // Update or add the product based on its existence in the array
+            const index = updatedProduct.findIndex(product => product._id === _id);
+            if (index !== -1) {
+                // If the product exists, update its price
+                const newUpdatedProduct = [...updatedProduct];
+                newUpdatedProduct[index].price = price;
+                setUpdatedProduct(newUpdatedProduct);
+            } else {
+                // If the product doesn't exist, add it to the array
+                setUpdatedProduct([...updatedProduct, { _id, price }]);
             }
         }
-        else {
-            setUpdatedProduct([...updatedProduct, { _id, price }])
-        }
-
-    }
-
-
+    };
 
     return (
         <SafeAreaView className="flex-1 bg-white px-2 "
@@ -92,7 +119,7 @@ const UpdateProductScreen = ({ navigation }) => {
                     onPress={() => navigation.goBack()} />
 
                 <Appbar.Content
-                    title="Update Products sjdhfkdshfjjnfkdsk"
+                    title={params + " Prices"}
                     titleStyle={{
                         flexWrap: 'wrap',
                         fontFamily: "Mulish-SemiBold",
@@ -104,7 +131,7 @@ const UpdateProductScreen = ({ navigation }) => {
 
 
 
-            <View
+            {/* <View
                 className="bg-gray-200 gap-x-2 m-2 p-1 rounded-2xl flex-row items-center ">
                 <Feather name="search" color="black" size={responsiveHeight(2.5)} />
 
@@ -116,11 +143,11 @@ const UpdateProductScreen = ({ navigation }) => {
                     }}
                     placeholder='Search Products'
                     placeholderTextColor={"black"} />
-            </View>
+            </View> */}
 
 
             <DataTable
-                className="bg-white border-2 border-gray-300 rounded-2xl my-2 h-[70%]">
+                className="bg-white border-2 border-gray-300 rounded-2xl my-2 h-3/4">
 
                 <DataTable.Header>
                     <DataTable.Title
@@ -151,30 +178,26 @@ const UpdateProductScreen = ({ navigation }) => {
                     </DataTable.Title>
 
                 </DataTable.Header>
+                {isLoadingAllProducts || isRefetching ?
+                    <View className="flex-1 items-center justify-center">
+                        <ActivityIndicator size={"large"} color='#53B175' />
+                    </View>
+                    :
+                    <KeyboardAwareScrollView
+                        enableAutomaticScroll
+                        className=""
+                        // scrollEnabled={false}
+                        // resetScrollToCoords={{ x: 0, y: 0 }}
+                        enableOnAndroid={true}
+                        // extraScrollHeight={responsiveHeight(6)}
+                        // extraHeight={responsiveHeight(6)}
+                        // automaticallyAdjustKeyboardInsets
 
-                <KeyboardAwareScrollView
-                    enableAutomaticScroll
-                    // contentContainerStyle={{
-                    //     flex: 1,
-                    //     backgroundColor: "red",
-                    //     flexGrow: 1,
-                    //     padding: 0,
+                        automaticallyAdjustKeyboardInsets={true}
+                        automaticallyAdjustContentInsets={false}
+                    >
 
-                    // }}
-                    // keyboardShouldPersistTaps="handled"
-                    className=""
-                    // scrollEnabled={false}
-                    // resetScrollToCoords={{ x: 0, y: 0 }}
-                    enableOnAndroid={true}
-                    // extraScrollHeight={responsiveHeight(6)}
-                    // extraHeight={responsiveHeight(6)}
-                    // automaticallyAdjustKeyboardInsets
-
-                    automaticallyAdjustKeyboardInsets={true}
-                    automaticallyAdjustContentInsets={false}
-                >
-
-                    {/* <KeyboardAwareScrollView
+                        {/* <KeyboardAwareScrollView
                     enableAutomaticScroll
                     // keyboardOpeningTime={0}
                     enableResetScrollToCoords
@@ -184,18 +207,11 @@ const UpdateProductScreen = ({ navigation }) => {
                     automaticallyAdjustKeyboardInsets={true}
                     automaticallyAdjustContentInsets={false}
                 > */}
-                    {isLoadingAllProducts || isRefetching ?
-                        <View className="flex-1 items-center justify-center">
-                            <ActivityIndicator size={"large"} color='#53B175' />
-                        </View>
-                        :
 
                         <ScrollView className="pb-4 mb-2 ">
-
                             {allProducts?.map((product, index) => {
                                 return (
-                                    <DataTable.Row key={product?._id} className="flex-1">
-
+                                    <DataTable.Row key={product?._id} className="flex-1 py-2">
                                         <DataTable.Cell>
                                             <Text className="" style={{
                                                 color: "black",
@@ -248,9 +264,8 @@ const UpdateProductScreen = ({ navigation }) => {
                                 )
                             })}
                         </ScrollView>
-
-                    }
-                </KeyboardAwareScrollView >
+                    </KeyboardAwareScrollView >
+                }
             </DataTable>
 
 
@@ -258,16 +273,20 @@ const UpdateProductScreen = ({ navigation }) => {
             <View className="items-center w-full">
 
                 <TouchableOpacity
-                    disabled={updatedProduct?.length === 0 || isMutating}
-                    onPress={() => updatePrice(updatedProduct)}
-                    className={`${(updatedProduct?.length === 0 || isMutating) && "opacity-50 "}
+                    disabled={updatedProduct?.length === 0 || isUpdating}
+                    onPress={() => updatePrice({ updatedProduct, priceCategory: params })}
+                    className={`${(updatedProduct?.length === 0) && "opacity-50 "}
                     bg-[#53B175] w-[90%] p-5 rounded-3xl mx-5 items-center justify-center`}>
 
-                    <Text
-                        className=' text-white font-mulish-semibold'
-                        style={{ fontSize: responsiveFontSize(2.25) }}>
-                        Save
-                    </Text>
+                    {isUpdating ?
+                        <ActivityIndicator color='white' />
+                        :
+                        <Text
+                            className=' text-white font-mulish-semibold'
+                            style={{ fontSize: responsiveFontSize(2.25) }}>
+                            Save
+                        </Text>
+                    }
 
                 </TouchableOpacity>
             </View>

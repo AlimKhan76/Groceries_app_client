@@ -5,7 +5,7 @@ import { Appbar, Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { getAllOrdersApi } from '../../api/orderAPI'
+import { getAllUserOrdersAPI } from '../../api/orderAPI'
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import Feather from "react-native-vector-icons/Feather"
 import moment from "moment-timezone"
@@ -21,12 +21,13 @@ const AllOrdersScreen = () => {
         hasNextPage,
         isFetching,
         isFetchingNextPage,
+        isRefetching,
         fetchPreviousPage,
         status,
         isError,
     } = useInfiniteQuery({
         queryKey: ["userOrders"],
-        queryFn: getAllOrdersApi,
+        queryFn: getAllUserOrdersAPI,
         staleTime: Infinity,
         initialPageParam: 1,
         getNextPageParam: (lastPage, pages) => lastPage.nextPage
@@ -76,7 +77,7 @@ const AllOrdersScreen = () => {
                     </TouchableOpacity>
                 </View>
                 :
-                status === "pending"
+                status === "pending" || isRefetching
                     ?
                     <View className='flex-1 items-center justify-center'>
                         <ActivityIndicator size={'large'} color='#53B175' />
@@ -111,14 +112,25 @@ const AllOrdersScreen = () => {
                                                         #{order?.orderNo}
                                                     </Text>
                                                 </View>
+
                                                 <View
-                                                    className={`flex-row rounded-xl p-2.5 items-center
-                                                         ${order?.status === "Pending" ? "bg-[#c2c2c2]"
-                                                            : order?.status === "Cancelled" ? "bg-red-400" :
-                                                                "bg-[#53B175]"}`}>
-                                                    <Text
-                                                        className="px-1 font-mulish-bold text-white "
-                                                        style={{ fontSize: responsiveFontSize(1.75) }}>
+                                                    className=" flex-row p-2.5 bg-white border-gray-300 border-2 rounded-xl items-center gap-x-1">
+                                                    {order?.status === "Pending" ?
+                                                        <MaterialCommunityIcons
+                                                            name="timer-sand" size={responsiveHeight(2.25)} color="black" />
+                                                        :
+                                                        order?.status === "Delivered" ?
+                                                            <MaterialCommunityIcons
+                                                                name="checkbox-multiple-marked-outline" size={responsiveHeight(2.25)} color="black" />
+                                                            :
+                                                            <MaterialCommunityIcons
+                                                                name="cancel" size={responsiveHeight(2.25)} color="black" />
+                                                    }
+
+                                                    <Text className="text-black font-mulish-semibold px-1"
+                                                        style={{
+                                                            fontSize: responsiveFontSize(1.85)
+                                                        }}>
                                                         {order?.status}
                                                     </Text>
                                                 </View>

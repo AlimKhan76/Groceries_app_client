@@ -56,7 +56,7 @@ const StartUpScreen = ({ navigation }) => {
                     <Text
                         className="text-white font-mulish-semibold"
                         style={{ fontSize: RFPercentage(4) }}>
-                        Nectar
+                        Shri Biroba
                     </Text>
 
                     <Text className="text-white flex-col font-mulish-regular"

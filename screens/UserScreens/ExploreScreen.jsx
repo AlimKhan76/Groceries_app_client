@@ -2,35 +2,60 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, Image, TouchableWi
 import React, { useEffect, useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect } from '@react-navigation/native'
-import { searchApi } from '../../api/searchAPI'
 import { useQuery } from '@tanstack/react-query';
 import { IMAGE_URL } from '@env';
 import CategoriesCard from '../components/CategoriesCard'
 import { ActivityIndicator } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
+import useUserDataQuery from '../../hooks/useUserData'
+import { searchProductAPI } from '../../api/productAPI';
 
 const ExploreScreen = ({ navigation, route }) => {
   const inputRef = useRef();
-  const [fromHome, setFromHome] = useState(route?.params?.fromHome !== undefined ? true : false)
+  // const [fromHome, setFromHome] = useState(route?.params?.fromHome !== undefined ? true : false)
   const [searchQuery, setSearchQuery] = useState("")
-
+  const { data: userData } = useUserDataQuery()
   useFocusEffect(React.useCallback(() => {
-    console.log(route?.params)
-    console.log(fromHome)
-    if (route?.params?.fromHome === true) {
-      inputRef.current.focus();
-    }
-    return () => {
-      navigation.setParams({ fromHome: false });
-      setFromHome(false)
+    //   console.log(route?.params)
+    //   console.log(fromHome)
+    //   if (route?.params?.fromHome === true) {
+    //     inputRef.current.focus();
+    //   }
+    //   return () => {
+    //     navigation.setParams({ fromHome: false });
+    //     setFromHome(false)
+    //     setSearchQuery("")
+    //   }
+
+    const unsubscribe = navigation.addListener('tabPress', (e) => {
+      // Prevent default behavior
+      e.preventDefault();
       setSearchQuery("")
-    }
-  }, []))
+
+      // Do something manually
+      // ...
+    });
+
+    return unsubscribe;
+  }, [navigation]))
+
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('tabPress', (e) => {
+  //     // Prevent default behavior
+  //     e.preventDefault();
+  //     setSearchQuery("")
+
+  //     // Do something manually
+  //     // ...
+  //   });
+
+  //   return unsubscribe;
+  // }, [navigation]);
 
   const { data, refetch, isLoading } = useQuery({
     queryKey: ['searchItem', searchQuery],
-    queryFn: () => searchApi(searchQuery),
+    queryFn: () => searchProductAPI(searchQuery),
     enabled: false,
     staleTime: Infinity
   })
@@ -111,7 +136,7 @@ const ExploreScreen = ({ navigation, route }) => {
                     return (
                       <TouchableOpacity
                         key={product?._id}
-                        onPress={() => navigation.navigate("ProductDetails", { product })}
+                        onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
                         className='border-gray-100 border-2 px-4 py-4 rounded-2xl '
                         style={{ width: responsiveWidth(45) }}>
 
@@ -139,7 +164,7 @@ const ExploreScreen = ({ navigation, route }) => {
                             style={{
                               fontSize: responsiveFontSize(2)
                             }}>
-                            ₹{product?.price}
+                            ₹{product?.price?.[userData?.category]}
                           </Text>
 
                           <View

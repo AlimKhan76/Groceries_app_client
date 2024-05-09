@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, ImageBackground, Keyboard, BackHandler } 
 import React, { useState } from 'react'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-import { getUserData, loginUserAPI } from '../api/userAPI'
+import { getUserDataAPI, loginUserAPI } from '../api/userAPI'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Dialog } from 'react-native-alert-notification'
 import * as SecureStore from 'expo-secure-store';
@@ -29,7 +29,7 @@ const OTPScreen = ({ navigation }) => {
         React.useCallback(() => {
             const subscription = BackHandler.addEventListener('hardwareBackPress',
                 () => {
-                    navigation.replace("Landing")
+                    navigation.replace("Login")
                     return true;
                 });
 
@@ -39,7 +39,7 @@ const OTPScreen = ({ navigation }) => {
 
     // const { data: userData } = useQuery({
     //     queryKey: ['userData'],
-    //     queryFn: getUserData,
+    //     queryFn: getUserDataAPI,
     //     staleTime: Infinity,
     // })
 
@@ -90,7 +90,7 @@ const OTPScreen = ({ navigation }) => {
             const result = await params?.confirmation?.confirm(code)
             console.log(result?.additionalUserInfo?.isNewUser)
             if (result?.additionalUserInfo?.isNewUser === true) {
-                navigation.replace("UserRegsiterationPage", params?.phoneNumber)
+                navigation.replace("UserRegisterationPage", params?.phoneNumber)
                 setLoading(false)
             }
             else {

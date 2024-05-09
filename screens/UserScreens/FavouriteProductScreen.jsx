@@ -2,21 +2,18 @@ import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
 import React, { Fragment } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useQuery } from '@tanstack/react-query'
-import { getUserData } from '../../api/userAPI'
+import { getUserDataAPI } from '../../api/userAPI'
 import { useNavigation } from '@react-navigation/native'
 import { IMAGE_URL } from "@env"
 import { Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
+import useUserDataQuery from '../../hooks/useUserData'
 
 const FavouriteProductScreen = () => {
   const navigation = useNavigation()
 
-  const { data: userData } = useQuery({
-    queryKey: ["userData"],
-    queryFn: getUserData,
-    staleTime: Infinity
-  })
+  const { data: userData } = useUserDataQuery()
 
 
   return (
@@ -45,7 +42,7 @@ const FavouriteProductScreen = () => {
             return (
               <Fragment key={product?._id}>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("ProductDetails", { product })}
+                  onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
                   key={product?._id}
                   className=' px-4 py-2 flex-row  '>
                   <Image
@@ -87,7 +84,7 @@ const FavouriteProductScreen = () => {
                       style={{
                         fontSize: responsiveFontSize(1.85)
                       }}>
-                      ₹{product?.price}
+                      ₹{product?.price?.[userData?.category]}
                     </Text>
                     <Feather
                       name="chevron-right"

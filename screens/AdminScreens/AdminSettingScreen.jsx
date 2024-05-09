@@ -1,9 +1,8 @@
 import React, { Fragment, useState } from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
 import data from "../components/AdminAccountScreenCard"
-import { downloadPendingOrders, markAllPackedOrdersAsDeliveredApi } from '../../api/adminAPIs/orderAPI'
+import { downloadPendingOrders, markAllPendingOrdersAsDeliveredAPI } from '../../api/adminAPIs/orderAPI'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import RNFS from 'react-native-fs';
 import { BASE_URL } from "@env"
@@ -15,7 +14,7 @@ import Feather from "react-native-vector-icons/Feather"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import * as SecureStore from "expo-secure-store";
 import { BlurView } from '@react-native-community/blur'
-import { Toast } from 'react-native-alert-notification'
+import { Dialog, Toast } from 'react-native-alert-notification'
 
 
 
@@ -40,62 +39,76 @@ const AdminSettingScreen = ({ navigation }) => {
   }
 
   const downloadCSV = async () => {
-    const token = await SecureStore.getItemAsync("token")
-    RNFetchBlob.config(Platform.select({
-      ios: {
-        fileCache: true,
-        notification: true,
-        title: `orders-${new Date().toDateString()}.csv`,
-        path: RNFS.DocumentDirectoryPath + `/orders-${new Date().toDateString()}.csv`,
-
-      },
-      android: {
-        addAndroidDownloads: {
-          title: `orders-${new Date().toDateString()}.csv`,
+    try {
+      const token = await SecureStore.getItemAsync("token")
+      RNFetchBlob.config(Platform.select({
+        ios: {
           fileCache: true,
-          useDownloadManager: true,
-          // setting it to true will use the device's native download manager and will be shown in the notification bar.
           notification: true,
-          path: RNFS.DownloadDirectoryPath + `/orders-${new Date().toDateString()}.csv`,  // this is the path where your downloaded file will live in
-          description: 'Downloading orders files.'
+          title: `orders-${new Date().toDateString()}`,
+          path: RNFS.DocumentDirectoryPath + `/orders-${new Date().toDateString()}.csv`,
+
+        },
+        android: {
+          addAndroidDownloads: {
+            title: `orders-${new Date().toDateString()}`,
+            fileCache: true,
+            useDownloadManager: true,
+            // setting it to true will use the device's native download manager and will be shown in the notification bar.
+            notification: true,
+            path: RNFS.DownloadDirectoryPath + `/orders-${new Date().toDateString()}.xlsx`,  // this is the path where your downloaded file will live in
+            description: 'Downloading orders files.'
+          }
         }
+      })
 
-        // fileCache: true,
-        // useDownloadManager: true,
-        // // setting it to true will use the device's native download manager and will be shown in the notification bar.
-        // notification: true,
-        // path: RNFS.DownloadDirectoryPath + `/orders-${new Date().toDateString()}.csv`,  // this is the path where your downloaded file will live in
-        // description: 'Downloading orders files.'
-      }
-    })
+      )
+        .fetch("GET",
+          `${BASE_URL}adminOrder/downloadPendingOrders`,
+          // "http://192.168.0.100:5000/adminOrder/downloadPendingOrders",
+          {
+            Authorization: token
 
-    )
-
-
-      .fetch("GET",
-        `${BASE_URL}adminOrder/downloadPendingOrders`,
-        // "http://192.168.0.101:5000/adminOrder/downloadPendingOrders",
-        {
-          Authorization: token
-
+          })
+        .then((res) => {
+          // the temp file path
+          console.log("The file saved to ", res.path());
+          if (Platform.OS === "ios") {
+            RNFetchBlob.ios.openDocument(res.data);
+          }
         })
-      .then((res) => {
-        // the temp file path
-        console.log("The file saved to ", res.path());
-        if (Platform.OS === "ios") {
-          RNFetchBlob.ios.openDocument(res.data);
-        }
-      });
+        .catch((error) => {
+          console.log(error)
+          Dialog.show({
+            type: "DANGER",
+            title: "Error in downloading Orders",
+            textBody: "Please try again later",
+            autoClose: 1000
+          })
+        })
+    }
+    catch (err) {
+      console.log(err)
+      Dialog.show({
+        type: "DANGER",
+        title: "Error in downloading Orders",
+        textBody: "Please try again later",
+        autoClose: 1000
+      })
+    }
 
   }
 
 
 
   const { mutate, isPending } = useMutation({
-    mutationFn: markAllPackedOrdersAsDeliveredApi,
+    mutationFn: markAllPendingOrdersAsDeliveredAPI,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["order"]
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["deliveredOrder"]
       })
       Toast.show({
         type: "SUCCESS",
@@ -137,7 +150,7 @@ const AdminSettingScreen = ({ navigation }) => {
               onPress={() => {
                 data?.title === "Download Pending Orders" ?
                   downloadCSV() :
-                  data?.title === "Mark all packed orders as delivered" ?
+                  data?.title === "Mark all pending orders as delivered" ?
                     setConfirmation(true) :
                     navigation.navigate(data?.navigation)
               }

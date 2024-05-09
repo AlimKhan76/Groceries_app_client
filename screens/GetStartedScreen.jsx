@@ -1,5 +1,6 @@
 import { View, Text, ImageBackground, Image, TouchableOpacity, StatusBar, BackHandler } from 'react-native'
 import React from 'react'
+import { responsiveFontSize } from 'react-native-responsive-dimensions'
 
 const GetStartedScreen = ({ navigation }) => {
     return (
@@ -14,16 +15,22 @@ const GetStartedScreen = ({ navigation }) => {
                     className="mb-2.5" />
 
                 <Text
-                    className="text-white font-mulish-semibold text-3xl m-2">
-                    Welcome
+                    className="text-white font-mulish-semibold  m-2"
+                    style={{
+                        fontSize:responsiveFontSize(4)
+                    }}>
+                    Welcome to
                 </Text>
 
-                <Text className="text-white font-mulish-semibold text-3xl mb-3">
-                    to our store
+                <Text className="text-white font-mulish-semibold  mb-3"
+                style={{
+                    fontSize:responsiveFontSize(3.5)
+                }}>
+                    Shri Biroba app
                 </Text>
 
                 <Text className="text-white font-mulish-medium mb-8">
-                    Get your groceries to your doorstep
+                    Get your fresh groceries to your doorstep
                 </Text>
 
                 <TouchableOpacity

@@ -1,63 +1,155 @@
-import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native'
+import { View, Text, TouchableOpacity, Image, FlatList, PixelRatio } from 'react-native'
 import React, { Fragment, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { IMAGE_URL } from "@env";
 import { useFocusEffect } from '@react-navigation/native'
-import { addToCartApi, getItemsFromCartApi, removeFromCart } from '../../api/cartAPI'
+import { addToCartAPI, getItemsFromCartAPI, removeFromCartAPI } from '../../api/cartAPI'
 import { ActivityIndicator, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
 import Ionicons from "react-native-vector-icons/Ionicons"
+import useUserDataQuery from '../../hooks/useUserData';
+import moment from 'moment-timezone';
 
 const CartScreen = ({ navigation }) => {
 
+
+
+  // const CartCard = React.memo(({ item: product, userData, isRefetching, isPending, idOfUpdatingProduct, modifyQuantity, removeItem }) => {
+  //   return (
+  //     <Fragment key={product?.cartItem?._id}>
+  //       <TouchableOpacity
+  //         disabled={isRefetching || isPending}
+  //         onPress={() => navigation.navigate("ProductDetails",
+  //           {
+  //             product: {
+  //               ...product?.cartItem,
+  //               price: product?.cartItem?.price?.[userData?.category]
+  //             },
+  //           }
+  //         )}
+
+  //         key={product?.cartItem?._id}
+  //         className=' px-2 py-2.5 flex-row  '>
+  //         <Image className="self-center"
+  //           style={{
+  //             width: responsiveWidth(30),
+  //             height: responsiveHeight(15)
+  //           }}
+  //           resizeMode='contain'
+  //           source={{ uri: `${IMAGE_URL}${product?.cartItem?.url}` }}
+  //         />
+
+  //         <View className=" px-3  flex-shrink w-full">
+
+  //           <Text
+  //             className=" text-black text-xl font-mulish-semibold"
+  //             style={{ fontSize: responsiveFontSize(2.25) }}>
+  //             {product?.cartItem?.title}
+  //           </Text>
+
+  //           <Text
+  //             className=" font-mulish-regular text-slate-500"
+  //             style={{ fontSize: responsiveFontSize(1.35) }}>
+  //             ₹{product?.cartItem?.price?.[userData?.category]} / {product?.cartItem?.unit}
+  //           </Text>
+
+
+  //           <View className='flex-row py-4 justify-between items-center'>
+  //             <View className="flex-row items-center justify-around w-3/5">
+
+  //               <TouchableOpacity
+  //                 disabled={product?.quantity === 1 || idOfUpdatingProduct.includes(product?.cartItem?._id) && true}
+  //                 onPress={() => {
+  //                   setIdOfUpdatingProduct([...idOfUpdatingProduct, product?.cartItem?._id])
+  //                   modifyQuantity({
+  //                     ...product?.cartItem,
+  //                     quantity: product?.quantity - 1,
+  //                   })
+  //                 }}
+  //                 className={`
+  //                            border-gray-200  border-2 rounded-2xl p-2.5`}>
+  //                 <Feather name="minus" size={responsiveHeight(2.5)}
+  //                   color="black" />
+
+  //               </TouchableOpacity>
+
+  //               {idOfUpdatingProduct.includes(product?.cartItem?._id) ?
+  //                 <ActivityIndicator size={"small"} color='black'
+  //                   style={{ marginHorizontal: responsiveWidth(2) }} />
+  //                 :
+  //                 <Text
+  //                   className=" text-black font-mulish-semibold mx-4"
+  //                   style={{
+  //                     fontSize: responsiveFontSize(1.85)
+  //                   }}>
+  //                   {product?.quantity}
+  //                 </Text>
+  //               }
+  //               <TouchableOpacity
+  //                 disabled={idOfUpdatingProduct.includes(product?.cartItem?._id) && true}
+  //                 onPress={() => {
+  //                   setIdOfUpdatingProduct([...idOfUpdatingProduct, product?.cartItem?._id])
+  //                   modifyQuantity({
+  //                     ...product.cartItem,
+  //                     quantity: product?.quantity + 1,
+  //                   })
+  //                 }}
+  //                 className={`
+  //                            border-gray-200 border-2 rounded-2xl p-2.5 `}>
+  //                 <Feather name="plus" size={responsiveHeight(2.5)}
+  //                   color="#53B175" />
+  //               </TouchableOpacity>
+  //             </View>
+
+  //             <Text
+  //               className="text-black font-mulish-semibold"
+  //               style={{
+  //                 fontSize: responsiveFontSize(1.85)
+  //               }}>
+  //               ₹ {(product?.quantity) * (product?.cartItem?.price?.[userData?.category])}
+  //             </Text>
+
+  //           </View>
+
+  //         </View>
+
+  //         <View className="absolute right-3.5 top-2.5 ">
+  //           <TouchableOpacity
+  //             className="p-2 "
+  //             disabled={removingFromCart}
+  //             onPress={() => {
+  //               removeItem(product?.cartItem?._id)
+  //             }}>
+
+  //             <Ionicons name="close-outline" color="black" size={responsiveHeight(3.5)} />
+  //           </TouchableOpacity>
+  //         </View>
+
+  //       </TouchableOpacity>
+  //       <Divider style={{
+  //         marginHorizontal: responsiveWidth(5)
+  //       }} />
+  //     </Fragment>
+  //   );
+  // });
+  // const navigation = useNavigation();
+
   const [checkOutAmount, setCheckOutAmount] = useState(0)
   const [isCheckoutDisabled, setIsCheckoutDisable] = useState(false)
-  const [idOfUpdatingProduct, setIdOfUpdatingProduct] = useState("")
+  const [idOfUpdatingProduct, setIdOfUpdatingProduct] = useState([])
+  const [isPastCutOff, setIsPastCutOff] = useState(false)
   const queryClient = useQueryClient()
+  const { data: userData } = useUserDataQuery()
 
-
-  // const lowerQuantity = () => {
-  //   if (quantity === 0) {
-  //     setQuantity(0)
-  //   }
-  //   else {
-  //     setQuantity(quantity - +1)
-  //   }
-  // }
-
-  // const increaseQuantity = () => {
-  //   setQuantity(quantity => quantity + 1)
-  // }
-
-  // useEffect(() => {
-  //   setTotalPrice(quantity * product?.price)
-  // }, [quantity])
-
-  const { data: cartItems, isLoading } = useQuery({
+  const { data: cartItems, isLoading, isRefetching } = useQuery({
     queryKey: ['cartItems'],
-    queryFn: getItemsFromCartApi,
+    queryFn: getItemsFromCartAPI,
     staleTime: Infinity,
   })
 
   // For calculating Total Checkout Amount 
-  useFocusEffect(React.useCallback(() => {
-    let amount = 0;
-    for (let i = 0; i < cartItems?.cart?.length; i++) {
-      const sumPrice = cartItems?.cart[i]?.cart_item?.price * cartItems?.cart[i]?.quantity
-      amount = amount + Number(sumPrice);
-    }
-
-    setCheckOutAmount(amount);
-    setIdOfUpdatingProduct("")
-    return (() => {
-      setIdOfUpdatingProduct("")
-      setCheckOutAmount(0)
-    })
-  }, [cartItems]))
-
-
   useFocusEffect(React.useCallback(() => {
     if (cartItems?.cart?.length > 0) {
       setIsCheckoutDisable(false)
@@ -65,26 +157,76 @@ const CartScreen = ({ navigation }) => {
     else {
       setIsCheckoutDisable(true)
     }
+
+    let amount = 0;
+    for (let i = 0; i < cartItems?.cart?.length; i++) {
+      const sumPrice = cartItems?.cart[i]?.cartItem?.price?.[userData?.category] * cartItems?.cart[i]?.quantity
+      amount = amount + Number(sumPrice);
+    }
+    setCheckOutAmount(amount);
+    return (() => {
+      setIdOfUpdatingProduct([])
+      setCheckOutAmount(0)
+    })
   }, [cartItems]))
 
 
+
+  useFocusEffect(React.useCallback(() => {
+    isBetween2AMAnd11AM()
+  }, []))
+
+
+
+  console.log(PixelRatio.getFontScale())
+
   const { mutate: removeItem, isPending: removingFromCart } = useMutation({
-    mutationFn: removeFromCart,
+    mutationFn: removeFromCartAPI,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['cartItems'],
-      })
+      queryClient.invalidateQueries({ queryKey: ['cartItems'] })
     }
   })
 
   const { mutate: modifyQuantity, isPending } = useMutation({
-    mutationFn: addToCartApi,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['cartItems']
-      })
-    }
+    mutationFn: addToCartAPI,
+    onMutate: async (data) => {
+      setIdOfUpdatingProduct(prevIds => [...prevIds, data._id]);
+
+      await queryClient.cancelQueries({ queryKey: ['cartItems'], exact: true })
+
+      // Snapshot the previous value
+      const previousCartItems = queryClient.getQueryData(['cartItems'])
+
+      const updatedCartItems = previousCartItems.cart?.map(item =>
+        item?.cartItem?._id === data._id ? { ...item, quantity: data?.quantity } : item
+      );
+
+      await queryClient.setQueryData(['cartItems'], { cart: updatedCartItems })
+
+      return { previousCartItems }
+    },
+    // If the mutation fails,
+    // use the context returned from onMutate to roll back
+    onError: (err, context) => {
+      queryClient.setQueryData(['cartItems'], context.previousCartItems)
+    },
+    // Always refetch after error or success:
+    onSuccess: async (data) => {
+      setIdOfUpdatingProduct(prevIds => prevIds.filter(id => id !== data));
+      await queryClient.cancelQueries({ queryKey: ['cartItems'], type: "all" })
+
+      queryClient.invalidateQueries({ queryKey: ['cartItems'] })
+    },
   })
+
+
+  const isBetween2AMAnd11AM = () => {
+    const currentTime = moment.tz("Asia/Kolkata");
+    const start = moment.tz("02:00:00", "HH:mm:ss", "Asia/Kolkata");
+    const end = moment.tz("11:00:00", "HH:mm:ss", "Asia/Kolkata");
+    setIsPastCutOff(currentTime.isBetween(start, end))
+    return currentTime.isBetween(start, end);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white"
@@ -114,113 +256,109 @@ const CartScreen = ({ navigation }) => {
         marginVertical: responsiveHeight(0.5)
       }} />
 
-      {isLoading ?
+      {isLoading || removingFromCart || isRefetching ?
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator animating={true} size={'large'} color={'#53B175'} />
         </View>
         :
         cartItems?.cart?.length > 0 ?
           (
-            <ScrollView horizontal={false}
-              className="overflow-hidden">
-              {cartItems?.cart?.map((product) => {
+            <FlatList
+              data={cartItems?.cart}
+              renderItem={({ item: product }) => {
                 return (
-                  <Fragment key={product?.cart_item?._id}>
+                  <Fragment key={product?.cartItem?._id}>
                     <TouchableOpacity
+                      disabled={isRefetching || isPending}
                       onPress={() => navigation.navigate("ProductDetails",
                         {
                           product: {
-                            ...product?.cart_item,
-                            quantity: product?.quantity
-                          }
-                        })}
+                            ...product?.cartItem,
+                            price: product?.cartItem?.price?.[userData?.category]
+                          },
+                        }
+                      )}
 
-                      key={product?.cart_item?._id}
-                      className=' px-4 py-3 flex-row  '>
+                      key={product?.cartItem?._id}
+                      className=' px-2 py-2.5 flex-row'>
                       <Image className="self-center"
                         style={{
                           width: responsiveWidth(30),
-                          height: responsiveHeight(15)
+                          height: responsiveHeight(12.5)
                         }}
                         resizeMode='contain'
-                        source={{ uri: `${IMAGE_URL}${product?.cart_item?.url}` }}
+                        source={{ uri: `${IMAGE_URL}${product?.cartItem?.url}` }}
                       />
 
                       <View className=" px-3  flex-shrink w-full">
 
                         <Text
                           className=" text-black text-xl font-mulish-semibold"
-                          style={{ fontSize: responsiveFontSize(2.5) }}>
-                          {product?.cart_item?.title}
+                          style={{ fontSize: responsiveFontSize(2.25) }}>
+                          {product?.cartItem?.title}
                         </Text>
 
                         <Text
                           className=" font-mulish-regular text-slate-500"
                           style={{ fontSize: responsiveFontSize(1.35) }}>
-                          ₹{product?.cart_item?.price} / {product?.cart_item?.unit}
+                          ₹{product?.cartItem?.price?.[userData?.category]} / {product?.cartItem?.unit}
                         </Text>
 
 
                         <View className='flex-row py-4 justify-between items-center'>
-                          <View className="flex-row items-center justify-around w-3/5">
+                          {/* <View className="flex-row items-center justify-around w-3/5"> */}
 
-                            <TouchableOpacity
-                              disabled={isLoading || product?.quantity === 1}
+                          {/* <TouchableOpacity
+                              disabled={product?.quantity === 1 || idOfUpdatingProduct.includes(product?.cartItem?._id) && true}
                               onPress={() => {
-                                let quantity = product?.cart_item?.quantity + 1
-                                setIdOfUpdatingProduct(product?.cart_item?._id)
+                                // setIdOfUpdatingProduct([...idOfUpdatingProduct, product?.cartItem?._id])
                                 modifyQuantity({
-                                  ...product?.cart_item,
+                                  ...product?.cartItem,
                                   quantity: product?.quantity - 1,
-                                  // totalPrice: quantity * product?.cart_item?.price,
                                 })
-                              }} 
-                              // ${isPending || product?.quantity === 1 ? "opacity-40 bg-gray-200" : "opacity-100"}
+                              }}
                               className={`
-                             border-gray-200  border-2 rounded-2xl p-2.5 `}>
+                                       border-gray-200  border-2 rounded-2xl p-2.5`}>
                               <Feather name="minus" size={responsiveHeight(2.5)}
                                 color="black" />
 
                             </TouchableOpacity>
 
-                            {idOfUpdatingProduct === product?.cart_item?._id ?
+                             {idOfUpdatingProduct.includes(product?.cartItem?._id) ? 
+                            {false ?
                               <ActivityIndicator size={"small"} color='black'
-                                style={{ marginHorizontal: responsiveWidth(2)}} /> 
-                                :
-                              <Text
-                                className=" text-black font-mulish-semibold mx-4"
-                                style={{
-                                  fontSize: responsiveFontSize(2)
-                                }}>
-                                {product?.quantity}
-                              </Text>
-                            }
-                            <TouchableOpacity
-                              disabled={isPending}
+                                style={{ marginHorizontal: responsiveWidth(2) }} />
+                              : */}
+                          <Text
+                            className="text-black font-mulish-medium"
+                            style={{
+                              fontSize: responsiveFontSize(2)
+                            }}>
+                            Qty : {product?.quantity} {product?.cartItem?.unit}
+                          </Text>
+                          {/* } */}
+                          {/* <TouchableOpacity
+                              disabled={idOfUpdatingProduct.includes(product?.cartItem?._id)}
                               onPress={() => {
-                                let quantity = product?.quantity + 1
-                                setIdOfUpdatingProduct(product?.cart_item?._id)
+                                // setIdOfUpdatingProduct([...idOfUpdatingProduct, product?.cartItem?._id])
                                 modifyQuantity({
-                                  ...product.cart_item,
+                                  ...product.cartItem,
                                   quantity: product?.quantity + 1,
-                                  // totalPrice: quantity * product?.cart_item?.price
                                 })
                               }}
                               className={`
-                             border-gray-200 border-2 rounded-2xl p-3 `}>
+                                       border-gray-200 border-2 rounded-2xl p-2.5 `}>
                               <Feather name="plus" size={responsiveHeight(2.5)}
                                 color="#53B175" />
-                            </TouchableOpacity>
-                          </View>
+                            </TouchableOpacity> */}
+                          {/* </View> */}
 
                           <Text
                             className="text-black font-mulish-semibold"
                             style={{
-                              fontSize: responsiveFontSize(2)
+                              fontSize: responsiveFontSize(1.85)
                             }}>
-                            {/* ₹{isPending ? "" : product?.totalPrice} */}
-                            {/* ₹ {product?.totalPrice} */}
-                            ₹ {(product?.quantity) * (product?.cart_item?.price)}
+                            ₹ {(product?.quantity) * (product?.cartItem?.price?.[userData?.category])}
                           </Text>
 
                         </View>
@@ -228,9 +366,12 @@ const CartScreen = ({ navigation }) => {
                       </View>
 
                       <View className="absolute right-3.5 top-2.5 ">
-                        <TouchableOpacity className="p-2 "
+                        <TouchableOpacity
+                          className="p-2 "
                           disabled={removingFromCart}
-                          onPress={() => { removeItem(product?.cart_item?._id) }}>
+                          onPress={() => {
+                            removeItem(product?.cartItem?._id)
+                          }}>
 
                           <Ionicons name="close-outline" color="black" size={responsiveHeight(3.5)} />
                         </TouchableOpacity>
@@ -242,10 +383,12 @@ const CartScreen = ({ navigation }) => {
                     }} />
                   </Fragment>
                 )
-              })}
-            </ScrollView>
+              }}
+              keyExtractor={(item) => item.cartItem._id}
+            />
 
-          ) :
+          )
+          :
           <View className="items-center justify-center flex-1 mx-3">
             <Text
               className="text-center text-black font-mulish-semibold"
@@ -258,26 +401,30 @@ const CartScreen = ({ navigation }) => {
       {!isCheckoutDisabled &&
         <View className="bottom-2.5 relative self-center w-full overflow-hidden  ">
           <TouchableOpacity
-            disabled={isCheckoutDisabled}
+            disabled={isCheckoutDisabled || isPastCutOff || idOfUpdatingProduct.length !== 0}
             onPress={() => navigation.navigate("Checkout")}
-            // bg-[#216239]
             className={`
           ${isCheckoutDisabled && "opacity-60"} bg-[#53B175]
-          p-5 rounded-3xl flex-row mx-5 items-center justify-center`}
+          p-5 rounded-3xl flex-row mx-5 items-center justify-center`}>
 
-          >
-            <Text className=' text-white text-xl font-mulish-semibold'
-              style={{ fontSize: responsiveFontSize(2.25) }}>
-              Go to Checkout
+            <Text
+              className=' text-white text-xl font-mulish-semibold flex-wrap text-center'
+              style={{
+                fontSize: isPastCutOff ? responsiveFontSize(2) : responsiveFontSize(2.25)
+              }}>
+              {isPastCutOff ? "No Orders allowed between 2am and 11am" : "Go to checkout"
+              }
             </Text>
+            {!isPastCutOff &&
+              <View className={`${isCheckoutDisabled && "opacity-50"} right-5 absolute bg-[#489E67] p-1.5 rounded-xl `}>
 
-            <View className={`${isCheckoutDisabled && "opacity-50"} right-5 absolute bg-[#489E67] p-1.5 rounded-xl `}>
+                <Text className='text-white font-mulish-semibold px-1'
+                  style={{ fontSize: responsiveFontSize(1.35) }}>
+                  ₹ {checkOutAmount}
+                </Text>
+              </View>
+            }
 
-              <Text className='text-white font-mulish-semibold px-1'
-                style={{ fontSize: responsiveFontSize(1.35) }}>
-                ₹ {checkOutAmount}
-              </Text>
-            </View>
           </TouchableOpacity>
         </View>
       }

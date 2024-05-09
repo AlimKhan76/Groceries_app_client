@@ -3,7 +3,7 @@ import React, {  useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
-import { getOrdersByStatus } from '../../api/adminAPIs/orderAPI'
+import { getOrdersByStatusAPI } from '../../api/adminAPIs/orderAPI'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import AdminOrderCard from '../components/AdminOrderCard'
 
@@ -27,7 +27,7 @@ const PendingOrderScreen = ({ navigation }) => {
 
   } = useInfiniteQuery({
     queryKey: ['order', orderStatus],
-    queryFn: ({ queryKey, pageParam }) => getOrdersByStatus(pageParam, queryKey[1]),
+    queryFn: ({ queryKey, pageParam }) => getOrdersByStatusAPI(pageParam, queryKey[1]),
     staleTime: Infinity,
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => lastPage?.nextPage,
@@ -64,12 +64,11 @@ const PendingOrderScreen = ({ navigation }) => {
             fontSize: responsiveFontSize(3.5),
           }} />
 
-        <Appbar.Action icon="dots-vertical" color='black' />
 
       </Appbar.Header>
       <Divider bold />
 
-
+{/* 
       <View className="flex-row gap-2 p-2">
         <TouchableOpacity
           onPress={() => { setOrderStatus("Pending") }}
@@ -90,9 +89,7 @@ const PendingOrderScreen = ({ navigation }) => {
           <Text className="text-black font-mulish-bold ">Packed</Text>
         </TouchableOpacity>
 
-      </View>
-
-      {console.log(isRefetching)}
+      </View> */}
 
 
       {status === "error" ?
@@ -121,7 +118,7 @@ const PendingOrderScreen = ({ navigation }) => {
           :
           orders?.pages[0]?.docs?.length > 0
             ?
-            <FlatList
+            <FlatList className="my-2"
               onEndReached={() => isFetchingNextPage || !hasNextPage ? null : fetchNextPage()}
               data={orders?.pages?.map(pages => pages?.docs).flat()}
               initialNumToRender={10}

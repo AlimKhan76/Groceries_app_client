@@ -1,23 +1,42 @@
-import { View, Text, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView, FlatList, TouchableOpacity } from 'react-native'
+import React, { Fragment, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Appbar, DataTable, Divider } from 'react-native-paper'
-import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
+import { ActivityIndicator, Appbar, DataTable, Divider } from 'react-native-paper'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { useNavigation } from '@react-navigation/native'
-import { moderateScale, moderateVerticalScale, scale } from 'react-native-size-matters'
-import AntDesign from "react-native-vector-icons/AntDesign"
-import { useQuery } from '@tanstack/react-query'
-import { getAllCustomerPayment } from '../../api/adminAPIs/paymentAPI'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { fetchAllCustomerBalancesAPI, fetchOverallBalanceAPI } from '../../api/adminAPIs/transactionsAPI'
 
 const AllCustomerPaymentScreen = () => {
   const navigation = useNavigation()
+  // const [totalBalance, setTotalBalance] = useState()
 
+  const { data: allCustomerBalances,
+    isLoading: isLoadingAllCustomerBalances,
+    isRefetching: isRefetchingAllCustomerBalances,
+    isFetching: isFetchingAllCustomerBalances,
+    refetch: refetchAllCustomerBalances,
+    fetchNextPage: fetchNextPageAllCustomerBalances,
+    error: errorAllCustomerBalances,
+    hasNextPage: hasNextPageAllCustomerBalances,
+    isFetchingNextPage: isFetchingNextPageAllCustomerBalances,
+    fetchPreviousPage: fetchPreviousPageAllCustomerBalances,
+    status: statusAllCustomerBalances,
+    isError: isErrorAllCustomerBalances,
+  } = useInfiniteQuery({
+    queryKey: ["allCustomerBalance"],
+    queryFn: (pageParam) => fetchAllCustomerBalancesAPI(pageParam),
+    staleTime: Infinity,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => lastPage?.nextPage,
+  })
 
-  const { data: allCustomerPayments } = useQuery({
-    queryKey: ["allPaymentDetails"],
-    queryFn: getAllCustomerPayment,
+  const { data: overallBalance, isLoading: isLoadingOverallBalance } = useQuery({
+    queryKey: ["totalBalance"],
+    queryFn: fetchOverallBalanceAPI,
     staleTime: Infinity,
   })
+
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -47,136 +66,121 @@ const AllCustomerPaymentScreen = () => {
       <Divider />
 
 
-      {/* <View> */}
+      <View className="bg-[#419a79] py-6 gap-y-2 items-center justify-center m-2 rounded-3xl ">
+        <Text className="text-white text-center font-mulish-semibold"
+          style={{
+            fontSize: responsiveFontSize(2)
+          }}>
+          {("Total Balance Receivable").toUpperCase()}
 
-      {/* </View>
-      <View style={{ marginHorizontal: moderateScale(20) }
-      }>
-        <View className="bg-gray-200 items-center justify-center rounded-2xl "
-          style={{ padding: moderateScale(15) }}>
-          <Text className="text-black font-mulish-semibold "
+        </Text>
+        {isLoadingOverallBalance ?
+          <ActivityIndicator color='white' size="small" style={{ paddingVertical: responsiveHeight(0.5) }} />
+          :
+          <Text className="text-white text-center font-mulish-semibold"
             style={{
-              fontSize: scale(20)
+              fontSize: responsiveFontSize(3)
             }}>
-            Alim Khan
+            ₹ {overallBalance}
           </Text>
-
-          <View className="bg-[#53B175] rounded-3xl items-center justify-center"
-            style={{
-              padding: moderateScale(15),
-              paddingHorizontal: moderateScale(80)
-            }}>
-            <Text className="text-white font-mulish-bold"
-              style={{
-                fontSize: scale(20)
-              }}>
-              Balance
-            </Text>
-            <Text className="text-white font-mulish-bold"
-              style={{
-                fontSize: scale(20)
-              }}>
-              40000
-            </Text>
-          </View>
-        </View>
-
-
-        <ScrollView style={{
-          marginVertical: moderateScale(10)
-        }}>
-
-        </ScrollView>
-
-
-
-      </View> */}
-
-      <View className="items-center mx-2.5 ">
-
-        <DataTable>
-
-
-          <DataTable.Header>
-            <DataTable.Title
-              textStyle={{
-                color: "black",
-                fontSize: responsiveFontSize(1.75),
-                fontFamily: "Mulish-Bold",
-              }}>
-              Name
-            </DataTable.Title>
-
-            <DataTable.Title numeric
-              textStyle={{
-                color: "black",
-                fontSize: responsiveFontSize(1.75),
-                fontFamily: "Mulish-Bold",
-              }}>
-              Balance
-            </DataTable.Title>
-
-            <DataTable.Title
-              textStyle={{
-                color: "black",
-                // fontSize: moderateScale(12.5),
-                fontFamily: "Mulish-Bold",
-              }}>
-            </DataTable.Title>
-          </DataTable.Header>
-
-          <ScrollView className=" pb-4 ">
-
-            {allCustomerPayments?.map((transaction, index) => {
-              console.log(transaction?._id)
-              return (
-
-                <DataTable.Row
-                  key={transaction?._id}
-                  // className="px-2 py-4"
-                  onPress={() => navigation.navigate("CustomerPaymentDetailsScreen",
-                    {
-                      customer: {
-                        customerId: transaction?._id,
-                        balance: transaction?.balance,
-                        customerName: transaction?.customerName
-                      }
-                    })}
-                >
-                  <DataTable.Cell
-                    textStyle={{
-                      color: "black",
-                      // fontSize: moderateScale(12.5),
-                      fontSize: responsiveFontSize(1.75),
-
-                      fontFamily: "Mulish-SemiBold",
-                    }}>
-                    {index + 1}.  {transaction?.customerName}
-                    {/* {product?.title} */}
-                  </DataTable.Cell>
-
-                  <DataTable.Cell numeric
-                    textStyle={{
-                      color: "black",
-                      fontSize: responsiveFontSize(1.75),
-                      fontFamily: "Mulish-SemiBold",
-                    }}  >
-                    ₹ {transaction?.balance}
-                    {/* {product?.quantity} {product?.unit} */}
-                  </DataTable.Cell>
-
-                  <DataTable.Cell numeric>
-                    <AntDesign name="right" size={responsiveHeight(2)} color="black" />
-                  </DataTable.Cell>
-
-                </DataTable.Row>
-              )
-            })}
-
-          </ScrollView>
-        </DataTable>
+        }
       </View>
 
+      {isLoadingAllCustomerBalances || isRefetchingAllCustomerBalances ?
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator color='#419a79' size={"large"} />
+        </View>
+        :
+        allCustomerBalances?.pages[0]?.docs?.length > 0
+          ?
+          <FlatList
+            className="m-3 "
+            onEndReached={() => isFetchingNextPageAllCustomerBalances || !hasNextPageAllCustomerBalances ? null : fetchNextPageAllCustomerBalances()}
+            data={allCustomerBalances?.pages?.map(pages => pages?.docs).flat()}
+            initialNumToRender={10}
+            renderItem={({ item: customer }) => {
+              return (
+                <Fragment key={customer?._id}>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("CustomerPaymentDetailsScreen",
+                      {
+                        customerId: customer?._id,
+                        customerContact: customer?._customerContact,
+                        balance: customer?.balance,
+                        customerName: customer?.customerName
+
+                      })}
+                    className="py-3 px-3  my-1 flex-row items-center rounded-2xl justify-between">
+                    <View className="flex-row items-center gap-x-4 flex-1">
+                      {/* <MaterialCommunityIcons
+                          name={order?.type === "Purchase" ? "arrow-up" : "arrow-down"}
+                          size={responsiveHeight(3.5)} color="black" /> */}
+                      <View style={{ width: responsiveWidth(50) }} >
+
+                        <Text className="text-black font-mulish-semibold flex-wrap"
+                          style={{
+                            fontSize: responsiveFontSize(2.25)
+                          }}>
+                          {customer?.customerName}
+                        </Text>
+                        <Text className="text-black font-mulish-semibold" style={{
+                          fontSize: responsiveFontSize(1.75)
+                        }}>
+                          Contact No: {customer?.customerContact}
+                        </Text>
+                        {/* <Text className="text-black font-mulish-semibold" style={{
+                            fontSize: responsiveFontSize(1.5)
+                          }}>
+                            {moment.tz(order?.dateOfTransaction, "Asia/Kolkata").format("DD/MM/yy hh:mm A")}
+                          </Text> */}
+
+                      </View>
+
+
+                    </View>
+                    <Text className={`font-mulish-semibold text-black`
+                    }
+                      style={{
+                        fontSize: responsiveFontSize(2)
+                      }}>
+                      ₹ {customer?.balance}
+                    </Text>
+                  </TouchableOpacity>
+                  <Divider />
+                </Fragment>
+              )
+            }}
+
+            ListFooterComponent={isFetchingNextPageAllCustomerBalances ?
+              <ActivityIndicator style={{
+                marginVertical: responsiveHeight(1.5)
+              }}
+                size={"small"} color='#419a79' /> :
+              !hasNextPageAllCustomerBalances &&
+              <Text style={{
+                marginVertical: responsiveHeight(1.5),
+                fontSize: responsiveFontSize(2)
+              }}
+                className="text-black font-mulish-medium text-center">
+                No more customers left
+              </Text>
+
+            }
+          >
+          </FlatList>
+          :
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-black font-mulish-semibold"
+              style={{
+                fontSize: responsiveFontSize(3)
+              }}>
+              No customers
+            </Text>
+          </View>
+      }
+
+
+    
     </SafeAreaView>
   )
 }

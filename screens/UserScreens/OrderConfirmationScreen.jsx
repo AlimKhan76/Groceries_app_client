@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, Animated, TextInput, StatusBar } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, Animated, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -7,103 +7,102 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getUserData } from '../../api/userAPI'
-import { getItemsFromCartApi } from '../../api/cartAPI'
-import { placeOrderApi } from '../../api/orderAPI'
+import { getItemsFromCartAPI } from '../../api/cartAPI'
+import { placeOrderAPI } from '../../api/orderAPI'
 import { Dialog } from 'react-native-alert-notification'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-import { useCouponApi } from '../../api/adminAPIs/couponAPI'
-import { BlurView } from "@react-native-community/blur";
+import useUserDataQuery from '../../hooks/useUserData'
+import moment from 'moment-timezone'
 
 
-const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, error, isError, status }) => {
-    const [height] = useState(new Animated.Value(0));
+// const ExpandableView = ({ expanded = false, couponCode, refetch, setCouponCode, error, isError, status }) => {
+//     const [height] = useState(new Animated.Value(0));
 
-    useEffect(() => {
-        Animated.timing(height, {
-            toValue: !expanded ? responsiveHeight(13) : 0,
-            duration: 150,
-            useNativeDriver: false
-        }).start();
-    }, [expanded, height]);
+//     useEffect(() => {
+//         Animated.timing(height, {
+//             toValue: !expanded ? responsiveHeight(13) : 0,
+//             duration: 150,
+//             useNativeDriver: false
+//         }).start();
+//     }, [expanded, height]);
 
 
-    return (
-        <Animated.View className={`${expanded && "hidden"} px-3`}
-            style={{
-                backgroundColor: 'white',
-                marginTop: !expanded ? responsiveHeight(-1) : 0,
-                height,
-            }}
-        >
-            {!expanded && <Divider />}
-            <View
-                className='py-3 rounded-b-2xl flex-row justify-between items-center'>
+//     return (
+//         <Animated.View className={`${expanded && "hidden"} px-3`}
+//             style={{
+//                 backgroundColor: 'white',
+//                 marginTop: !expanded ? responsiveHeight(-1) : 0,
+//                 height,
+//             }}
+//         >
+//             {!expanded && <Divider />}
+//             <View
+//                 className='py-3 rounded-b-2xl flex-row justify-between items-center'>
 
-                <TextInput
-                    className={`${status === "error" ? `border-red-400` : status === "success" ? `border-[#53B175]` : 'border-gray-200'} px-4 border-2 rounded-xl font-mulish-semibold`}
-                    placeholder='Enter Code'
-                    value={couponCode}
-                    onChangeText={(e) => setCouponCode(e)}
-                    style={{
-                        width: responsiveWidth(50),
-                        color: "black",
-                        fontSize: responsiveFontSize(1.75),
-                    }}
-                    maxLength={20}
-                    placeholderTextColor={"black"}
-                />
+//                 <TextInput
+//                     className={`${status === "error" ? `border-red-400` : status === "success" ? `border-[#53B175]` : 'border-gray-200'} px-4 border-2 rounded-xl font-mulish-semibold`}
+//                     placeholder='Enter Code'
+//                     value={couponCode}
+//                     onChangeText={(e) => setCouponCode(e)}
+//                     style={{
+//                         width: responsiveWidth(50),
+//                         color: "black",
+//                         fontSize: responsiveFontSize(1.75),
+//                     }}
+//                     maxLength={20}
+//                     placeholderTextColor={"black"}
+//                 />
 
-                <TouchableOpacity
-                    disabled={couponCode?.length === 0 ? true : false}
-                    onPress={refetch}
-                    className={`${couponCode?.length === 0 ? "opacity-50" : 'opacity-100'} border-2 border-gray-300 rounded-2xl p-3`} >
-                    <Text
-                        style={{
-                            fontSize: responsiveFontSize(1.75)
-                        }}
-                        className="text-black font-mulish-semibold px-2">
-                        Submit
-                    </Text>
-                </TouchableOpacity>
+//                 <TouchableOpacity
+//                     disabled={couponCode?.length === 0 ? true : false}
+//                     onPress={refetch}
+//                     className={`${couponCode?.length === 0 ? "opacity-50" : 'opacity-100'} border-2 border-gray-300 rounded-2xl p-3`} >
+//                     <Text
+//                         style={{
+//                             fontSize: responsiveFontSize(1.75)
+//                         }}
+//                         className="text-black font-mulish-semibold px-2">
+//                         Submit
+//                     </Text>
+//                 </TouchableOpacity>
 
-            </View>
+//             </View>
 
-            {console.log(status)}
-            {status !== "pending" && status === "error" &&
-                <View className="flex-row items-center gap-x-1 ">
-                    <MaterialIcons
-                        name="error-outline"
-                        size={responsiveHeight(2)} color="red" />
+//             {console.log(status)}
+//             {status !== "pending" && status === "error" &&
+//                 <View className="flex-row items-center gap-x-1 ">
+//                     <MaterialIcons
+//                         name="error-outline"
+//                         size={responsiveHeight(2)} color="red" />
 
-                    <Text className="text-red-500 font-mulish-regular"
-                        style={{
-                            fontSize: responsiveFontSize(1.45)
-                        }}>
-                        {error}
-                    </Text>
-                </View>
-            }
+//                     <Text className="text-red-500 font-mulish-regular"
+//                         style={{
+//                             fontSize: responsiveFontSize(1.45)
+//                         }}>
+//                         {error}
+//                     </Text>
+//                 </View>
+//             }
 
-            {status !== "pending" && status === "success" &&
+//             {status !== "pending" && status === "success" &&
 
-                <View className="flex-row items-center gap-x-1 ">
-                    <MaterialIcons
-                        name="error-outline"
-                        size={responsiveHeight(2)} color="#53B175" />
-                    <Text className="text-[#53B175] font-mulish-regular"
-                        style={{
-                            fontSize: responsiveFontSize(1.45)
-                        }}>
-                        Coupon applied Successfully
-                    </Text>
-                </View>
-            }
+//                 <View className="flex-row items-center gap-x-1 ">
+//                     <MaterialIcons
+//                         name="error-outline"
+//                         size={responsiveHeight(2)} color="#53B175" />
+//                     <Text className="text-[#53B175] font-mulish-regular"
+//                         style={{
+//                             fontSize: responsiveFontSize(1.45)
+//                         }}>
+//                         Coupon applied Successfully
+//                     </Text>
+//                 </View>
+//             }
 
-        </Animated.View>
+//         </Animated.View>
 
-    );
-};
+//     );
+// };
 
 
 const OrderConfirmationScreen = () => {
@@ -111,58 +110,57 @@ const OrderConfirmationScreen = () => {
     const navigation = useNavigation();
     const queryClient = useQueryClient()
     const [totalPrice, setTotalPrice] = useState(0)
-    const [subTotal, setSubTotal] = useState(0)
-    const [couponCode, setCouponCode] = useState("")
+    // const [subTotal, setSubTotal] = useState(0)
+    // const [couponCode, setCouponCode] = useState("")
 
 
     const { address } = route?.params;
-    const [isExpanded, setIsExpanded] = useState(true);
+    // const [isExpanded, setIsExpanded] = useState(true);
 
 
-    const { data: couponDetails, refetch, error, isError, isFetching, status } = useQuery({
-        queryKey: ["couponCode", couponCode],
-        queryFn: ({ queryKey }) => useCouponApi(queryKey[1]),
-        enabled: false,
-        // refetchOnMount: false,
-        retry: 1,
-        // staleTime: 100000,
-    })
+    // const { data: couponDetails, refetch, error, isError, isFetching, status } = useQuery({
+    //     queryKey: ["couponCode", couponCode],
+    //     queryFn: ({ queryKey }) => useCouponApi(queryKey[1]),
+    //     enabled: false,
+    //     // refetchOnMount: false,
+    //     retry: 1,
+    //     // staleTime: ,
+    // })
 
 
     useFocusEffect(React.useCallback(() => {
+        // queryClient.invalidateQueries({ queryKey: ["couponCode"] })
         let amount = 0;
         for (let i = 0; i < cartItems?.cart?.length; i++) {
-            const sumPrice = cartItems?.cart[i]?.cart_item?.price * cartItems?.cart[i]?.quantity
+            const sumPrice = cartItems?.cart[i]?.cartItem?.price?.[userData?.category] * cartItems?.cart[i]?.quantity
             amount = amount + Number(sumPrice);
         }
-        if (couponDetails !== undefined) {
-            setTotalPrice(amount - couponDetails?.value)
-        }
-        else setTotalPrice(amount);
+        // if (couponDetails !== undefined) {
+        //     setTotalPrice(amount - couponDetails?.value)
+        // }
+        // else 
+        setTotalPrice(amount);
 
-        setSubTotal(amount)
+        // setSubTotal(amount)
 
         return (() => {
-            setSubTotal(0)
+            // setSubTotal(0)
             setTotalPrice(0)
+            // queryClient.invalidateQueries({ queryKey: ["couponCode"] })
         })
 
-    }, [cartItems, couponDetails]))
+    }, [cartItems]))
 
     const { data: cartItems, isLoading } = useQuery({
         queryKey: ['cartItems'],
-        queryFn: getItemsFromCartApi,
+        queryFn: getItemsFromCartAPI,
         staleTime: Infinity,
     })
 
-    const { data: userData } = useQuery({
-        queryKey: ['userData'],
-        queryFn: getUserData,
-        staleTime: Infinity,
-    })
+    const { data: userData } = useUserDataQuery()
 
     const { mutate: placeOrder, isPending } = useMutation({
-        mutationFn: placeOrderApi,
+        mutationFn: placeOrderAPI,
         onError: () => {
             Dialog.show({
                 type: "DANGER",
@@ -179,17 +177,35 @@ const OrderConfirmationScreen = () => {
             queryClient.invalidateQueries({
                 queryKey: ['userOrders']
             })
-            setCouponCode("")
             queryClient.invalidateQueries({
-                queryKey: ['couponCode']
+                queryKey: ['customerTransactions']
+            })
+            queryClient.invalidateQueries({
+                queryKey: ['customerBalance']
             })
             navigation.navigate("OrderAccepted")
-
         }
     })
 
 
+    // const setPriceCategory = (cartItems) => {
+    //     const cart = cartItems.cart.map(obj => {
+    //         return { ...obj, price: obj?.price?.[userData?.category] };
+    //     });
 
+    //     console.log(cart)
+    //     return cart
+    // }
+    const optimizeOrder = () => {
+        const newArray = cartItems?.cart?.map(item => {
+            const { cartItem, quantity, _id } = item;
+            const { description, baseQuantity, category, url, __v, ...newCartItem } = cartItem;
+            return { cartItem: newCartItem, quantity, _id };
+        });
+        return newArray
+    }
+
+    console.log(optimizeOrder())
     return (
         <SafeAreaView className="flex-1"
             edges={['right', 'top', 'left']}>
@@ -217,7 +233,7 @@ const OrderConfirmationScreen = () => {
             <Divider />
 
 
-            {isFetching &&
+            {/* {isFetching &&
                 <BlurView
                     className="items-center justify-center"
                     style={{
@@ -240,7 +256,7 @@ const OrderConfirmationScreen = () => {
                         size={"large"}
                         color='rgb(83 177 117)' />
                 </BlurView>
-            }
+            } */}
 
 
             <ScrollView className="m-3 overflow-hidden mb-8"
@@ -312,7 +328,7 @@ const OrderConfirmationScreen = () => {
                 </View>
 
                 {/* Coupon Code Card Start */}
-
+                {/* 
                 <TouchableOpacity
                     className="bg-white rounded-t-2xl flex-row justify-between items-center"
                     style={{
@@ -350,10 +366,10 @@ const OrderConfirmationScreen = () => {
                     setCouponCode={setCouponCode}
                     error={error}
                     isError={isError}
-                    status={status} />
+                    status={status} /> */}
 
-                <View className=" bg-white rounded-2xl px-1.5 my-2">
-                    <DataTable>
+                <View className=" bg-white rounded-2xl px-1.5 py-3 my-2 ">
+                    <DataTable >
                         <DataTable.Header>
                             <DataTable.Title
                                 textStyle={{
@@ -390,7 +406,8 @@ const OrderConfirmationScreen = () => {
 
                         {cartItems?.cart?.map((product) => {
                             return (
-                                <DataTable.Row key={product?.cart_item?._id}>
+                                <DataTable.Row
+                                    key={product?.cartItem?._id} className="">
                                     <DataTable.Cell
                                         textStyle={{
                                             fontSize: responsiveFontSize(1.75),
@@ -400,7 +417,7 @@ const OrderConfirmationScreen = () => {
                                         <Text className="text-black flex-wrap" style={{
                                             fontSize: responsiveFontSize(1.75)
                                         }}>
-                                            {product?.cart_item?.title}
+                                            {product?.cartItem?.title}
 
                                         </Text>
                                     </DataTable.Cell>
@@ -410,7 +427,7 @@ const OrderConfirmationScreen = () => {
                                             fontFamily: "Mulish-Medium",
                                             color: "black",
                                         }}>
-                                        {product?.quantity} {product?.cart_item?.unit}
+                                        {product?.quantity} {product?.cartItem?.unit}
                                     </DataTable.Cell>
 
                                     <DataTable.Cell numeric
@@ -419,7 +436,7 @@ const OrderConfirmationScreen = () => {
                                             fontFamily: "Mulish-Medium",
                                             color: "black"
                                         }}>
-                                        ₹ {product?.quantity * product?.cart_item?.price}
+                                        ₹ {product?.quantity * product?.cartItem?.price?.[userData?.category]}
                                     </DataTable.Cell>
 
                                 </DataTable.Row>
@@ -427,62 +444,7 @@ const OrderConfirmationScreen = () => {
                             )
                         })}
 
-                        <DataTable.Row>
-                            <DataTable.Cell
-                                textStyle={{
-                                    fontSize: responsiveFontSize(1.75),
-                                    fontFamily: "Mulish-Bold",
-                                    color: "black"
-                                }} >
 
-                                Sub Total :
-                            </DataTable.Cell>
-
-                            <DataTable.Cell></DataTable.Cell>
-
-                            <DataTable.Cell numeric
-                                textStyle={{
-                                    fontSize: responsiveFontSize(1.75),
-                                    fontFamily: "Mulish-Bold",
-                                    color: "black"
-                                }}>
-                                ₹ {subTotal}
-                            </DataTable.Cell>
-                        </DataTable.Row>
-
-
-                        {couponDetails !== undefined &&
-                            <DataTable.Row style={{
-                                height: responsiveHeight(8),
-                            }}>
-                                <DataTable.Cell textStyle={{
-                                    fontSize: responsiveFontSize(1.5),
-                                    fontFamily: "Mulish-Medium",
-                                    color: "black"
-                                }} >
-                                    <Text style={{
-                                        fontSize: responsiveFontSize(1.5),
-                                        fontFamily: "Mulish-Medium",
-                                        color: "black"
-                                    }}>
-
-                                        Discount :({couponDetails?.code})
-                                    </Text>
-                                </DataTable.Cell>
-
-                                <DataTable.Cell></DataTable.Cell>
-
-                                <DataTable.Cell numeric textStyle={{
-                                    fontSize: responsiveFontSize(1.5),
-                                    fontFamily: "Mulish-SemiBold",
-                                    color: "black"
-                                }}>
-
-                                    - ₹ {couponDetails?.value}
-                                </DataTable.Cell>
-                            </DataTable.Row>
-
-                        }
 
 
 
@@ -520,14 +482,13 @@ const OrderConfirmationScreen = () => {
                     disabled={isPending}
                     onPress={() => {
                         placeOrder({
-                            items: cartItems?.cart,
-                            address,
-                            subTotal: subTotal,
-                            couponCode: couponDetails?.code,
-                            discount: couponDetails?.value,
+                            items: optimizeOrder(),
+                            address: address,
+                            orderedDate: moment.tz("Asia/Kolkata").format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
                             totalPrice: totalPrice,
                             name: userData?.name,
-                            contactNo: userData?.contactNo
+                            contactNo: userData?.contactNo,
+                            customerCategory: userData?.category
                         })
                     }}
                     className="bg-[#53B175] p-5 rounded-3xl flex-row mx-5 items-center justify-center ">

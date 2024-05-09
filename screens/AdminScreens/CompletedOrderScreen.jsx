@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { getOrdersByCustomerName, getOrdersByStatus } from '../../api/adminAPIs/orderAPI'
+import { searchOrdersByCustomerNameAPI, getOrdersByStatusAPI } from '../../api/adminAPIs/orderAPI'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AdminOrderCard from '../components/AdminOrderCard'
@@ -29,7 +29,7 @@ const CompletedOrderScreen = ({ navigation }) => {
 
   } = useInfiniteQuery({
     queryKey: ['deliveredOrder'],
-    queryFn: ({ pageParam }) => getOrdersByStatus(pageParam, "Delivered"),
+    queryFn: ({ pageParam }) => getOrdersByStatusAPI(pageParam, "Delivered"),
     staleTime: Infinity,
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => lastPage?.nextPage
@@ -48,7 +48,7 @@ const CompletedOrderScreen = ({ navigation }) => {
     isError: isErrorOfCustomerOrder,
   } = useInfiniteQuery({
     queryKey: ["customerOrder", value],
-    queryFn: ({ pageParam }) => getOrdersByCustomerName(pageParam, value),
+    queryFn: ({ pageParam }) => searchOrdersByCustomerNameAPI(pageParam, value),
     staleTime: Infinity,
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => lastPage?.nextPage,

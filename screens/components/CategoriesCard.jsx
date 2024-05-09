@@ -36,7 +36,7 @@ const CategoriesCard = () => {
                     className="pt-2 text-black text-center font-mulish-bold "
                     style={{ fontSize: responsiveFontSize(2.35) }}
                 >
-                    Beverages and drinks
+                    Everyday Needs
                 </Text>
 
             </TouchableOpacity>
@@ -65,7 +65,7 @@ const CategoriesCard = () => {
                     className="pt-2 text-black text-lg text-center font-mulish-bold "
                     style={{ fontSize: responsiveFontSize(2.35) }}
                 >
-                    Fresh fruits and vegetables
+                    Green Vegetables
                 </Text>
 
             </TouchableOpacity>
@@ -92,7 +92,7 @@ const CategoriesCard = () => {
                     className="pt-2 text-black text-lg text-center font-mulish-bold "
                     style={{ fontSize: responsiveFontSize(2.35) }}
                 >
-                    Exotic Fruits
+                    Exotic Vegetables
                 </Text>
 
             </TouchableOpacity>
@@ -116,7 +116,7 @@ const CategoriesCard = () => {
                 <Text
                     className="pt-2 text-black text-center font-mulish-bold "
                     style={{ fontSize: responsiveFontSize(2.35) }}>
-                    Dairy & Eggs
+                    Leafy Vegetables
                 </Text>
             </TouchableOpacity>
 

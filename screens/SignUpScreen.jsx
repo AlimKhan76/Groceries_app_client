@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, ImageBackground, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Button } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { registerUserAPI } from '../api/userAPI'
+// import { registerUserAPI } from '../api/userAPI'
 import { Formik } from 'formik'
 import { object, string, shape } from 'yup'
 import { Dialog } from 'react-native-alert-notification'
@@ -56,33 +56,33 @@ const SignUpScreen = ({ navigation }) => {
     // }
 
 
-    const { mutate, isError, isPending, error } = useMutation({
-        mutationKey: ['register'],
-        mutationFn: registerUserAPI,
-        onSuccess: () => {
-            Dialog.show({
-                type: 'SUCCESS',
-                title: 'Verification',
-                autoClose: 1000,
-                // textBody: "Please enter the OTP sent to your number",
-                textBody: "The User has been successfully registered",
-                button: '',
-            })
-            navigation.navigate("Login")
-            // navigation.navigate("OTPScreen")
-        },
+    // const { mutate, isError, isPending, error } = useMutation({
+    //     mutationKey: ['register'],
+    //     mutationFn: registerUserAPI,
+    //     onSuccess: () => {
+    //         Dialog.show({
+    //             type: 'SUCCESS',
+    //             title: 'Verification',
+    //             autoClose: 1000,
+    //             // textBody: "Please enter the OTP sent to your number",
+    //             textBody: "The User has been successfully registered",
+    //             button: '',
+    //         })
+    //         navigation.navigate("Login")
+    //         // navigation.navigate("OTPScreen")
+    //     },
 
-        // pattern="^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$"
-        onError: (error) => {
-            Dialog.show({
-                type: 'DANGER',
-                title: 'Error',
-                autoClose: 1500,
-                textBody: error,
-                button: 'Close',
-            })
-        }
-    })
+    //     // pattern="^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$"
+    //     onError: (error) => {
+    //         Dialog.show({
+    //             type: 'DANGER',
+    //             title: 'Error',
+    //             autoClose: 1500,
+    //             textBody: error,
+    //             button: 'Close',
+    //         })
+    //     }
+    // })
 
 
     return (

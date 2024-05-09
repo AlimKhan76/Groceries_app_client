@@ -7,11 +7,12 @@ import {
     responsiveFontSize
 } from "react-native-responsive-dimensions";
 import { useQuery } from '@tanstack/react-query';
-import { getBestSellingProducts } from '../../api/productAPI';
-import { getUserData } from '../../api/userAPI';
+import { getProductByCategoryAPI } from '../../api/productAPI';
+import { getUserDataAPI } from '../../api/userAPI';
 import { IMAGE_URL } from '@env';
 import { ActivityIndicator } from 'react-native-paper';
 import Feather from "react-native-vector-icons/Feather"
+import useUserDataQuery from '../../hooks/useUserData';
 
 const HomeScreen = ({ navigation }) => {
 
@@ -21,17 +22,12 @@ const HomeScreen = ({ navigation }) => {
         isError,
         refetch
     } = useQuery({
-        queryKey: ["bestSellingProduct"],
-        queryFn: getBestSellingProducts,
+        queryKey: ["Best-Selling"],
+        queryFn: ({ queryKey }) => getProductByCategoryAPI(queryKey[0]),
         enabled: true,
         staleTime: Infinity
     })
-
-    const { data: userData } = useQuery({
-        queryKey: ['userData'],
-        queryFn: getUserData,
-        staleTime: Infinity,
-    })
+    const { data: userData, isLoading: isLoadingUserData } = useUserDataQuery()
 
     return (
         <SafeAreaView className=' bg-white flex-1 '
@@ -97,7 +93,7 @@ const HomeScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
 
-                    {loadingProducts ?
+                    {loadingProducts || isLoadingUserData ?
                         <View className="flex-1 justify-center items-center pt-32">
                             <ActivityIndicator animating={true} size={'large'}
                                 color={'#53B175'} />
@@ -130,7 +126,7 @@ const HomeScreen = ({ navigation }) => {
                                     return (
                                         <TouchableOpacity
                                             key={product?._id}
-                                            onPress={() => navigation.navigate("ProductDetails", { product })}
+                                            onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
                                             className='border-gray-100 border-2 px-4 py-4 rounded-2xl'
                                             style={{ width: responsiveWidth(45) }}>
 
@@ -156,7 +152,7 @@ const HomeScreen = ({ navigation }) => {
                                                 <Text
                                                     className="text-black font-mulish-bold"
                                                     style={{ fontSize: responsiveFontSize(1.85) }}>
-                                                    ₹{product?.price}
+                                                    ₹{product?.price[userData?.category]}
                                                 </Text>
 
                                                 <View
@@ -176,7 +172,7 @@ const HomeScreen = ({ navigation }) => {
                             })
                     }
 
-                    {!isError && !loadingProducts &&
+                    {!isError && !loadingProducts && !isLoadingUserData &&
                         <TouchableOpacity
                             onPress={() => navigation.navigate("CategoryProducts", { category: "Best-Selling" })}
                             className='border-gray-100 border-2 px-4 py-4 rounded-2xl justify-center items-center'
@@ -202,7 +198,7 @@ const HomeScreen = ({ navigation }) => {
                 </View>
             </ScrollView>
 
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 

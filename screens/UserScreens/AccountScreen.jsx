@@ -1,24 +1,27 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Keyboard } from 'react-native'
 import React, { Fragment } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import data from "../components/UserAccountScreenCard"
 import * as SecureStore from "expo-secure-store";
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { getUserData } from '../../api/userAPI'
+import { getUserDataAPI } from '../../api/userAPI'
 import { Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import useUserDataQuery from '../../hooks/useUserData';
+import ReactNativeModal from 'react-native-modal';
 
 const AccountScreen = ({ navigation }) => {
 
   const queryClient = useQueryClient()
-  const { data: userData } = useQuery({
-    queryKey: ['userData'],
-    queryFn: getUserData,
-    staleTime: Infinity,
-  })
+  // const { data: userData } = useQuery({
+  //   queryKey: ['userData'],
+  //   queryFn: getUserDataAPI,
+  //   staleTime: Infinity,
+  // })
 
+  const { data: userData } = useUserDataQuery()
 
   const logout = async () => {
     try {
@@ -104,7 +107,7 @@ const AccountScreen = ({ navigation }) => {
             <Text
               className="text-[#53B175] font-mulish-semibold"
               style={{
-                fontSize:responsiveFontSize(2.5)
+                fontSize: responsiveFontSize(2.5)
               }}>
               Log Out
             </Text>
@@ -113,6 +116,81 @@ const AccountScreen = ({ navigation }) => {
           </View>
         </TouchableOpacity>
       </View>
+
+      <ReactNativeModal testID={'modalForDownloading'}
+        animationIn={"slideInUp"}
+        animationOut={"slideOutDown"}
+        animationOutTiming={1000}
+        animationInTiming={700}
+        hideModalContentWhileAnimating
+        backdropTransitionOutTiming={0}
+        isVisible={false}
+        onBackButtonPress={() => {
+          Keyboard.dismiss()
+          // setDownlaodModalVisible(false)
+          // setStartDate("")
+          // setEndDate("")
+        }}
+        onBackdropPress={() => {
+          Keyboard.dismiss()
+          // setDownlaodModalVisible(false)
+          // setStartDate("")
+          // setEndDate("")
+        }}
+      >
+
+        <View className=" flex-1 justify-center flex-col ">
+
+          <View className=" bg-white rounded-3xl p-5 items-center justify-center ">
+            <Text className="text-black font-mulish-semibold text-center" style={{
+              fontSize: responsiveFontSize(2.5)
+            }}>
+              Do you want to logout ?
+            </Text>
+
+            <View className="flex-row justify-around w-full my-4">
+              <TouchableOpacity
+                // onPress={() => setStartDateModalVisible(true)}
+                className=" flex-row items-center gap-x-3 border-2 p-3 border-[#eeedf3] rounded-2xl">
+                <Text className=" text-black font-mulish-semibold"
+                  style={{
+                    fontSize: responsiveFontSize(1.75)
+                  }}>
+                  Yes
+                </Text>
+
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                //  onPress={() => { setEndDateModalVisible(true) }}
+                className=" flex-row items-center gap-x-3 border-2 p-3 border-[#eeedf3] rounded-2xl">
+                <Text className="text-black font-mulish-semibold" style={{
+                  fontSize: responsiveFontSize(1.75)
+                }}>
+                  No
+                </Text>
+
+              </TouchableOpacity>
+            </View>
+
+            {/* <TouchableOpacity
+              disabled={(startDate === "" || endDate === "" && true)}
+              onPress={() => downloadTransactionPdf(params?.custoemrId, startDate, endDate)}
+              className="bg-[#419a79] p-4  rounded-xl">
+              <Text className="text-white font-mulish-semibold" style={{
+                fontSize: responsiveFontSize(2)
+              }}>
+                Download PDF
+              </Text>
+            </TouchableOpacity> */}
+
+          </View>
+
+        </View>
+
+
+      </ReactNativeModal>
+
     </SafeAreaView>
   )
 }

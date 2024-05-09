@@ -1,19 +1,21 @@
-import { View, Text, TouchableOpacity, Dimensions, ScrollView, Image, StatusBar } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, Image, StatusBar, PixelRatio, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Heart from "../../assets/icons/tabs/heart.svg"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { changeFavouriteProduct } from '../../api/productAPI'
-import { getUserData } from '../../api/userAPI'
+import { changeFavouriteProductAPI } from '../../api/productAPI'
 import { useFocusEffect } from '@react-navigation/native'
-import { addToCartApi, getItemsFromCartApi } from '../../api/cartAPI';
+import { addToCartAPI, getItemsFromCartAPI } from '../../api/cartAPI';
 import { IMAGE_URL } from "@env";
 import { Toast } from 'react-native-alert-notification'
 import { ActivityIndicator, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
+import useUserDataQuery from '../../hooks/useUserData'
 
 const ProductDetailsScreen = ({ route, navigation }) => {
+    const screenWidth = Dimensions.get('window');
+    console.log(screenWidth)
     const { product } = route?.params
     const queryClient = useQueryClient()
     const [isFavourite, setIsFavourite] = useState(false)
@@ -39,14 +41,11 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         setTotalPrice(quantity * product?.price)
     }, [quantity])
 
-
     // Checking if the product is in favourties
     const checkFavourite = () => {
         if (userData?.favourite?.length > 0) {
             for (let i = 0; i < userData?.favourite?.length; i++) {
-                console.log(userData?.favourite[i]?._id === product?._id)
                 if (userData?.favourite[i]?._id === product?._id) {
-                    console.log("hdshfgdsg")
                     setIsFavourite(true);
                     break;
                 }
@@ -58,20 +57,14 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         else {
             setIsFavourite(false)
         }
-
     }
 
+    const { data: userData } = useUserDataQuery()
 
-    const { data: userData } = useQuery({
-        queryKey: ["userData"],
-        queryFn: getUserData,
-        staleTime: Infinity,
-    })
-
-
-    const { mutate, isPending: addingToFavourites } = useMutation({
-        mutationFn: changeFavouriteProduct,
+    const { mutate, isPending: addingToFavourites, status } = useMutation({
+        mutationFn: changeFavouriteProductAPI,
         onSuccess: () => {
+
             queryClient.invalidateQueries({
                 queryKey: ['userData'],
             })
@@ -81,7 +74,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
     const { mutate: addToCartMutate, isSuccess, isPending: addingToBasket } = useMutation({
         mutationKey: ["addToCart", product],
-        mutationFn: addToCartApi,
+        mutationFn: addToCartAPI,
         onSuccess: () => {
             Toast.show({
                 title: "Added to Cart",
@@ -98,23 +91,14 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
     const { data: cartItems, isFetching } = useQuery({
         queryKey: ['cartItems'],
-        queryFn: getItemsFromCartApi,
+        queryFn: getItemsFromCartAPI,
         staleTime: Infinity,
     })
 
 
-    // const { mutate: modifyQuantity, isPending: modifyingCart } = useMutation({
-    //     mutationFn: addToCartApi,
-    //     onSuccess: () => {
-    //         queryClient.invalidateQueries({
-    //             queryKey: ['cartItems']
-    //         })
-    //     }
-    // })
-
     const checkProductInCart = () => {
         const userCart = cartItems?.cart
-        const productInCart = userCart?.filter((item) => item?.cart_item?._id == product?._id)
+        const productInCart = userCart?.filter((item) => item?.cartItem?._id == product?._id)
         if (productInCart?.length > 0) {
             setQuantity(productInCart[0]?.quantity)
             setIsInCart(true)
@@ -126,12 +110,15 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
 
     useFocusEffect(React.useCallback(() => {
-        checkFavourite();
         checkProductInCart();
         return (() => {
             setIsInCart(false)
         })
     }, [userData, cartItems]))
+
+    useFocusEffect(React.useCallback(() => {
+        checkFavourite()
+    }, [userData]))
 
     return (
         <SafeAreaView className="flex-1 bg-white "
@@ -184,8 +171,12 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
 
                             <TouchableOpacity
-                                disabled={addingToFavourites}
-                                onPress={() => { mutate({ productId: product?._id }) }}>
+                                disabled={addingToFavourites || status === "pending"}
+
+                                onPress={() => {
+                                    setIsFavourite(!isFavourite)
+                                    mutate({ productId: product?._id })
+                                }}>
                                 <Heart color={isFavourite ? "red" : "white"} />
                             </TouchableOpacity>
 
@@ -347,14 +338,15 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
             <View className="bottom-3 relative self-center w-full overflow-hidden ">
                 <TouchableOpacity
-                    disabled={addingToBasket}
+                    disabled={addingToBasket || isFetching}
                     onPress={
                         () => addToCartMutate({ ...product, quantity })
                     }
                     className="bg-[#53B175] p-5 rounded-3xl mx-5 items-center justify-center ">
 
                     {addingToBasket || isFetching ?
-                        <ActivityIndicator color='white' style={{ paddingVertical: responsiveHeight(0.5) }} /> :
+                        <ActivityIndicator color='white' />
+                        :
                         <Text
                             className=' text-white font-mulish-semibold'
                             style={{

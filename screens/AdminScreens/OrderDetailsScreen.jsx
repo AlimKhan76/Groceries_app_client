@@ -7,7 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { updateOrderApi } from '../../api/adminAPIs/orderAPI'
+import { updateOrderStatusAPI } from '../../api/adminAPIs/orderAPI'
 import { moderateScale, scale } from 'react-native-size-matters'
 import moment from 'moment-timezone'
 import Feather from "react-native-vector-icons/Feather"
@@ -20,7 +20,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
     const queryClient = useQueryClient();
 
     const { mutate, isPending: markingOrder } = useMutation({
-        mutationFn: updateOrderApi,
+        mutationFn: updateOrderStatusAPI,
         onSuccess: (data) => {
             queryClient.invalidateQueries({
                 queryKey: ["order"]
@@ -265,13 +265,13 @@ const OrderDetailsScreen = ({ navigation, route }) => {
 
                         {order?.items?.map((product) => {
                             return (
-                                <DataTable.Row key={product?.cart_item?._id}>
+                                <DataTable.Row key={product?.cartItem?._id}>
 
                                     <DataTable.Cell >
                                         <Text className=" text-black font-mulish-medium"
                                             style={{ fontSize: responsiveFontSize(1.65) }}>
 
-                                            {product?.cart_item?.title}
+                                            {product?.cartItem?.title}
                                         </Text>
                                     </DataTable.Cell>
                                     <DataTable.Cell numeric
@@ -281,7 +281,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                                             color: "black",
                                         }}>
 
-                                        {product?.quantity} {product?.cart_item?.unit}
+                                        {product?.quantity} {product?.cartItem?.unit} / ₹{product?.cartItem?.price?.[order?.customerCategory]}
                                     </DataTable.Cell>
                                     <DataTable.Cell numeric
                                         textStyle={{
@@ -289,7 +289,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                                             fontFamily: "Mulish-Bold",
                                             color: "black",
                                         }}>
-                                        ₹  {product?.quantity * product?.cart_item?.price}
+                                        ₹ {product?.quantity * product?.cartItem?.price?.[order?.customerCategory]}
                                     </DataTable.Cell>
                                 </DataTable.Row>
 
@@ -319,54 +319,6 @@ const OrderDetailsScreen = ({ navigation, route }) => {
 
                     <View>
                         <DataTable numeric >
-
-                            <DataTable.Row numeric>
-                                <DataTable.Cell>
-                                    <Text className=' text-black font-mulish-medium'
-                                        style={{ fontSize: responsiveFontSize(1.75) }}>
-
-                                        Sub Total :
-                                    </Text>
-
-                                </DataTable.Cell>
-
-                                <DataTable.Cell numeric
-                                    textStyle={{
-                                        fontSize: responsiveFontSize(1.75),
-                                        fontFamily: "Mulish-Medium",
-                                        color: "black",
-                                    }}>
-                                    ₹ {order?.subTotal}
-
-                                </DataTable.Cell>
-                            </DataTable.Row>
-
-
-                            {order?.couponCode !== "" &&
-                                <>
-                                    <DataTable.Row numeric>
-                                        <DataTable.Cell>
-                                            <Text className='text-lg text-black font-mulish-medium'
-                                                style={{ fontSize: responsiveFontSize(1.65) }}>
-                                                Discount  : ({order?.couponCode})
-                                            </Text>
-
-                                        </DataTable.Cell>
-
-                                        <DataTable.Cell numeric
-                                            textStyle={{
-                                                fontSize: responsiveFontSize(1.65),
-                                                fontFamily: "Mulish-Medium",
-                                                color: "black",
-                                            }}>
-                                            - ₹ {order?.discount}
-
-                                        </DataTable.Cell>
-                                    </DataTable.Row>
-                                    <Divider bold />
-                                </>
-
-                            }
 
                             <DataTable.Row numeric>
                                 <DataTable.Cell
@@ -417,12 +369,12 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                         className='bg-[#53B175] p-5 rounded-2xl '
                         style={{ width: responsiveWidth(90) }}
                         onPress={() => {
-                            if (order?.status === "Pending") {
-                                mutate({ orderId: order?._id, status: "Packed" })
-                            }
-                            else if (order?.status === "Packed") {
-                                mutate({ orderId: order?._id, status: "Delivered" })
-                            }
+                            // if (order?.status === "Pending") {
+                            // mutate({ orderId: order?._id, status: "Packed" })
+                            // }
+                            // else if (order?.status === "Packed") {
+                            mutate({ orderId: order?._id, status: "Delivered" })
+                            // }
                         }}>
 
                         <View className="flex-row items-center justify-center gap-2">
@@ -435,10 +387,10 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                                 <Text
                                     className="text-white text-center font-mulish-semibold"
                                     style={{ fontSize: responsiveFontSize(2.5) }}>
-                                    {order?.status === "Pending" ? "Mark as Packed"
-                                        // :
-                                        // order?.status === "Processed" ? "Mark as Packed" 
-                                        : "Mark as Delivered"}
+                                    {/* {order?.status === "Pending" ? "Mark as Packed" */}
+                                    {/* // : */}
+                                    {/* // order?.status === "Processed" ? "Mark as Packed"  */}
+                                    Mark as Delivered
                                 </Text>
                             }
 

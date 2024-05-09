@@ -11,7 +11,8 @@ export const AdminBottomTabs = () => {
     const Tab = createBottomTabNavigator();
 
     return (
-        <Tab.Navigator initialRouteName='PendingOrders'
+        <Tab.Navigator
+            initialRouteName='PendingOrders'
             screenOptions={{
                 tabBarStyle: {
                     alignItems: "center",

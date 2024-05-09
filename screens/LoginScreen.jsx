@@ -1,200 +1,149 @@
-import { useMutation } from '@tanstack/react-query'
+import { View, Text, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
-import { View, Text, ImageBackground, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import firebase from '@react-native-firebase/auth';
+import { ActivityIndicator } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { loginUserAPI } from '../api/userAPI'
-import { Formik } from 'formik'
-import { object, string } from 'yup'
-import { Dialog } from 'react-native-alert-notification'
-import * as SecureStore from 'expo-secure-store';
-import { ActivityIndicator } from 'react-native-paper'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
-// Not in use
 const LoginScreen = ({ navigation }) => {
-    const [scrollHeight, setScrollHeight] = useState(0)
+    const [confirm, setConfirm] = useState(null)
+    const [isLoading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+    const [phoneNumber, setPhoneNumber] = useState("")
 
 
-    const loginSchema = object().shape({
-        contactNo: string()
-            .required("Enter your contact details")
-            .min(10, "Enter at least 10 numbers"),
-        // .matches("^(\[+]91[\-\s]?)?[0]?(91)?[789]\d{9}$", "Enter a valid number"),
-        password: string()
-            .required("Enter a password")
-            .min(6, "Password has to be at least 6 characters")
-    })
-
-    const { mutate, isPending: loggingIn } = useMutation({
-        mutationKey: ["login"],
-        mutationFn: loginUserAPI,
-        onSuccess: async (data) => {
-            console.log(data)
-            await SecureStore.setItemAsync("token", data?.token)
-            await SecureStore.setItemAsync("role", data?.role)
-
-            Dialog.show({
-                type: 'SUCCESS',
-                title: 'Logged in',
-                autoClose: 500,
-                textBody: "Logged in successfully",
-                button: '',
-            })
-            if (data?.role === "admin") {
-                navigation.replace("Admin")
-            }
-            else {
-                navigation.replace('Main')
-            }
-        },
-        onError: (error) => {
-            Dialog.show({
-                type: 'DANGER',
-                title: 'Error',
-                autoClose: 1000,
-                textBody: error,
-                button: 'Close',
-            })
+    const signInWithPhoneNumber = async (phoneNumber) => {
+        try {
+            Keyboard.dismiss()
+            setLoading(true)
+            const confirmation = await firebase().signInWithPhoneNumber("+91 " + phoneNumber);
+            setConfirm(confirmation);
+            setLoading(false)
+            navigation.replace("OTPScreen", { confirmation, phoneNumber })
+        } catch (phoneAuthError) {
+            setError(phoneAuthError?.message?.split("]")[1]?.split(".")[0])
+            setLoading(false)
+            console.log(phoneAuthError?.message)
+            console.log(phoneAuthError?.code)
         }
-    })
-
+    }
 
     return (
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <ImageBackground
-                source={require("../assets/images/sign/background-bottom.png")}
-                className="flex-1 justify-start pt-24 "
-                resizeMode='cover'>
+        <SafeAreaView className="bg-white flex-1">
+
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+
                 <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    className="bg-white"
                     scrollEnabled={false}
                     resetScrollToCoords={{ x: 0, y: 0 }}
                     enableOnAndroid={true}
-                    extraScrollHeight={scrollHeight}
-                    extraHeight={scrollHeight}>
+                    extraScrollHeight={responsiveHeight(12)}
+                    extraHeight={responsiveHeight(12)}
+                >
 
-                    <View className="flex w-full items-center mb-24">
-                        <Image source={(require("../assets/images/logo-colour.png"))} />
-                    </View>
-
-                    <View className="items-start mx-5 ">
-                        <Text className="text-2xl font-mulish-bold text-black ">
-                            Loging In
-                        </Text>
-                        <Text className="font-mulish-medium py-3 text-gray-400">
-                            Enter you mobile number and password
-                        </Text>
-
-
-
-                        <Formik initialValues={{
-                            contactNo: "",
-                            password: "",
+                    <Image
+                        resizeMode='cover'
+                        style={{ height: responsiveHeight(50) }}
+                        source={require("../assets/images/sign-in-background.png")}
+                    />
+                    <Text
+                        style={{
+                            width: responsiveWidth(75),
+                            fontSize: responsiveFontSize(3.25),
+                            marginHorizontal: responsiveWidth(6),
                         }}
-                            onSubmit={(values, { errors }) => {
-                                mutate(values)
-                                //     if (!error)
-                                //         // resetForm()
-                                //
+                        className='text-black font-mulish-semibold'>
+                        Get your groceries with Shri Biroba
+                    </Text>
+
+
+                    <View
+                        className={`flex-row border-b-2 
+                        ${error !== null ? "border-red-500" : 'border-gray-300'} 
+                        items-center mx-5 `}
+                        style={{
+                            paddingVertical: responsiveHeight(0.5),
+                            marginVertical: responsiveHeight(2)
+                        }}>
+
+                        <Text
+                            className='text-black px-2 font-mulish-medium'
+                            style={{
+                                fontSize: responsiveFontSize(1.75)
+                            }}>
+                            +91
+                        </Text>
+
+                        <TextInput
+                            style={{
+                                width: responsiveWidth(75),
+                                fontSize: responsiveFontSize(1.75)
                             }}
-                            validationSchema={loginSchema}
-                        >{({
-                            values,
-                            errors,
-                            touched,
-                            handleChange,
-                            handleBlur,
-                            handleSubmit,
-                        }) => (
-                            <>
-                                <View className="w-full my-5">
-                                    <Text className="text-sm  font-mulish-semibold text-gray-400">
-                                        Contact Number *
-                                    </Text>
-                                    <TextInput
-                                        value={values.contactNo}
-                                        onChangeText={handleChange("contactNo")}
-                                        onBlur={handleBlur('contactNo')}
-                                        onPressIn={() => setScrollHeight(150)}
-                                        className={
-                                            ` ${errors.contactNo && touched.contactNo ? "border-b-red-400" : "border-b-gray-200"}
-                                            py-1 pb-2.5 text-md border-b-2 font-mulish-medium w-full text-black `}
-                                        placeholderTextColor={"black"}
-                                        keyboardType='numeric'
-                                        placeholder='Enter Your mobile number' />
-                                </View>
-                                {errors?.contactNo && touched?.contactNo &&
-                                    <Text className='text-sm text-red-400'>
-                                        {errors?.contactNo}
-                                    </Text>
-                                }
-
-                                <View className="w-full my-5">
-                                    <Text className="font-mulish-semibold text-sm text-gray-400">
-                                        Password * (6 characters)
-                                    </Text>
-                                    <TextInput
-                                        value={values.password}
-                                        onChangeText={handleChange('password')}
-                                        onBlur={handleBlur('password')}
-                                        onPressIn={() => setScrollHeight(110)}
-                                        className={
-                                            ` ${errors.contactNo && touched.contactNo ? "border-b-red-400" : "border-b-gray-200"}
-                                            py-1 pb-2.5 text-md border-b-2 font-mulish-medium w-full text-black `}
-                                        placeholder='Enter Your password'
-                                        placeholderTextColor={"black"}
-                                        secureTextEntry={true} />
-                                </View>
-                                {errors?.password && touched?.password &&
-                                    <Text className='text-sm text-red-400'>
-                                        {errors?.password}
-                                    </Text>
-                                }
-
-                                <View className="items-end pb-2.5 w-full">
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate("ForgotPassword")}>
-                                        <Text
-                                            className=" text-black font-mulish-medium">
-                                            Forgot password ?
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-
-                                <TouchableOpacity
-                                    onPress={handleSubmit}
-                                    className="my-3 p-4 w-full rounded-2xl items-center bg-[#53B175]">
-                                    {loggingIn ?
-                                        <ActivityIndicator color='white' />
-                                        :
-                                        <Text
-                                            className="text-white text-lg font-mulish-semibold">
-                                            Log in
-                                        </Text>
-                                    }
-                                </TouchableOpacity>
-                            </>
-                        )}
-                        </Formik >
-
-
-
-
-
-
-                        <View className="flex-row py-3 gap-1 justify-center w-full">
-                            <Text className="font-mulish-semibold text-black">Don't have an account?</Text>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate("SignUp")}>
-                                <Text className="text-[#53B175] font-mulish-semibold ">
-                                    Signup
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-
+                            value={phoneNumber}
+                            onChangeText={(e) => {
+                                setPhoneNumber(e)
+                                setError(null)
+                            }}
+                            maxLength={10}
+                            className='text-black font-mulish-medium'
+                            keyboardType='numeric'
+                            placeholder='Mobile Number'
+                            placeholderTextColor={"black"}
+                        />
                     </View>
+
+                    {error !== null &&
+                        <Text className="text-red-500 "
+                            style={{
+                                fontSize: responsiveFontSize(1.5),
+                                marginHorizontal: responsiveWidth(6),
+                            }}>
+                            {error} Please try again later
+                        </Text>
+                    }
+
+                    <TouchableOpacity
+                        disabled={isLoading || phoneNumber.length < 10 && true}
+                        onPress={() => signInWithPhoneNumber(phoneNumber)}
+                        className={`${phoneNumber.length < 10 && "opacity-50"}
+                     mx-5 my-8 p-5 rounded-2xl bg-[#53B175]`}>
+
+                        {isLoading ?
+                            <ActivityIndicator color='white' size={"small"}
+                                style={{ paddingVertical: responsiveHeight(0.5) }} />
+                            :
+                            <Text
+                                style={{
+                                    fontSize: responsiveFontSize(2.25)
+                                }}
+                                className="text-center text-white font-mulish-semibold">
+                                Login with OTP
+                            </Text>
+                        }
+                    </TouchableOpacity>
+
+                    {/* <Text
+                        className="text-center text-[#828282] font-mulish-semibold text-sm">
+                        An OTP will be sent to your phone number
+                    </Text> */}
+
+                    {/* 
+            <TouchableOpacity
+                onPress={() => navigation.navigate("SignUp")}
+                className='bg-[#4A66AC] p-5 m-4 rounded-2xl'>
+                <Text
+                    className='text-center text-white font-mulish-semibold text-lg'>
+                    Sign in later
+                </Text>
+            </TouchableOpacity> */}
 
                 </KeyboardAwareScrollView>
-            </ImageBackground >
-        </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+
+        </SafeAreaView >
     )
 }
 

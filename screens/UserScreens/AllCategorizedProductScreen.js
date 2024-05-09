@@ -4,21 +4,23 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
-import { getProductByCategory } from '../../api/productAPI'
+import { getProductByCategoryAPI } from '../../api/productAPI'
 import { IMAGE_URL } from "@env"
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
+import useUserDataQuery from '../../hooks/useUserData'
 
 const AllCategorizedProductScreen = ({ route }) => {
     const navigation = useNavigation();
 
     const { category } = route.params
     const { data: categorizedProducts, isLoading: loadingProducts } = useQuery({
-        queryKey: ["getProductByCategory", category],
-        queryFn: () => getProductByCategory(category),
+        queryKey: ["getProductByCategoryAPI", category],
+        queryFn: () => getProductByCategoryAPI(category),
         staleTime: Infinity
     })
 
+    const { data: userData } = useUserDataQuery()
 
 
     return (
@@ -61,11 +63,11 @@ const AllCategorizedProductScreen = ({ route }) => {
                         </View>
                         :
                         categorizedProducts?.map((product, index) => {
-                            if (index < 5) {
+                            // if (index < 5) {
                                 return (
                                     <TouchableOpacity
                                         key={product?._id}
-                                        onPress={() => navigation.navigate("ProductDetails", { product })}
+                                        onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
                                         className='border-gray-100 border-2 px-4 py-4 rounded-2xl '
                                         style={{ width: responsiveWidth(45) }}>
 
@@ -97,7 +99,7 @@ const AllCategorizedProductScreen = ({ route }) => {
                                                 style={{
                                                     fontSize: responsiveFontSize(2)
                                                 }}>
-                                                ₹{product?.price}
+                                                ₹{product?.price?.[userData?.category]}
                                             </Text>
 
                                             <View
@@ -110,10 +112,10 @@ const AllCategorizedProductScreen = ({ route }) => {
                                         </View>
                                     </TouchableOpacity>
                                 )
-                            }
-                            else {
-                                return null
-                            }
+                            // }
+                            // else {
+                            //     return null
+                            // }
                         })
                     }
 

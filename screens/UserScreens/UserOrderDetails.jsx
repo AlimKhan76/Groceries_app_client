@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Dropdown } from 'react-native-element-dropdown'
@@ -6,17 +6,23 @@ import { ActivityIndicator, Appbar, DataTable, Divider } from 'react-native-pape
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { cancelOrderApi, reOrderApi } from '../../api/orderAPI'
+import { cancelOrderAPI, reOrderAPI } from '../../api/orderAPI'
 import { Dialog } from 'react-native-alert-notification'
 import EvilIcons from "react-native-vector-icons/EvilIcons"
 import moment from "moment-timezone";
+import useUserDataQuery from '../../hooks/useUserData'
+import { useFocusEffect } from '@react-navigation/native'
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 const UserOrderDetails = ({ navigation, route }) => {
     const { order } = route?.params;
     const queryClient = useQueryClient()
+    const { data: userData } = useUserDataQuery()
+    const [isPastCutOff, setIsPastCutOff] = useState(false)
+
 
     const { mutate: cancelOrder, isPending: cancelling } = useMutation({
-        mutationFn: cancelOrderApi,
+        mutationFn: cancelOrderAPI,
         onSuccess: (data) => {
             console.log(data)
             queryClient.invalidateQueries({ queryKey: ["userOrders"] })
@@ -41,7 +47,7 @@ const UserOrderDetails = ({ navigation, route }) => {
     })
 
     const { mutate: placeOrderAgain, isPending: orderingAgain } = useMutation({
-        mutationFn: reOrderApi,
+        mutationFn: reOrderAPI,
         onError: () => {
             Dialog.show({
                 type: "DANGER",
@@ -64,6 +70,19 @@ const UserOrderDetails = ({ navigation, route }) => {
 
         }
     })
+
+    const isBetween2AMAnd11AM = () => {
+        const currentTime = moment.tz("Asia/Kolkata");
+        const start = moment.tz("02:00:00", "HH:mm:ss", "Asia/Kolkata");
+        const end = moment.tz("11:00:00", "HH:mm:ss", "Asia/Kolkata");
+        console.log(currentTime, start, end)
+        console.log(currentTime.isBetween(start, end))
+        setIsPastCutOff(currentTime.isBetween(start, end))
+        return currentTime.isBetween(start, end);
+    };
+    useFocusEffect(React.useCallback(() => {
+        isBetween2AMAnd11AM()
+    }, []))
 
 
     return (
@@ -97,17 +116,43 @@ const UserOrderDetails = ({ navigation, route }) => {
 
             <ScrollView className="my-5 px-2.5">
 
-                <View className='flex-row pb-5 items-center'>
-                    <Text
-                        className=" font-mulish-regular text-slate-700"
-                        style={{ fontSize: responsiveFontSize(2.5) }}>
-                        Order&nbsp;
-                    </Text>
-                    <Text
-                        className=" text-black font-mulish-semibold"
-                        style={{ fontSize: responsiveFontSize(2.25) }}>
-                        #{order?.orderNo}
-                    </Text>
+                <View className='flex-row pb-3 items-center justify-between'>
+                    <View className="flex-row items-center">
+
+                        <Text
+                            className=" font-mulish-regular text-slate-700"
+                            style={{ fontSize: responsiveFontSize(2.75) }}>
+                            Order&nbsp;
+                        </Text>
+                        <Text
+                            className=" text-black font-mulish-semibold"
+                            style={{ fontSize: responsiveFontSize(2.25) }}>
+                            #{order?.orderNo}
+                        </Text>
+                    </View>
+
+
+                    <View
+                        className=" flex-row p-2.5 bg-white border-gray-300 border-2 rounded-xl items-center gap-x-1">
+                        {order?.status === "Pending" ?
+                            <MaterialCommunityIcons
+                                name="timer-sand" size={responsiveHeight(2.25)} color="black" />
+                            :
+                            order?.status === "Delivered" ?
+                                <MaterialCommunityIcons
+                                    name="checkbox-multiple-marked-outline" size={responsiveHeight(2.25)} color="black" />
+                                :
+                                <MaterialCommunityIcons
+                                    name="cancel" size={responsiveHeight(2.25)} color="black" />
+                        }
+
+                        <Text className="text-black font-mulish-semibold px-1"
+                            style={{
+                                fontSize: responsiveFontSize(1.85)
+                            }}>
+                            {order?.status}
+                        </Text>
+                    </View>
                 </View>
 
 
@@ -127,7 +172,6 @@ const UserOrderDetails = ({ navigation, route }) => {
                                 style={{ fontSize: responsiveFontSize(1.5) }}>
                                 {moment.tz(order?.orderedDate, "Asia/Kolkata").format("DD-MM-YYYY hh:mm A")}
 
-                                {/* {order?.orderedDate.replace(" ", " at ")} */}
                             </Text>
 
                         </View>
@@ -207,7 +251,7 @@ const UserOrderDetails = ({ navigation, route }) => {
                                 <Text className="text-black font-mulish-bold"
                                     style={{ fontSize: responsiveFontSize(1.65) }}>
 
-                                    Quantity
+                                    Quantity / Price
                                 </Text>
                             </DataTable.Title>
                             <DataTable.Title numeric >
@@ -226,7 +270,7 @@ const UserOrderDetails = ({ navigation, route }) => {
                                     <DataTable.Cell >
                                         <Text className=" text-black font-mulish-medium"
                                             style={{ fontSize: responsiveFontSize(1.65) }}>
-                                            {product?.cart_item?.title}
+                                            {product?.cartItem?.title}
 
                                         </Text>
                                     </DataTable.Cell>
@@ -237,10 +281,9 @@ const UserOrderDetails = ({ navigation, route }) => {
                                             fontSize: responsiveFontSize(1.5),
                                             color: "black",
                                             fontFamily: "Mulish-Medium"
-
                                         }}>
 
-                                        {product?.quantity} {product?.cart_item?.unit}
+                                        {product?.quantity} {product?.cartItem?.unit} / ₹{product?.cartItem?.price?.[order?.customerCategory]}
                                     </DataTable.Cell>
 
 
@@ -251,7 +294,7 @@ const UserOrderDetails = ({ navigation, route }) => {
                                             fontFamily: "Mulish-Medium"
 
                                         }}>
-                                        ₹ {product?.cart_item?.price * product?.quantity}
+                                        ₹ {product?.cartItem?.price?.[userData?.category] * product?.quantity}
                                     </DataTable.Cell>
 
 
@@ -281,47 +324,10 @@ const UserOrderDetails = ({ navigation, route }) => {
                     <View>
 
 
-                        <DataTable numeric >
+                        <DataTable  >
 
-                            <DataTable.Row numeric>
-                                <DataTable.Cell>
-                                    <Text className=' text-black font-mulish-medium'
-                                        style={{ fontSize: responsiveFontSize(1.85) }}>
-                                        Sub Total :
-                                    </Text>
-                                </DataTable.Cell>
+                          
 
-                                <DataTable.Cell numeric>
-                                    <Text className=' text-black font-mulish-medium'
-                                        style={{ fontSize: responsiveFontSize(1.85) }}>
-                                        ₹ {order?.subTotal}
-                                    </Text>
-                                </DataTable.Cell>
-
-                            </DataTable.Row>
-
-
-                            {order?.couponCode !== "" &&
-                                <>
-                                    <DataTable.Row numeric>
-                                        <DataTable.Cell>
-                                            <Text className=' text-black font-mulish-medium'
-                                                style={{ fontSize: responsiveFontSize(1.65) }}>
-                                                Discount  : ({order?.couponCode})
-                                            </Text>
-                                        </DataTable.Cell>
-
-                                        <DataTable.Cell numeric>
-                                            <Text className=' text-black font-mulish-regular'
-                                                style={{ fontSize: responsiveFontSize(1.65) }}>
-                                                - ₹ {order?.discount}
-                                            </Text>
-                                        </DataTable.Cell>
-
-                                    </DataTable.Row>
-                                    <Divider bold />
-                                </>
-                            }
 
                             <DataTable.Row numeric>
                                 <DataTable.Cell>
@@ -350,11 +356,11 @@ const UserOrderDetails = ({ navigation, route }) => {
 
 
             {/* Bottom button */}
-            {order?.status === "Pending"
+            {/* {order?.status === "Pending"
                 ?
                 <View className="relative bottom-2.5 items-center">
                     <TouchableOpacity className='bg-red-400 p-5 rounded-2xl '
-                        disabled={cancelling}
+                        disabled={cancelling || isPastCutOff}
                         onPress={() => cancelOrder(order?._id)}
                         style={{ width: responsiveWidth(90) }}>
 
@@ -364,18 +370,22 @@ const UserOrderDetails = ({ navigation, route }) => {
                                 style={{
                                     paddingVertical: responsiveHeight(0.5)
                                 }} />
-
                             :
                             <Text
                                 className="text-white text-center font-mulish-semibold"
-                                style={{ fontSize: responsiveFontSize(2.5) }}>
-                                Cancel Order
+                                style={{
+                                    fontSize: isPastCutOff ? responsiveFontSize(2) : responsiveFontSize(2.5)
+                                }}>
+                                {isPastCutOff ?
+                                    "Cancelling order not allowed between 2am and 11pm" :
+                                    "Cancel Order"
+                                }
                             </Text>
                         }
 
                     </TouchableOpacity>
                 </View>
-                :
+                : */}
                 <View className="relative bottom-2.5 items-center">
                     <TouchableOpacity className='bg-[#53B175] p-5 rounded-2xl '
                         disabled={orderingAgain}
@@ -400,7 +410,7 @@ const UserOrderDetails = ({ navigation, route }) => {
 
                     </TouchableOpacity>
                 </View>
-            }
+            {/*  } */}
 
 
         </SafeAreaView>

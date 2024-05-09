@@ -1,40 +1,39 @@
 const { API } = require("./config/axios")
 
-exports.addToCartApi = async (product) => {
+
+exports.addToCartAPI = async (product) => {
     try {
         const { data } = await API.post("cart/add", { product })
-        console.log("Product is Added to Cart Successfully " + data)
+        console.log("Product is Added to Cart " + data)
         return data;
     }
     catch (error) {
-        console.log("Error in adding product to cart " + error.response.data.message)
-        throw error.response.data.message
+        console.log("Error in adding product to cart " + error?.response?.data?.message)
+        throw error?.response?.data?.message
     }
 }
 
 
-exports.removeFromCart = async (productId) => {
+exports.removeFromCartAPI = async (productId) => {
     try {
         const { data } = await API.post("cart/remove", { productId })
         console.log("Product removed from cart " + data)
         return data;
     }
     catch (error) {
-        console.log("Error in removing Product from cart " + error.response.data.message)
-        throw error.response.data.message
+        console.log("Error in removing Product from cart " + error?.response?.data?.message)
+        throw error?.response?.data?.message
     }
-
 }
 
 
-exports.getItemsFromCartApi = async () => {
+exports.getItemsFromCartAPI = async () => {
     try {
         const { data } = await API.get("cart/get")
-        console.log("Cart Items fetched successfully ", data)
+        console.log("Cart Items fetched successfully ")
         return data;
     } catch (error) {
-        console.log("Error in fetching cart items" + error.response.data.message)
-        throw error.response.data.message
-
+        console.log("Error in fetching cart items" + error?.response?.data?.message)
+        throw error?.response?.data?.message
     }
 }

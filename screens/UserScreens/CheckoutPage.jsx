@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Appbar, Divider, RadioButton } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
-import { getAddresses } from '../../api/addressAPI'
+import { getUserAddressAPI } from '../../api/addressAPI'
 import OrderConfirmationScreen from './OrderConfirmationScreen'
 import { Dialog } from 'react-native-alert-notification'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -16,7 +16,8 @@ const CheckoutPage = () => {
 
     const { data: userAddress, isLoading } = useQuery({
         queryKey: ['userAddresses'],
-        queryFn: getAddresses,
+        queryFn: getUserAddressAPI,
+        staleTime: Infinity
     })
 
     const proceedToOrderConfirmation = () => {
