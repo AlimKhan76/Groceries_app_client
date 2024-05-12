@@ -1,104 +1,61 @@
-<!-- This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
-
-# Getting Started
-
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
-
-## Step 1: Start the Metro Server
-
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
-
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native. -->
-
 # Shri Biroba: E-Commerce App - Modernizing Local Vegetable Wholesale Operations
 
-Welcome to Shri Biroba, an innovative e-commerce app designed to modernize the operations of local vegetable wholesale suppliers. This app caters to both customers and administrators, providing a seamless platform for wholesale transactions.
+An innovative e-commerce app designed to modernize the operations of a local vegetable wholesale supplier. This app caters to both customers and administrators, providing a seamless platform for wholesale transactions.
 
 The app streamlines supplier operations by automating key tasks, including:
 
 - Daily order management and product quantity tracking.
 
-- Generation of Excel spreadsheets for pending orders.
+- Generation of Excel spreadsheets for Inventory management and Order management.
 
-- Downloadable PDF statements detailing all user transactions within specified timeframes.
+- Downloadable PDF statements detailing all user transactions within a specified timeframe.
 
 - Tailored pricing for different customer categories.
 
 
-## Customer Interface Demo
+## Customer Interface Screenshots
 
-Insert gif or link to demo
-
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/74f886e7-1cff-48ca-ae2f-fd00a7862a41"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/45d2969a-ee44-406a-94a8-d2fb06d50a43"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/7c5d158c-fe0c-4d1e-b473-5e41d24a4c23" />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/e03aafb2-4222-4531-9c1a-99b1816199ee"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/6eae9763-e079-4220-a2ea-e02e285396db"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/f9c1bacb-316c-4a97-8eb2-bbf95822a7ee"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/08ce7c45-b50c-4358-8d57-098c347e78c9"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/99e3dd0e-8ef6-4e98-bf24-1b080d30404a"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/61e91ba0-b5f2-4565-b9d1-d71002be8694"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/b1400f39-b99a-458d-9c2d-a8f936786c0e"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/1f73c5f9-178d-4164-90b0-040bc253a3ad"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/af6b3122-f7bd-4124-b65c-a87930e2818c"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/31d18c4f-5cb5-4d3c-8344-db72e7c27535"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/549452a2-2b2d-49c6-915a-279c4cd4908b"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/4bb8baef-9f54-4296-9d8a-43eb9d199a34"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/2fb1490d-83bd-472e-b601-7cc3097e8307"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/61b76ea3-a0b5-43ee-a16f-4c9a5e9766fd"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/c2607487-b402-48a4-921f-df24ffc783ff"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/60e85c1a-6547-4982-aa84-dac226348907"  />
 
 ## Admin Interface Demo
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/f5e86d82-239f-4af8-bd7a-d046f65b8578"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/92c74798-5057-4eb3-9aa7-067f27cc2355"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/2fa6586f-c7dd-41e1-9fe5-2a464eefad88"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/f25eb080-9a93-4f68-99b9-73eff17e38fe"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/2eac5a82-42f1-41e5-af2c-c45fb83a247a"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/5e169560-866e-4a59-b1a9-dbf12e0c7646"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/b80f2a3f-f723-4466-84f3-c57dd844595a"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/5fc7a741-9a32-4147-bdfc-9249e43d27ad"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/585cb797-f30e-4b40-b77b-049ebaf0f7a8"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/b6355355-ef76-4185-87b8-731c1afb1b6a"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/847aa762-48a9-4526-81de-57c55a77a39b"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/d0159756-e461-4ecd-88b6-356eed8c1412"  />
+<img width="225" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/50b9e6c7-ca35-4a17-ac7f-d2d6464e2fd5"  />
+
+
+### Screenshots of Downloadable Excel and PDF files from the app
+<img width="300" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/5ece2837-29d8-476d-9616-9350cda2c812"  />
+<img width="300" height="500" src="https://github.com/AlimKhan76/Groceries_app_client/assets/120938653/37f812f5-df6c-42ab-9770-6f15e1cfb56a"  />
+
+
 ## Customer Features
 
 - **User Authentication**: Secure Authentication system using a SMS-based-OTP verification system.
@@ -114,9 +71,9 @@ Insert gif or link to demo
 
 ## Admin Features
 
-- **View Pending Orders**: Administrators have access to a user-friendly interface to manage and view all pending orders details.
+- **View Pending Orders**: Administrators have access to a user-friendly interface to manage and view all pending order details.
 
-- **Search Completed Orders**: Easily search and retrieve completed orders details by customer name.
+- **Search Completed Orders**: Easily search and retrieve completed order details by customer name.
 
 - **Price Category Management**: Flexibly manage price categories for individual customers.
 
@@ -133,15 +90,9 @@ Insert gif or link to demo
 - **Mark Pending Orders as Delivered**: Expedite order processing by marking all pending orders as delivered with a single click.
 
 
-
-## Screenshots
-
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
-
 ## Download
 
-You can download the apk from [Google Drive]("https://google.com")
+You can download the apk from [Google Drive](https://drive.google.com/file/d/1kfUvM8b_x5DR3JxNVNVwr6CJTbyVtLK6/view)
 
 ## Application Overview
 
