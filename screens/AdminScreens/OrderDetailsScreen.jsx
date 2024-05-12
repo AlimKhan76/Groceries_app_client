@@ -8,7 +8,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { updateOrderStatusAPI } from '../../api/adminAPIs/orderAPI'
-import { moderateScale, scale } from 'react-native-size-matters'
 import moment from 'moment-timezone'
 import Feather from "react-native-vector-icons/Feather"
 import Ionicons from "react-native-vector-icons/Ionicons"
@@ -205,7 +204,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                                     className="text-black font-mulish-regular "
                                     style={{ fontSize: responsiveFontSize(1.65) }}>
 
-                                    {order?.address?.pincode}
+                                    Pincode: {order?.address?.pincode}
                                 </Text>
 
                                 {order?.address?.landmark?.length > 0 &&

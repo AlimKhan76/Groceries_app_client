@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import StackNavigator from './navigation/StackNavigator';
 import { AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
-import { Provider } from 'react-redux';
 import { PaperProvider } from 'react-native-paper';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Alert, StatusBar } from 'react-native';

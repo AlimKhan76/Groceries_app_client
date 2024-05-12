@@ -7,7 +7,7 @@ const OrderAcceptedScreen = ({ navigation }) => {
     useFocusEffect(React.useCallback(() => {
         setTimeout(() => {
             navigation.navigate("Shop");
-        }, 3000)
+        }, 1500)
     }, []))
 
     return (

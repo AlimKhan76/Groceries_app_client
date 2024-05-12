@@ -2,7 +2,6 @@ import { API } from "./config/axios"
 
 export const loginUserAPI = async (loginData) => {
     try {
-        console.log(loginData)
         const { data } = await API.post("user/login", loginData)
         console.log(" User is logged in successfully " + data)
         return data;

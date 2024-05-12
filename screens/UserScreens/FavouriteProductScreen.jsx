@@ -1,10 +1,7 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
 import React, { Fragment } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useQuery } from '@tanstack/react-query'
-import { getUserDataAPI } from '../../api/userAPI'
 import { useNavigation } from '@react-navigation/native'
-import { IMAGE_URL } from "@env"
 import { Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
@@ -52,7 +49,7 @@ const FavouriteProductScreen = () => {
                       height: responsiveHeight(16)
                     }}
                     resizeMode='contain'
-                    source={{ uri: `${IMAGE_URL}${product?.url}` }}
+                    source={{ uri: `${product?.url}` }}
                   />
 
                   <View className="pl-4 flex-shrink w-full justify-center gap-y-2 ">

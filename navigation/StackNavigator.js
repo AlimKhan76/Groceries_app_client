@@ -9,7 +9,6 @@ import AddedToCartPopUp from '../screens/components/AddedToCartPopUp';
 import OrderAcceptedScreen from '../screens/UserScreens/OrderAcceptedScreen';
 import ProductDetailsScreen from '../screens/UserScreens/ProductDetailsScreen';
 import LoginScreen from '../screens/LoginScreen';
-import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import OTPScreen from '../screens/OTPScreen';
 import * as SecureStore from 'expo-secure-store';
 import CheckoutPage from '../screens/UserScreens/CheckoutPage';

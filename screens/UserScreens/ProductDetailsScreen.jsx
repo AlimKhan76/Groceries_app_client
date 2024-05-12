@@ -6,7 +6,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { changeFavouriteProductAPI } from '../../api/productAPI'
 import { useFocusEffect } from '@react-navigation/native'
 import { addToCartAPI, getItemsFromCartAPI } from '../../api/cartAPI';
-import { IMAGE_URL } from "@env";
 import { Toast } from 'react-native-alert-notification'
 import { ActivityIndicator, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -14,14 +13,14 @@ import Feather from "react-native-vector-icons/Feather"
 import useUserDataQuery from '../../hooks/useUserData'
 
 const ProductDetailsScreen = ({ route, navigation }) => {
-    const screenWidth = Dimensions.get('window');
-    console.log(screenWidth)
+
     const { product } = route?.params
     const queryClient = useQueryClient()
     const [isFavourite, setIsFavourite] = useState(false)
     const [quantity, setQuantity] = useState(1)
     const [totalPrice, setTotalPrice] = useState(product?.price)
     const [isInCart, setIsInCart] = useState(false)
+    const [constantQuantity, setConstantQuantity] = useState(0)
 
     const lowerQuantity = () => {
         if (quantity <= 2) {
@@ -73,7 +72,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
 
     const { mutate: addToCartMutate, isSuccess, isPending: addingToBasket } = useMutation({
-        mutationKey: ["addToCart", product],
+        // mutationKey: ["addToCart", product],
         mutationFn: addToCartAPI,
         onSuccess: () => {
             Toast.show({
@@ -100,6 +99,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         const userCart = cartItems?.cart
         const productInCart = userCart?.filter((item) => item?.cartItem?._id == product?._id)
         if (productInCart?.length > 0) {
+            setConstantQuantity(productInCart[0]?.quantity)
             setQuantity(productInCart[0]?.quantity)
             setIsInCart(true)
         }
@@ -147,7 +147,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                 }}
                                 className="self-center "
                                 resizeMode='contain'
-                                source={{ uri: `${IMAGE_URL}${product?.url}` }}
+                                source={{ uri: `${product?.url}` }}
                             />
                         </View>
 
@@ -335,10 +335,10 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                 </>
             </ScrollView >
 
-
             <View className="bottom-3 relative self-center w-full overflow-hidden ">
                 <TouchableOpacity
-                    disabled={addingToBasket || isFetching}
+                    disabled={addingToBasket || isFetching || constantQuantity === quantity && true
+                    }
                     onPress={
                         () => addToCartMutate({ ...product, quantity })
                     }
@@ -353,8 +353,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                 fontSize: responsiveFontSize(2.25)
                             }}>
                             {/* {isFetching ? <ActivityIndicator color='white' /> : */}
-                            {isInCart ? "Update Basket" :
-                                isSuccess ? 'Added to Basket' : 'Add To Basket'
+                            {isInCart ? "Update Cart" :
+                                isSuccess ? 'Added to Cart' : 'Add To Cart'
                             }
                         </Text>
                     }

@@ -3,7 +3,6 @@ import React from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 import * as SecureStore from "expo-secure-store"
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-import { RFPercentage } from 'react-native-responsive-fontsize'
 
 const StartUpScreen = ({ navigation }) => {
     const logo = require("../assets/images/logo.png")
@@ -55,7 +54,7 @@ const StartUpScreen = ({ navigation }) => {
                 <View className="flex-col items-center px-2">
                     <Text
                         className="text-white font-mulish-semibold"
-                        style={{ fontSize: RFPercentage(4) }}>
+                        style={{ fontSize: responsiveFontSize(4) }}>
                         Shri Biroba
                     </Text>
 

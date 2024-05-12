@@ -147,7 +147,7 @@ const AddAddressScreen = () => {
                 <Text
                   className=" font-mulish-semibold text-gray-400"
                   style={{
-                    fontSize: responsiveFontSize(1.45)
+                    fontSize: responsiveFontSize(1.5)
                   }}>
                   Building Name, Company, Shop No *
                 </Text>
@@ -161,7 +161,7 @@ const AddAddressScreen = () => {
                    py-1 pb-2 mb-1 border-b-2 font-mulish-medium w-full text-black `}
                   placeholderTextColor={"gray"}
                   style={{
-                    fontSize: responsiveFontSize(1.5)
+                    fontSize: responsiveFontSize(1.75)
                   }}
                   placeholder={address !== undefined ? address?.line1 : ""}
                 />
@@ -169,7 +169,7 @@ const AddAddressScreen = () => {
                 {errors?.line1 && touched?.line1 &&
                   <Text className='text-sm text-red-400'
                     style={{
-                      fontSize: responsiveFontSize(1.25)
+                      fontSize: responsiveFontSize(1.35)
                     }}>
                     {errors?.line1}
                   </Text>
@@ -180,7 +180,7 @@ const AddAddressScreen = () => {
                 <Text
                   className="font-mulish-semibold text-gray-400"
                   style={{
-                    fontSize: responsiveFontSize(1.45)
+                    fontSize: responsiveFontSize(1.5)
                   }}>
                   Street / Road Name, Area *
                 </Text>
@@ -195,7 +195,7 @@ const AddAddressScreen = () => {
                   py-1 pb-2.5 mb-1 border-b-2 font-mulish-medium w-full text-black `
                   }
                   style={{
-                    fontSize: responsiveFontSize(1.35)
+                    fontSize: responsiveFontSize(1.75)
                   }}
                   placeholderTextColor={"gray"}
                   placeholder={address !== undefined ? address?.line2 : ""}
@@ -216,7 +216,7 @@ const AddAddressScreen = () => {
               <View className="w-full my-3">
                 <Text className=" font-mulish-semibold text-gray-400"
                   style={{
-                    fontSize: responsiveFontSize(1.45)
+                    fontSize: responsiveFontSize(1.5)
                   }}>
                   Pincode *
                 </Text>
@@ -232,7 +232,7 @@ const AddAddressScreen = () => {
                   placeholderTextColor={"gray"}
                   keyboardType='numeric'
                   style={{
-                    fontSize: responsiveFontSize(1.35)
+                    fontSize: responsiveFontSize(1.75)
                   }}
                   placeholder={address !== undefined ? address?.pincode : 'Eg: 400024'} />
                 {errors?.pincode && touched?.pincode &&
@@ -247,7 +247,7 @@ const AddAddressScreen = () => {
 
               <View className="w-full my-3">
                 <Text className="font-mulish-semibold text-gray-400" style={{
-                  fontSize: responsiveFontSize(1.45)
+                  fontSize: responsiveFontSize(1.5)
                 }}>
                   Land Mark ( If Any )
                 </Text>
@@ -261,7 +261,7 @@ const AddAddressScreen = () => {
                    py-1 pb-2.5 mb-1 border-b-2 font-mulish-medium w-full text-black `}
                   placeholderTextColor={"gray"}
                   style={{
-                    fontSize: responsiveFontSize(1.5)
+                    fontSize: responsiveFontSize(1.75)
                   }}
                   placeholder={address?.landmark?.length > 0 ? address?.landmark : 'Eg : Near Apollo Hospital'} />
                 {errors?.landmark && touched?.landmark &&

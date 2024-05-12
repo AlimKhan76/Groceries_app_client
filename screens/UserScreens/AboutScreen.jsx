@@ -3,9 +3,10 @@ import React from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { Appbar } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Entypo from "react-native-vector-icons/Entypo"
+import { useNavigation } from '@react-navigation/native'
 
 const AboutScreen = () => {
+  const navigation = useNavigation()
   return (
     <SafeAreaView className="flex-1 bg-white px-2"
       edges={["right", "left", "top"]}>

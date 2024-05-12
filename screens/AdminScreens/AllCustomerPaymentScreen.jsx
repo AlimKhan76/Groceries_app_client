@@ -105,16 +105,13 @@ const AllCustomerPaymentScreen = () => {
                     onPress={() => navigation.navigate("CustomerPaymentDetailsScreen",
                       {
                         customerId: customer?._id,
-                        customerContact: customer?._customerContact,
+                        customerContact: customer?.customerContact,
                         balance: customer?.balance,
                         customerName: customer?.customerName
 
                       })}
                     className="py-3 px-3  my-1 flex-row items-center rounded-2xl justify-between">
                     <View className="flex-row items-center gap-x-4 flex-1">
-                      {/* <MaterialCommunityIcons
-                          name={order?.type === "Purchase" ? "arrow-up" : "arrow-down"}
-                          size={responsiveHeight(3.5)} color="black" /> */}
                       <View style={{ width: responsiveWidth(50) }} >
 
                         <Text className="text-black font-mulish-semibold flex-wrap"
@@ -124,7 +121,7 @@ const AllCustomerPaymentScreen = () => {
                           {customer?.customerName}
                         </Text>
                         <Text className="text-black font-mulish-semibold" style={{
-                          fontSize: responsiveFontSize(1.75)
+                          fontSize: responsiveFontSize(1.65)
                         }}>
                           Contact No: {customer?.customerContact}
                         </Text>

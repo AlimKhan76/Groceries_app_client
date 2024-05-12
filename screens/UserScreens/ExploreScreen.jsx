@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query';
-import { IMAGE_URL } from '@env';
 import CategoriesCard from '../components/CategoriesCard'
 import { ActivityIndicator } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -64,7 +63,7 @@ const ExploreScreen = ({ navigation, route }) => {
     if (searchQuery !== "") {
       setTimeout(() => {
         refetch(searchQuery)
-      }, 500);
+      }, 1000);
     }
   }, [searchQuery])
 
@@ -143,7 +142,7 @@ const ExploreScreen = ({ navigation, route }) => {
                         <Image
                           className="items-center bg-center self-center w-full h-24"
                           resizeMode='contain'
-                          source={{ uri: `${IMAGE_URL}${product?.url}` }} />
+                          source={{ uri: `${product?.url}` }} />
 
                         <Text
                           className="pt-2 text-black items-center font-mulish-bold "

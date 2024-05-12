@@ -72,7 +72,7 @@ const LoginScreen = ({ navigation }) => {
                         <Text
                             className='text-black px-2 font-mulish-medium'
                             style={{
-                                fontSize: responsiveFontSize(1.75)
+                                fontSize: responsiveFontSize(1.85)
                             }}>
                             +91
                         </Text>
@@ -80,7 +80,7 @@ const LoginScreen = ({ navigation }) => {
                         <TextInput
                             style={{
                                 width: responsiveWidth(75),
-                                fontSize: responsiveFontSize(1.75)
+                                fontSize: responsiveFontSize(1.85)
                             }}
                             value={phoneNumber}
                             onChangeText={(e) => {

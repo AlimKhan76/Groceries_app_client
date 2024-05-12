@@ -14,13 +14,11 @@ const UserRegisterationPage = () => {
     const [name, setName] = useState("");
 
     const { params } = useRoute();
-    console.log(params)
 
     const { mutate, isPending: loggingIn, error, isError } = useMutation({
         mutationKey: ["login"],
         mutationFn: loginUserAPI,
         onSuccess: async (data) => {
-            console.log(data)
             await SecureStore.setItemAsync("token", data?.token)
             await SecureStore.setItemAsync("role", data?.role)
 

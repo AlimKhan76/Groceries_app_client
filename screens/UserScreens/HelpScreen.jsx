@@ -15,7 +15,7 @@ const HelpScreen = () => {
   const sections = [
     {
       title: 'How to order in the app ?',
-      content: "Simply search for the vegetables you need and add your preferred quantity to the basket. Once you've added all your items, head to the cart screen to review your selections.\n\nWhen you're ready, proceed to checkout. Select your address, review your order details on the final confirmation screen, and if everything looks good, hit \"Place Order\" to finalize your purchase. "
+      content: "Simply search for the vegetables you need and add your preferred quantity to the cart. Once you've added all your items, head to the cart screen to review your selections.\n\nWhen you're ready, proceed to checkout. Select your address, review your order details on the final confirmation screen, and if everything looks good, hit \"Place Order\" to finalize your purchase. "
     },
     {
       title: 'How can I access my transaction history ?',

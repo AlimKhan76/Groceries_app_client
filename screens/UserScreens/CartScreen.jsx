@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity, Image, FlatList, PixelRatio } from 'react
 import React, { Fragment, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { IMAGE_URL } from "@env";
 import { useFocusEffect } from '@react-navigation/native'
 import { addToCartAPI, getItemsFromCartAPI, removeFromCartAPI } from '../../api/cartAPI'
 import { ActivityIndicator, Divider } from 'react-native-paper'
@@ -178,8 +177,6 @@ const CartScreen = ({ navigation }) => {
 
 
 
-  console.log(PixelRatio.getFontScale())
-
   const { mutate: removeItem, isPending: removingFromCart } = useMutation({
     mutationFn: removeFromCartAPI,
     onSuccess: () => {
@@ -287,10 +284,10 @@ const CartScreen = ({ navigation }) => {
                           height: responsiveHeight(12.5)
                         }}
                         resizeMode='contain'
-                        source={{ uri: `${IMAGE_URL}${product?.cartItem?.url}` }}
+                        source={{ uri: `${product?.cartItem?.url}` }}
                       />
 
-                      <View className=" px-3  flex-shrink w-full">
+                      <View className=" px-3 flex-shrink w-full">
 
                         <Text
                           className=" text-black text-xl font-mulish-semibold"
@@ -332,7 +329,7 @@ const CartScreen = ({ navigation }) => {
                           <Text
                             className="text-black font-mulish-medium"
                             style={{
-                              fontSize: responsiveFontSize(2)
+                              fontSize: responsiveFontSize(1.85)
                             }}>
                             Qty : {product?.quantity} {product?.cartItem?.unit}
                           </Text>

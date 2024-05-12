@@ -205,7 +205,6 @@ const OrderConfirmationScreen = () => {
         return newArray
     }
 
-    console.log(optimizeOrder())
     return (
         <SafeAreaView className="flex-1"
             edges={['right', 'top', 'left']}>
@@ -309,7 +308,7 @@ const OrderConfirmationScreen = () => {
                                 style={{
                                     fontSize: responsiveFontSize(1.75)
                                 }}>
-                                {address?.pincode}
+                               Pincode: {address?.pincode}
                             </Text>
 
                             {address?.landmark.length > 0 &&

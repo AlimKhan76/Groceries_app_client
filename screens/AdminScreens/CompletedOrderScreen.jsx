@@ -54,7 +54,6 @@ const CompletedOrderScreen = ({ navigation }) => {
     getNextPageParam: (lastPage, pages) => lastPage?.nextPage,
     enabled: !!value,
   })
-  { console.log(value) }
   // useEffect(() => {
   //   setCustomerOrderEnabled(Boolean(customerName))
 

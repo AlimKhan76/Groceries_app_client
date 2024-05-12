@@ -75,7 +75,7 @@ const UserAddressesScreen = () => {
                     }} />
             </Appbar.Header>
             <Divider />
-            {console.log(userAddress)}
+
             {isLoadingAllAddresses || isRefetchingAllAddresses ?
                 <View className="flex-1 items-center justify-center">
                     <ActivityIndicator size={"large"} color='#419a79' />

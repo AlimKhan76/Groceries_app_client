@@ -112,7 +112,7 @@ const CheckoutPage = () => {
                                                     <Text className="text-black font-mulish-regular" style={{
                                                         fontSize: responsiveFontSize(1.75)
                                                     }}>
-                                                        {address?.pincode}
+                                                        Pincode: {address?.pincode}
                                                     </Text>
 
                                                     {address?.landmark.length > 0 &&

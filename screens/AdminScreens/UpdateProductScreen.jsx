@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { ActivityIndicator, Appbar, DataTable, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-import { moderateScale } from 'react-native-size-matters'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getAllProductApi } from '../../api/productAPI'
 import { getAllProductsPricesByCategoryApi, updatePriceOfProductApi } from '../../api/adminAPIs/productUpdationAPI'
@@ -22,7 +21,6 @@ const UpdateProductScreen = ({ navigation }) => {
     const [updatedProduct, setUpdatedProduct] = useState([])
 
     const queryClient = useQueryClient();
-    console.log(params)
     // Query for fetching all the products
     // const { data: allProducts, isLoading: isLoadingAllProducts, status, isRefetching } = useQuery({
     //     queryKey: ["allProducts"],

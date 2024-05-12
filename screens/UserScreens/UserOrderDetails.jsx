@@ -24,7 +24,6 @@ const UserOrderDetails = ({ navigation, route }) => {
     const { mutate: cancelOrder, isPending: cancelling } = useMutation({
         mutationFn: cancelOrderAPI,
         onSuccess: (data) => {
-            console.log(data)
             queryClient.invalidateQueries({ queryKey: ["userOrders"] })
             Dialog.show({
                 type: "SUCCESS",
@@ -76,7 +75,6 @@ const UserOrderDetails = ({ navigation, route }) => {
         const start = moment.tz("02:00:00", "HH:mm:ss", "Asia/Kolkata");
         const end = moment.tz("11:00:00", "HH:mm:ss", "Asia/Kolkata");
         console.log(currentTime, start, end)
-        console.log(currentTime.isBetween(start, end))
         setIsPastCutOff(currentTime.isBetween(start, end))
         return currentTime.isBetween(start, end);
     };
@@ -205,7 +203,7 @@ const UserOrderDetails = ({ navigation, route }) => {
                                 <Text
                                     className="text-black font-mulish-regular "
                                     style={{ fontSize: responsiveFontSize(1.75) }}>
-                                    {order?.address?.pincode}
+                                    Pincode: {order?.address?.pincode}
                                 </Text>
 
                                 {order?.address?.landmark?.length > 0 &&
@@ -326,7 +324,7 @@ const UserOrderDetails = ({ navigation, route }) => {
 
                         <DataTable  >
 
-                          
+
 
 
                             <DataTable.Row numeric>
@@ -386,30 +384,30 @@ const UserOrderDetails = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
                 : */}
-                <View className="relative bottom-2.5 items-center">
-                    <TouchableOpacity className='bg-[#53B175] p-5 rounded-2xl '
-                        disabled={orderingAgain}
-                        onPress={() => placeOrderAgain({
-                            items: order?.items
-                        })}
-                        style={{ width: responsiveWidth(90) }}>
+            <View className="relative bottom-2.5 items-center">
+                <TouchableOpacity className='bg-[#53B175] p-5 rounded-2xl '
+                    disabled={orderingAgain}
+                    onPress={() => placeOrderAgain({
+                        items: order?.items
+                    })}
+                    style={{ width: responsiveWidth(90) }}>
 
-                        {orderingAgain ?
-                            <ActivityIndicator
-                                color='white'
-                                style={{
-                                    paddingVertical: responsiveHeight(0.5)
-                                }} />
-                            :
-                            <Text
-                                className="text-white text-center font-mulish-semibold"
-                                style={{ fontSize: responsiveFontSize(2.5) }}>
-                                Order Again
-                            </Text>
-                        }
+                    {orderingAgain ?
+                        <ActivityIndicator
+                            color='white'
+                            style={{
+                                paddingVertical: responsiveHeight(0.5)
+                            }} />
+                        :
+                        <Text
+                            className="text-white text-center font-mulish-semibold"
+                            style={{ fontSize: responsiveFontSize(2.5) }}>
+                            Order Again
+                        </Text>
+                    }
 
-                    </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
+            </View>
             {/*  } */}
 
 

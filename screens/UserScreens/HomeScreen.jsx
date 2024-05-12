@@ -9,7 +9,6 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { getProductByCategoryAPI } from '../../api/productAPI';
 import { getUserDataAPI } from '../../api/userAPI';
-import { IMAGE_URL } from '@env';
 import { ActivityIndicator } from 'react-native-paper';
 import Feather from "react-native-vector-icons/Feather"
 import useUserDataQuery from '../../hooks/useUserData';
@@ -133,7 +132,7 @@ const HomeScreen = ({ navigation }) => {
                                             <Image
                                                 className="items-center bg-center self-center w-full "
                                                 resizeMode='contain'
-                                                source={{ uri: `${IMAGE_URL}${product?.url}` }}
+                                                source={{ uri: `${product?.url}` }}
                                                 style={{ height: responsiveHeight(15) }} />
 
                                             <Text

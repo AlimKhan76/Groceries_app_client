@@ -28,7 +28,6 @@ const LoginScreen = ({ navigation }) => {
         mutationKey: ["login"],
         mutationFn: loginUserAPI,
         onSuccess: async (data) => {
-            console.log(data)
             await SecureStore.setItemAsync("token", data?.token)
             await SecureStore.setItemAsync("role", data?.role)
 

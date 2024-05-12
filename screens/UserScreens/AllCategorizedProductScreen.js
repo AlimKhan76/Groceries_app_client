@@ -5,7 +5,6 @@ import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
 import { getProductByCategoryAPI } from '../../api/productAPI'
-import { IMAGE_URL } from "@env"
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
 import useUserDataQuery from '../../hooks/useUserData'
@@ -74,7 +73,7 @@ const AllCategorizedProductScreen = ({ route }) => {
                                         <Image
                                             className="items-center bg-center self-center w-full h-24"
                                             resizeMode='contain'
-                                            source={{ uri: `${IMAGE_URL}${product?.url}` }} />
+                                            source={{ uri: `${product?.url}` }} />
 
                                         <Text
                                             className="pt-2 text-black items-center font-mulish-semibold"

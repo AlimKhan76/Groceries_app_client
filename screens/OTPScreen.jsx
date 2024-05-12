@@ -111,8 +111,7 @@ const OTPScreen = ({ navigation }) => {
             resizeMode='cover'
             source={require("../assets/images/sign/background-top.png")}
             className='flex-1 px-5 '>
-            {/* {console.log(userData)} */}
-
+                
             <Appbar.Header
                 mode='center-aligned'
                 style={{

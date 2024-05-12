@@ -13,13 +13,10 @@ import moment from 'moment-timezone'
 import Modal from "react-native-modal";
 import NumberPad from '../components/NumberPad'
 import { Dialog } from 'react-native-alert-notification'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DatePicker from 'react-native-modern-datepicker';
-import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as SecureStore from "expo-secure-store";
-import { BASE_URL } from "@env"
 
 
 const CustomerPaymentDetailsScreen = () => {
@@ -32,6 +29,7 @@ const CustomerPaymentDetailsScreen = () => {
   const [endDateModalVisible, setEndDateModalVisible] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  console.log(params)
 
   const [newTransactionData, setNewTransactionData] = useState({
     type: "",
@@ -71,7 +69,7 @@ const CustomerPaymentDetailsScreen = () => {
 
     )
       .fetch("GET",
-        `${BASE_URL}transaction/downloadTransactionDetails/${params?.customerId}/${startDate}/${endDate}`,
+        `https://groceries-app-server.vercel.app/transaction/downloadTransactionDetails/${params?.customerId}/${startDate}/${endDate}`,
         {
           Authorization: token
         })
@@ -138,6 +136,12 @@ const CustomerPaymentDetailsScreen = () => {
   const { mutate: addTransaction, isPending: isPendingAddTransaction } = useMutation({
     mutationFn: addTransactionToCustomerAPI,
     onSuccess: () => {
+      setNewTransactionData({
+        ...newTransactionData,
+        type: "",
+        amount: "",
+        ref: "",
+      })
       queryClient.invalidateQueries({ queryKey: ["customerBalance"] })
       queryClient.invalidateQueries({ queryKey: ["allCustomerBalance"] })
       queryClient.invalidateQueries({ queryKey: ["customerTransactions"] })
@@ -152,7 +156,7 @@ const CustomerPaymentDetailsScreen = () => {
     onError: (error) => {
       Dialog.show({
         type: "DANGER",
-        title: { error },
+        title: "Error in adding transaction",
         textBody: "Please try again later",
         autoClose: 1000
       })
@@ -537,7 +541,6 @@ const CustomerPaymentDetailsScreen = () => {
                 // Convert the new date string to a date object
                 const newDateObject = new Date(newDateString);
                 // Log the new date object
-                console.log(newDateString);
                 setStartDate(newDateString)
               }}
               options={{

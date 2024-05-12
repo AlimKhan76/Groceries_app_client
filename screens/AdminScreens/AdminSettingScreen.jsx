@@ -6,7 +6,6 @@ import { downloadPendingOrders, markAllPendingOrdersAsDeliveredAPI } from '../..
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import RNFS from 'react-native-fs';
 import { BASE_URL } from "@env"
-import { IMAGE_URL } from "@env"
 import { ActivityIndicator, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import RNFetchBlob from 'rn-fetch-blob';
@@ -64,7 +63,7 @@ const AdminSettingScreen = ({ navigation }) => {
 
       )
         .fetch("GET",
-          `${BASE_URL}adminOrder/downloadPendingOrders`,
+          `https://groceries-app-server.vercel.app/adminOrder/downloadPendingOrders`,
           // "http://192.168.0.100:5000/adminOrder/downloadPendingOrders",
           {
             Authorization: token
