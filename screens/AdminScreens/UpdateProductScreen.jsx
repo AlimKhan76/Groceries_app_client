@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, ScrollView, FlatList, KeyboardAvoidingView, Keyboard } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -21,12 +21,6 @@ const UpdateProductScreen = ({ navigation }) => {
     const [updatedProduct, setUpdatedProduct] = useState([])
 
     const queryClient = useQueryClient();
-    // Query for fetching all the products
-    // const { data: allProducts, isLoading: isLoadingAllProducts, status, isRefetching } = useQuery({
-    //     queryKey: ["allProducts"],
-    //     queryFn: getAllProductApi,
-    //     staleTime: Infinity,
-    // })
 
     const { data: allProducts, isLoading: isLoadingAllProducts, status, isRefetching } = useQuery({
         queryKey: ["allProducts", params],
@@ -99,6 +93,23 @@ const UpdateProductScreen = ({ navigation }) => {
         }
     };
 
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            setKeyboardVisible(true);
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardVisible(false);
+        });
+
+        // Cleanup event listeners on component unmount
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
+
     return (
         <SafeAreaView className="flex-1 bg-white px-2 "
             edges={["right", "left", "top"]}>
@@ -126,22 +137,7 @@ const UpdateProductScreen = ({ navigation }) => {
                     }} />
             </Appbar.Header>
             <Divider />
-
-
-
-            {/* <View
-                className="bg-gray-200 gap-x-2 m-2 p-1 rounded-2xl flex-row items-center ">
-                <Feather name="search" color="black" size={responsiveHeight(2.5)} />
-
-                <TextInput
-                    maxLength={25}
-                    className="text-black font-mulish-semibold p-1.5 w-full"
-                    style={{
-                        fontSize: responsiveFontSize(1.75)
-                    }}
-                    placeholder='Search Products'
-                    placeholderTextColor={"black"} />
-            </View> */}
+            {console.log(allProducts)}
 
 
             <DataTable
@@ -176,37 +172,14 @@ const UpdateProductScreen = ({ navigation }) => {
                     </DataTable.Title>
 
                 </DataTable.Header>
+
                 {isLoadingAllProducts || isRefetching ?
                     <View className="flex-1 items-center justify-center">
                         <ActivityIndicator size={"large"} color='#53B175' />
                     </View>
                     :
-                    <KeyboardAwareScrollView
-                        enableAutomaticScroll
-                        className=""
-                        // scrollEnabled={false}
-                        // resetScrollToCoords={{ x: 0, y: 0 }}
-                        enableOnAndroid={true}
-                        // extraScrollHeight={responsiveHeight(6)}
-                        // extraHeight={responsiveHeight(6)}
-                        // automaticallyAdjustKeyboardInsets
 
-                        automaticallyAdjustKeyboardInsets={true}
-                        automaticallyAdjustContentInsets={false}
-                    >
-
-                        {/* <KeyboardAwareScrollView
-                    enableAutomaticScroll
-                    // keyboardOpeningTime={0}
-                    enableResetScrollToCoords
-                    // onKeyboardWillHide={() => setKeyboardActive(false)}
-                    // onKeyboardWillShow={() => setKeyboardActive(true)}
-                    contentInset={{ bottom: contentBottom }}
-                    automaticallyAdjustKeyboardInsets={true}
-                    automaticallyAdjustContentInsets={false}
-                > */}
-
-                        <ScrollView className="pb-4 mb-2 ">
+                        <ScrollView className={`${isKeyboardVisible? "mb-28 ":""}`} >
                             {allProducts?.map((product, index) => {
                                 return (
                                     <DataTable.Row key={product?._id} className="flex-1 py-2">
@@ -258,11 +231,21 @@ const UpdateProductScreen = ({ navigation }) => {
                                         </DataTable.Cell>
 
                                     </DataTable.Row>
-
                                 )
+
                             })}
+
+                            {/* //         )
+                    //     }}
+                    //     keyExtractor={(item) => item?._id}
+                    //     initialNumToRender={20}
+                    //     // maxToRenderPerBatch={50}
+                    //     // windowSize={5}
+                    // /> */}
+                    {/* </KeyboardAvoidingView> */}
                         </ScrollView>
-                    </KeyboardAwareScrollView >
+
+
                 }
             </DataTable>
 

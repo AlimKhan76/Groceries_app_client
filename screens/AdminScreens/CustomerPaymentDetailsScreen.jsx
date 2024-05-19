@@ -224,7 +224,7 @@ const CustomerPaymentDetailsScreen = () => {
                 style={{
                   fontSize: responsiveFontSize(3)
                 }}>
-                ₹ {customerBalance?.balance}
+                ₹ {customerBalance?.balance.toLocaleString()}
               </Text>
             }
           </View>
@@ -365,7 +365,7 @@ const CustomerPaymentDetailsScreen = () => {
                         fontSize: responsiveFontSize(2)
                       }}>
                       {order?.type === "Purchase" ? " + " : " - "}
-                      ₹ {order?.amount}
+                      ₹ {order?.amount?.toLocaleString()}
                     </Text>
                   </View>
                   <Divider />
@@ -448,14 +448,14 @@ const CustomerPaymentDetailsScreen = () => {
                 }}>
                 ₹
               </Text>
+              {console.log((newTransactionData?.amount))}
               <TextInput
                 ref={amountInputRef}
-                value={newTransactionData?.amount
-                  // ?.replace((\d{1, 3}|\G\d{3})(?=(?:\d{3})+(?!\d))
-                  // , ",")
-                }
+                // value={newTransactionData?.amount === "" ? "" : parseInt(newTransactionData?.amount)?.toLocaleString("en-IN").toString()
+                // }
+                value={newTransactionData?.amount}
                 onChangeText={(e) => setNewTransactionData({ ...newTransactionData, amount: e })}
-                keyboardType='numeric'
+                keyboardTpe='numeric'
                 placeholder=''
                 className=" text-black text-center w-3/4"
                 style={{

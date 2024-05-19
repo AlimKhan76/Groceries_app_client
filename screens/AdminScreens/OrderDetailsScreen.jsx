@@ -84,7 +84,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
 
 
 
-            <ScrollView className="my-5 px-2.5">
+            <ScrollView className="my-4 px-2.5">
 
                 <View className='flex-row pb-5 items-center justify-between'>
                     <View className="flex-row items-center">

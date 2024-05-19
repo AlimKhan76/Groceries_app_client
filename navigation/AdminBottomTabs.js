@@ -23,6 +23,7 @@ export const AdminBottomTabs = () => {
                     borderTopColor: "#e2e2e2"
                 },
                 tabBarIconStyle: {
+                    // alignItems:"center"
                     marginTop: 5,
                 },
                 tabBarLabelStyle: { fontSize: responsiveFontSize(1.25), fontFamily: 'Mulish-Medium' },

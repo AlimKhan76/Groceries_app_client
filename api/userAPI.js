@@ -11,6 +11,17 @@ export const loginUserAPI = async (loginData) => {
         throw error?.response?.data?.message
     }
 }
+export const loginWithPhoneEmailOTPAPI = async (phoneEmailToken) => {
+    try {
+        const { data } = await API.post("user/loginWithOTP", { phoneEmailToken })
+        console.log(" User is logged in successfully " + data)
+        return data;
+    }
+    catch (error) {
+        console.log("Error in registering User " + error?.response?.data?.message)
+        throw error?.response?.data?.message
+    }
+}
 
 export const getUserDataAPI = async () => {
     try {
@@ -23,3 +34,5 @@ export const getUserDataAPI = async () => {
         throw error?.response?.data?.message
     }
 }
+
+

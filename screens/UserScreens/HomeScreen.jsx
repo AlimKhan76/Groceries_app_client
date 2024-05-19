@@ -12,6 +12,7 @@ import { getUserDataAPI } from '../../api/userAPI';
 import { ActivityIndicator } from 'react-native-paper';
 import Feather from "react-native-vector-icons/Feather"
 import useUserDataQuery from '../../hooks/useUserData';
+import ProductCard from '../components/ProductCard';
 
 const HomeScreen = ({ navigation }) => {
 
@@ -21,7 +22,7 @@ const HomeScreen = ({ navigation }) => {
         isError,
         refetch
     } = useQuery({
-        queryKey: ["Best-Selling"],
+        queryKey: ["Best Selling"],
         queryFn: ({ queryKey }) => getProductByCategoryAPI(queryKey[0]),
         enabled: true,
         staleTime: Infinity
@@ -60,8 +61,8 @@ const HomeScreen = ({ navigation }) => {
             <ScrollView
                 horizontal={false}>
 
-                <View className="flex-row flex-wrap gap-2 justify-center  "
-                    style={{ paddingBottom: responsiveHeight(2.5) }}>
+                <View className="flex-row flex-wrap justify-center  "
+                    style={{ paddingBottom: responsiveHeight(2.5), gap:responsiveHeight(1) }}>
                     <View className="items-center pb-2 ">
                         <Image source={require("../../assets/images/home_screen/banner.png")}
                             resizeMode='contain'
@@ -81,7 +82,7 @@ const HomeScreen = ({ navigation }) => {
                         </Text>
                         <TouchableOpacity
                             onPress={() => navigation.navigate("CategoryProducts", {
-                                category: "Best-Selling"
+                                category: "Best Selling"
                             })}>
                             <Text
                                 className='text-[#53B175] font-mulish-semibold '
@@ -123,46 +124,7 @@ const HomeScreen = ({ navigation }) => {
                             bestSellingProducts?.map((product, index) => {
                                 if (index < 5) {
                                     return (
-                                        <TouchableOpacity
-                                            key={product?._id}
-                                            onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
-                                            className='border-gray-100 border-2 px-4 py-4 rounded-2xl'
-                                            style={{ width: responsiveWidth(45) }}>
-
-                                            <Image
-                                                className="items-center bg-center self-center w-full "
-                                                resizeMode='contain'
-                                                source={{ uri: `${product?.url}` }}
-                                                style={{ height: responsiveHeight(15) }} />
-
-                                            <Text
-                                                className="pt-2 text-black items-center font-mulish-bold "
-                                                style={{ fontSize: responsiveFontSize(2) }}>
-                                                {product?.title}
-                                            </Text>
-                                            <Text
-                                                className=" font-mulish-medium text-slate-500"
-                                                style={{ fontSize: responsiveFontSize(1.5) }}>
-                                                {product?.baseQuantity}
-                                            </Text>
-
-                                            <View
-                                                className="flex-row justify-between pt-3 items-center">
-                                                <Text
-                                                    className="text-black font-mulish-bold"
-                                                    style={{ fontSize: responsiveFontSize(1.85) }}>
-                                                    ₹{product?.price[userData?.category]}
-                                                </Text>
-
-                                                <View
-                                                    className="bg-[#53B175] rounded-2xl p-3 text-center">
-                                                    <Feather
-                                                        name="chevron-right"
-                                                        color="white" size={responsiveHeight(2.5)} />
-                                                </View>
-
-                                            </View>
-                                        </TouchableOpacity>
+                                        <ProductCard key={product?._id} product={product} />
                                     )
                                 }
                                 else {
@@ -173,7 +135,7 @@ const HomeScreen = ({ navigation }) => {
 
                     {!isError && !loadingProducts && !isLoadingUserData &&
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("CategoryProducts", { category: "Best-Selling" })}
+                            onPress={() => navigation.navigate("CategoryProducts", { category: "Best Selling" })}
                             className='border-gray-100 border-2 px-4 py-4 rounded-2xl justify-center items-center'
                             style={{ width: responsiveWidth(45) }}>
 

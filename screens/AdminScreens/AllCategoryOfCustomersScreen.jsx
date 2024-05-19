@@ -132,7 +132,7 @@ const AllCategoryOfCustomersScreen = () => {
                 </View>
                 :
                 <ScrollView className="m-5">
-                    {Object.keys(categories?.price).map((category, index) => {
+                    {Object.keys(categories?.price).sort().map((category, index) => {
                         return (
                             <View
                                 key={index}

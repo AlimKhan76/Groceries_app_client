@@ -111,7 +111,7 @@ const AdminSettingScreen = ({ navigation }) => {
       })
       Toast.show({
         type: "SUCCESS",
-        title: "Marked all packed orders as delivered",
+        title: "Marked all pending orders as delivered",
         autoClose: 2000,
       })
       setConfirmation(false)

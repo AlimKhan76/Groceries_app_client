@@ -28,6 +28,7 @@ import UserAddressesScreen from '../screens/UserScreens/UserAddressesScreen';
 import UserCategoryUpdationScreen from '../screens/AdminScreens/UserCategoryUpdationScreen';
 import HelpScreen from '../screens/UserScreens/HelpScreen';
 import AboutScreen from '../screens/UserScreens/AboutScreen';
+import LoginWithOtpScreen from '../screens/LoginWithOtpScreen';
 
 const StackNavigator = () => {
     const Stack = createNativeStackNavigator();
@@ -81,7 +82,7 @@ const StackNavigator = () => {
 
                 <Stack.Screen
                     name='Login'
-                    component={LoginScreen}
+                    component={LoginWithOtpScreen}
                     screenOptions={{
                         animation: "slide_from_right"
                     }}

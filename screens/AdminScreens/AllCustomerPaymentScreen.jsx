@@ -81,7 +81,7 @@ const AllCustomerPaymentScreen = () => {
             style={{
               fontSize: responsiveFontSize(3)
             }}>
-            ₹ {overallBalance}
+            ₹ {overallBalance.toLocaleString()}
           </Text>
         }
       </View>
@@ -125,11 +125,6 @@ const AllCustomerPaymentScreen = () => {
                         }}>
                           Contact No: {customer?.customerContact}
                         </Text>
-                        {/* <Text className="text-black font-mulish-semibold" style={{
-                            fontSize: responsiveFontSize(1.5)
-                          }}>
-                            {moment.tz(order?.dateOfTransaction, "Asia/Kolkata").format("DD/MM/yy hh:mm A")}
-                          </Text> */}
 
                       </View>
 
@@ -140,7 +135,7 @@ const AllCustomerPaymentScreen = () => {
                       style={{
                         fontSize: responsiveFontSize(2)
                       }}>
-                      ₹ {customer?.balance}
+                      ₹ {customer?.balance?.toLocaleString()}
                     </Text>
                   </TouchableOpacity>
                   <Divider />
@@ -177,7 +172,7 @@ const AllCustomerPaymentScreen = () => {
       }
 
 
-    
+
     </SafeAreaView>
   )
 }

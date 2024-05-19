@@ -153,7 +153,7 @@ const OrderConfirmationScreen = () => {
 
     const { data: cartItems, isLoading } = useQuery({
         queryKey: ['cartItems'],
-        queryFn: getItemsFromCartAPI,
+        queryFn: ({signal})=>getItemsFromCartAPI(signal),
         staleTime: Infinity,
     })
 
@@ -232,33 +232,10 @@ const OrderConfirmationScreen = () => {
             <Divider />
 
 
-            {/* {isFetching &&
-                <BlurView
-                    className="items-center justify-center"
-                    style={{
-                        width: responsiveWidth(100),
-                        height: responsiveHeight(100),
-                        zIndex: 9999,
-                        position: 'absolute',
-                        right: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-
-                    }}
-                    blurType="dark"
-                    blurAmount={5}
-                    reducedTransparencyFallbackColor="white">
-                    <ActivityIndicator style={{
-                        height: responsiveHeight(100),
-                    }}
-                        size={"large"}
-                        color='rgb(83 177 117)' />
-                </BlurView>
-            } */}
+            
 
 
-            <ScrollView className="m-3 overflow-hidden mb-8"
+            <ScrollView className="m-3 overflow-hidden mb-5 "
                 style={{
 
                 }}>

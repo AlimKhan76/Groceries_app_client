@@ -103,7 +103,7 @@ const PaymentDetailsScreen = () => {
                                 style={{
                                     fontSize: responsiveFontSize(2.75)
                                 }}>
-                                ₹ {customerBalance?.balance}
+                                ₹ {customerBalance?.balance !== undefined ? customerBalance?.balance : 0}
                             </Text>
                         }
                     </View>

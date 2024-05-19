@@ -170,7 +170,7 @@ const UserCategoryUpdationScreen = () => {
                                                 fontFamily: "Mulish-Medium"
                                             }}
                                             data={
-                                                Object.keys(categories?.price).map((category, index) =>
+                                                Object.keys(categories?.price).sort().map((category) =>
                                                 ({
                                                     label: category,
                                                     value: category
@@ -214,7 +214,7 @@ const UserCategoryUpdationScreen = () => {
 
 
             {updatedCategoryCustomer?.length > 0 &&
-                <View className="bottom-2.5 relative self-center w-full overflow-hidden  ">
+                <View className="bottom-0 relative self-center w-full overflow-hidden p-3 ">
                     <TouchableOpacity
                         disabled={isPendingUpdation}
                         onPress={() => updatingCategory(updatedCategoryCustomer)}

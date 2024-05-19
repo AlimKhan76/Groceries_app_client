@@ -90,7 +90,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
     const { data: cartItems, isFetching } = useQuery({
         queryKey: ['cartItems'],
-        queryFn: getItemsFromCartAPI,
+        queryFn: ({ signal }) => getItemsFromCartAPI(signal),
         staleTime: Infinity,
     })
 

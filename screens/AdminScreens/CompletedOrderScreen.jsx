@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
@@ -85,6 +85,7 @@ const CompletedOrderScreen = ({ navigation }) => {
       </Appbar.Header>
       <Divider bold />
 
+
       <View
         className='bg-gray-200 mx-3 my-2 rounded-2xl px-3 flex-row items-center'>
         <MaterialCommunityIcons name="archive-search-outline" size={responsiveFontSize(3)} color="black" />
@@ -133,6 +134,7 @@ const CompletedOrderScreen = ({ navigation }) => {
           customerName?.length > 0 && statusOfCustomerOrder === "success" ?
             customerOrder?.pages[0]?.docs?.length > 0 ?
               <FlatList
+                onScroll={() => Keyboard.dismiss()}
                 onEndReached={() => isFetchingNextPageOfCustomerOrder || !hasNextPageOfCustomerOrder ? null : fetchNextPageOfCustomerOrder()}
                 data={customerOrder?.pages?.map(pages => pages?.docs).flat()}
                 initialNumToRender={10}
@@ -160,11 +162,11 @@ const CompletedOrderScreen = ({ navigation }) => {
               >
               </FlatList>
               :
-              <View className=" flex-1 justify-center items-center">
+              <View className=" flex-1 justify-center items-center px-3">
                 <Text className="text-black font-mulish-semibold"
                   style={{
                     textAlign: "center",
-                    fontSize: responsiveFontSize(3)
+                    fontSize: responsiveFontSize(2.5)
                   }}>
                   No Delivered Orders of {customerName} found
                 </Text>
@@ -174,6 +176,7 @@ const CompletedOrderScreen = ({ navigation }) => {
             orders?.pages[0]?.docs?.length > 0
               ?
               <FlatList
+                onScroll={() => Keyboard.dismiss()}
                 onEndReached={() => isFetchingNextPage || !hasNextPage ? null : fetchNextPage()}
                 data={orders?.pages?.map(pages => pages?.docs).flat()}
                 initialNumToRender={10}
@@ -211,6 +214,7 @@ const CompletedOrderScreen = ({ navigation }) => {
 
               </View>
       }
+
     </SafeAreaView >
   )
 }
