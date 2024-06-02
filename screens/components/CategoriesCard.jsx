@@ -4,9 +4,6 @@ import { useNavigation } from '@react-navigation/native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 
 
-
-
-
 const CategoriesCard = () => {
 
     const navigation = useNavigation()
@@ -15,17 +12,14 @@ const CategoriesCard = () => {
             <TouchableOpacity
                 onPress={() => {
                     navigation.navigate("CategoryProducts", {
-                        category: "Everyday Needs"
+                        category: "Indian Vegetables"
                     })
-
-                }
-                }
+                }}
                 className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
                 style={{
                     width: responsiveWidth(45),
                     height: responsiveHeight(30)
-                }}
-            >
+                }}>
                 <Image className="items-center bg-center self-center "
                     resizeMode='contain'
                     style={{
@@ -36,20 +30,18 @@ const CategoriesCard = () => {
                 <Text
                     className="pt-2 text-black text-center font-mulish-bold "
                     style={{ fontSize: responsiveFontSize(2.5) }}>
-                    Everyday Needs
+                    Indian Vegetables
                 </Text>
-
             </TouchableOpacity>
 
 
             <TouchableOpacity
                 onPress={() => {
                     navigation.navigate("CategoryProducts", {
-                        category: "Green Vegetables"
+                        category: "Leafy Vegetables"
                     })
-
-                }
-                } className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
+                }}
+                className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
                 style={{
                     width: responsiveWidth(45),
                     height: responsiveHeight(30)
@@ -58,24 +50,22 @@ const CategoriesCard = () => {
                 <Image className="items-center bg-center self-center  "
                     style={{
                         height: responsiveHeight(15),
-                        width: responsiveWidth(30),
+                        width: responsiveWidth(55),
                     }}
                     resizeMode='contain'
-                    source={require("../../assets/images/product_categories/greenVegetables.png")} />
+                    source={require("../../assets/images/product_categories/leafyVegetables.png")} />
                 <Text
                     className="pt-2 text-black text-lg text-center font-mulish-bold "
                     style={{ fontSize: responsiveFontSize(2.5) }}>
-                    Green Vegetables
+                    Leafy Vegetables
                 </Text>
-
             </TouchableOpacity>
 
 
             <TouchableOpacity
                 onPress={() => navigation.navigate("CategoryProducts", {
                     category: "Exotic Vegetables"
-                })
-                }
+                })}
                 className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
                 style={{
                     width: responsiveWidth(45),
@@ -102,7 +92,7 @@ const CategoriesCard = () => {
 
             <TouchableOpacity
                 onPress={() => navigation.navigate("CategoryProducts", {
-                    category: "Leafy Vegetables"
+                    category: "Fruits"
                 })
                 }
                 className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
@@ -114,18 +104,18 @@ const CategoriesCard = () => {
                 <Image className="items-center bg-center self-center "
                     style={{
                         height: responsiveHeight(15),
-                        width: responsiveWidth(30),
+                        width: responsiveWidth(35),
                     }}
                     resizeMode='cover'
-                    source={require("../../assets/images/product_categories/leafyVegetables.png")} />
+                    source={require("../../assets/images/product_categories/fruits.png")} />
                 <Text
                     className="pt-2 text-black text-center font-mulish-bold "
                     style={{ fontSize: responsiveFontSize(2.5) }}>
-                    Leafy Vegetables
+                    Fruits
                 </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
                 onPress={() => navigation.navigate("CategoryProducts", {
                     category: "Herbs & Spices"
                 })
@@ -141,37 +131,15 @@ const CategoriesCard = () => {
                         height: responsiveHeight(18)
                     }}
                     resizeMode='cover'
-                    source={require("../../assets/images/product_categories/herbsAndSpices.png")} />
+                    source={require("../../assets/images/product_categories/fruits.png")} />
                 <Text
                     className="pt-2 text-black text-center font-mulish-bold "
                     style={{ fontSize: responsiveFontSize(2.35) }}>
-                    Herbs & Spices
-                </Text>
-
-            </TouchableOpacity>
-
-            {/* <TouchableOpacity
-                // onPress={() => navigation.navigate("ProductDetails")}
-                className='border-gray-200 border-2 px-4 py-4 rounded-2xl justify-center bg-green-100 '
-                style={{
-                    width: responsiveWidth(45),
-                    height: responsiveHeight(30)
-                }}
-            >
-                <Image className="items-center bg-center self-center "
-                    style={{
-                        width: responsiveWidth(30)
-                    }}
-                    resizeMode='contain'
-                    source={require("../../assets/images/product_categories/bakery.png")} />
-                <Text
-                    className="pt-2 text-black text-center font-mulish-bold "
-                    style={{ fontSize: responsiveFontSize(2.35) }}>
-
-                    Bakery
+                    Exotic Fruits
                 </Text>
 
             </TouchableOpacity> */}
+
 
         </View>
     )

@@ -1,6 +1,7 @@
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { responsiveHeight } from 'react-native-responsive-dimensions'
 
 const data = [
@@ -31,6 +32,14 @@ const data = [
     {
         "icon": <Feather name="download" size={responsiveHeight(3)} color="black" />,
         "title": "Download Pending Orders"
+    },
+    {
+        "icon": <MaterialCommunityIcons name="file-download-outline" size={responsiveHeight(3)} color="black" />,
+        "title": "Download Pending Invoices"
+    },
+    {
+        "icon": <MaterialIcons name="event-available" size={responsiveHeight(3)} color="black" />,
+        "title": "Update Product Availability"
     },
     {
         "icon": <Ionicons name="checkmark-done-sharp" size={responsiveHeight(3)} color="black" />,

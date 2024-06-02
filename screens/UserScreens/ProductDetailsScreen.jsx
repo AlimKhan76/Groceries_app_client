@@ -17,27 +17,30 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     const { product } = route?.params
     const queryClient = useQueryClient()
     const [isFavourite, setIsFavourite] = useState(false)
-    const [quantity, setQuantity] = useState(1)
+    const [quantity, setQuantity] = useState(Number(product?.baseQuantity))
     const [totalPrice, setTotalPrice] = useState(product?.price)
     const [isInCart, setIsInCart] = useState(false)
     const [constantQuantity, setConstantQuantity] = useState(0)
+    const [intervalId, setIntervalId] = useState(null);
+
 
     const lowerQuantity = () => {
-        if (quantity <= 2) {
-            setQuantity(1)
+        if (quantity <= product?.baseQuantity) {
+            setQuantity(product?.baseQuantity)
         }
         else {
-            setQuantity(quantity - +1)
+            setQuantity(quantity => Number((Number(quantity) - Number(product?.baseQuantity)).toFixed(2)));
         }
     }
 
     const increaseQuantity = () => {
-        setQuantity(quantity => quantity + 1)
+        setQuantity(quantity => Number((Number(quantity) + Number(product?.baseQuantity)).toFixed(2)));
     }
 
     // Rendering  the price with cange in quantity
     useEffect(() => {
-        setTotalPrice(quantity * product?.price)
+        setTotalPrice(Number((Number(quantity) * Number(product?.price)).toFixed(2)));
+
     }, [quantity])
 
     // Checking if the product is in favourties
@@ -63,7 +66,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     const { mutate, isPending: addingToFavourites, status } = useMutation({
         mutationFn: changeFavouriteProductAPI,
         onSuccess: () => {
-
             queryClient.invalidateQueries({
                 queryKey: ['userData'],
             })
@@ -120,6 +122,38 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         checkFavourite()
     }, [userData]))
 
+    const handlePressOut = () => {
+        console.log('Long Press Ended');
+        // Clear the interval
+        clearInterval(intervalId);
+    };
+
+    const handleLongPress = (type) => {
+        let quantity = Number(quantity);
+        if (type === "increasing") {
+            const id = setInterval(() => {
+                setQuantity(quantity => Number((Number(quantity) + Number(product?.baseQuantity)).toFixed(2)));
+            }, 150);
+            setIntervalId(id);
+        }
+        else {
+            if (quantity !== product?.baseQuantity) {
+                const id = setInterval(() => {
+                    setQuantity(prevQuantity => {
+                        const newQuantity = Number(Number(prevQuantity) - Number(product?.baseQuantity)).toFixed(1);
+                        if (newQuantity <= product?.baseQuantity) {
+                            clearInterval(id);
+                            return product?.baseQuantity; // Ensure it stops exactly at baseQuantity
+                        }
+                        return newQuantity;
+                    });
+                }, 150);
+                setIntervalId(id);
+            }
+        }
+    };
+
+
     return (
         <SafeAreaView className="flex-1 bg-white "
             edges={['right', 'top', 'left']}>
@@ -161,7 +195,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                 <Text
                                     className="text-black font-mulish-bold"
                                     style={{ fontSize: responsiveFontSize(3) }}>
-                                    {product?.title}
+                                    {product?.title[0]}
                                 </Text>
                                 <Text className="text-[#7C7C7C] font-mulish-semibold"
                                     style={{ fontSize: responsiveFontSize(1.85) }}>
@@ -243,7 +277,9 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                 className="flex-row items-center">
 
                                 <TouchableOpacity
-                                    disabled={quantity === 1}
+                                    onLongPress={() => handleLongPress("decreasing")}
+                                    onPressOut={handlePressOut}
+                                    disabled={quantity === product?.baseQuantity}
                                     onPress={lowerQuantity}
                                     className="border-gray-200 border-2 rounded-2xl p-3 ">
                                     <Feather name="minus" size={responsiveHeight(2.5)}
@@ -252,19 +288,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
 
 
-                                {/* <Text
-                                        className="text-black font-mulish-semibold items-center"
-                                        style={{ fontSize: responsiveFontSize(2.25) }}>
-                                        {isFetching ? <ActivityIndicator /> :
-                                            cartItems?.cart.cart_item_?.map(item => {
-                                                if (item?._id === product?._id)
-                                                    return item?.quantity;
-                                                else
-                                                    return null;
-                                            })
-                                        }
-
-                                    </Text> */}
 
                                 <Text className=" text-black items-center px-3"
                                     style={{ fontSize: responsiveFontSize(2.25) }}>
@@ -274,6 +297,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                                 </Text>
 
                                 <TouchableOpacity
+                                    onLongPress={() => handleLongPress("increasing")}
+                                    onPressOut={handlePressOut}
                                     onPress={increaseQuantity}
                                     className="border-gray-200 border-2 rounded-2xl p-3 ">
                                     <Feather name="plus" color="#53B175" size={responsiveHeight(2.5)} />

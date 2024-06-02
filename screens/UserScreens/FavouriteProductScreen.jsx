@@ -60,7 +60,7 @@ const FavouriteProductScreen = () => {
                         fontSize: responsiveFontSize(2)
                       }}
                     >
-                      {product?.title}
+                      {product?.title[0]}
                     </Text>
 
                     <Text
@@ -68,7 +68,7 @@ const FavouriteProductScreen = () => {
                       style={{
                         fontSize: responsiveFontSize(1.5)
                       }}>
-                      {product?.baseQuantity}
+                      {product?.baseQuantity} {product?.unit}
                     </Text>
 
                   </View>

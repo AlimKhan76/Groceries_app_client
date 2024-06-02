@@ -268,7 +268,7 @@ const UserOrderDetails = ({ navigation, route }) => {
                                     <DataTable.Cell >
                                         <Text className=" text-black font-mulish-medium"
                                             style={{ fontSize: responsiveFontSize(1.65) }}>
-                                            {product?.cartItem?.title}
+                                            {product?.cartItem?.title[0]}
 
                                         </Text>
                                     </DataTable.Cell>
@@ -292,7 +292,7 @@ const UserOrderDetails = ({ navigation, route }) => {
                                             fontFamily: "Mulish-Medium"
 
                                         }}>
-                                        ₹ {product?.cartItem?.price?.[userData?.category] * product?.quantity}
+                                        ₹ {Number((Number(product?.quantity) * Number(product?.cartItem?.price?.[userData?.category])).toFixed(2))}
                                     </DataTable.Cell>
 
 

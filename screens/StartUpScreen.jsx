@@ -45,7 +45,7 @@ const StartUpScreen = ({ navigation }) => {
 
             <View className=" flex-row items-center justify-center">
                 <Image source={logo}
-                resizeMode='cover'
+                    resizeMode='cover'
                     style={{
                         width: responsiveWidth(15),
                         height: responsiveHeight(8)
@@ -55,7 +55,7 @@ const StartUpScreen = ({ navigation }) => {
                     <Text
                         className="text-white font-mulish-semibold"
                         style={{ fontSize: responsiveFontSize(4) }}>
-                        Shri Biroba
+                        Biroba Vegetables
                     </Text>
 
                     <Text className="text-white flex-col font-mulish-regular"

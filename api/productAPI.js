@@ -20,6 +20,7 @@ exports.getProductByCategoryAPI = async (category) => {
         return data;
     }
     catch (error) {
+        console.log(error)
         console.log(`Error in fetching products of  ${category}` + error?.response?.data?.message)
         throw error?.response?.data?.message
     }
@@ -35,6 +36,7 @@ exports.searchProductAPI = async (searchQuery) => {
         }
         return "";
     } catch (error) {
+        console.log(error)
         console.log("Error in searching products " + error?.response?.data?.message)
         throw error?.response?.data?.message
 

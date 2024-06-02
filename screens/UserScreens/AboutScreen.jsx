@@ -53,7 +53,7 @@ const AboutScreen = () => {
             style={{
               fontSize: responsiveFontSize(2.5)
             }}>
-            Shri Biroba Vegetable Suppliers
+            Biroba Vegetable Suppliers
           </Text>
         </View>
         <View className="justify-center gap-y-2">
@@ -70,7 +70,7 @@ const AboutScreen = () => {
               fontSize: responsiveFontSize(1.75)
             }}>
 
-            Introducing the Shri Biroba App – your new kitchen companion for fresh, locally sourced vegetables, now just a tap away!
+            Introducing the Biroba Vegetables App – your new kitchen companion for fresh, locally sourced vegetables, now just a tap away!
             {"\n \n"}
 
             With our user-friendly app, shopping for your favorite groceries has never been easier. Here’s what you can do:

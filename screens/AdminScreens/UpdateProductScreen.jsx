@@ -179,71 +179,71 @@ const UpdateProductScreen = ({ navigation }) => {
                     </View>
                     :
 
-                        <ScrollView className={`${isKeyboardVisible? "mb-28 ":""}`} >
-                            {allProducts?.map((product, index) => {
-                                return (
-                                    <DataTable.Row key={product?._id} className="flex-1 py-2">
-                                        <DataTable.Cell>
-                                            <Text className="" style={{
-                                                color: "black",
-                                                fontSize: responsiveFontSize(1.75),
-                                                fontFamily: "Mulish-Medium",
-                                                paddingEnd: responsiveWidth(1)
-                                            }}>
-                                                {index + 1}. {product?.title}
+                    <ScrollView className={`${isKeyboardVisible ? "mb-28 " : ""}`} >
+                        {allProducts?.map((product, index) => {
+                            return (
+                                <DataTable.Row key={product?._id} className="flex-1 py-2">
+                                    <DataTable.Cell>
+                                        <Text className="" style={{
+                                            color: "black",
+                                            fontSize: responsiveFontSize(1.75),
+                                            fontFamily: "Mulish-Medium",
+                                            paddingEnd: responsiveWidth(1)
+                                        }}>
+                                            {index + 1}. {product?.title[0]}
 
+                                        </Text>
+                                    </DataTable.Cell>
+
+                                    <DataTable.Cell
+                                        textStyle={{
+                                            color: "black",
+                                            fontSize: responsiveFontSize(1.75),
+                                            fontFamily: "Mulish-Medium",
+                                        }}>
+                                        {product?.baseQuantity}
+                                    </DataTable.Cell>
+
+
+                                    <DataTable.Cell>
+                                        <View
+                                            className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
+                                            <Text className="text-black font-mulish-medium"
+                                                style={{
+                                                    fontSize: responsiveFontSize(1.75),
+                                                }}>
+                                                ₹
                                             </Text>
-                                        </DataTable.Cell>
 
-                                        <DataTable.Cell
-                                            textStyle={{
-                                                color: "black",
-                                                fontSize: responsiveFontSize(1.75),
-                                                fontFamily: "Mulish-Medium",
-                                            }}>
-                                            {product?.baseQuantity}
-                                        </DataTable.Cell>
+                                            <TextInput
+                                                onChangeText={(e) => handleUpdationOfProduct(product._id, e)}
+                                                className="text-black px-2 w-full py-1 items-center font-mulish-medium"
+                                                maxLength={5}
+                                                keyboardType='numeric'
+                                                style={{
+                                                    fontSize: responsiveFontSize(1.75),
+                                                }}
+                                                placeholder={product?.price?.toString()}
+                                                placeholderTextColor={"rgb(156 163 175)"}>
+                                            </TextInput>
+                                        </View>
 
+                                    </DataTable.Cell>
 
-                                        <DataTable.Cell>
-                                            <View
-                                                className="flex-row border-2 rounded-xl w-5/6 border-gray-300 my-1 px-2 py-1 items-center">
-                                                <Text className="text-black font-mulish-medium"
-                                                    style={{
-                                                        fontSize: responsiveFontSize(1.75),
-                                                    }}>
-                                                    ₹
-                                                </Text>
+                                </DataTable.Row>
+                            )
 
-                                                <TextInput
-                                                    onChangeText={(e) => handleUpdationOfProduct(product._id, e)}
-                                                    className="text-black px-2 w-full py-1 items-center font-mulish-medium"
-                                                    maxLength={5}
-                                                    keyboardType='numeric'
-                                                    style={{
-                                                        fontSize: responsiveFontSize(1.75),
-                                                    }}
-                                                    placeholder={product?.price?.toString()}
-                                                    placeholderTextColor={"rgb(156 163 175)"}>
-                                                </TextInput>
-                                            </View>
+                        })}
 
-                                        </DataTable.Cell>
-
-                                    </DataTable.Row>
-                                )
-
-                            })}
-
-                            {/* //         )
+                        {/* //         )
                     //     }}
                     //     keyExtractor={(item) => item?._id}
                     //     initialNumToRender={20}
                     //     // maxToRenderPerBatch={50}
                     //     // windowSize={5}
                     // /> */}
-                    {/* </KeyboardAvoidingView> */}
-                        </ScrollView>
+                        {/* </KeyboardAvoidingView> */}
+                    </ScrollView>
 
 
                 }

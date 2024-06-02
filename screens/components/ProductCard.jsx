@@ -8,14 +8,14 @@ import useUserDataQuery from '../../hooks/useUserData';
 
 const ProductCard = ({ product }) => {
     const navigation = useNavigation()
-
     const { data: userData } = useUserDataQuery()
     return (
-        
         <TouchableOpacity
             key={product?._id}
-            onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
-            className='border-gray-100 border-2 px-4 py-4 rounded-2xl'
+            onPress={() => navigation.navigate("ProductDetails",
+                { product: { ...product, price: product?.price?.[userData?.category] } }
+            )}
+            className='border-gray-100 border-2 px-4 py-4 rounded-2xl justify-between'
             style={{ width: responsiveWidth(45) }}>
 
             <Image
@@ -27,12 +27,12 @@ const ProductCard = ({ product }) => {
             <Text
                 className="pt-2 text-black items-center font-mulish-bold "
                 style={{ fontSize: responsiveFontSize(2) }}>
-                {product?.title}
+                {product?.title[0]}
             </Text>
             <Text
                 className=" font-mulish-medium text-slate-500"
                 style={{ fontSize: responsiveFontSize(1.5) }}>
-                {product?.baseQuantity}
+                {product?.baseQuantity} {product?.unit}
             </Text>
 
             <View

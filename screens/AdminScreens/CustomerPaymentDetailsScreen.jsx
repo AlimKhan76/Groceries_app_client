@@ -448,15 +448,11 @@ const CustomerPaymentDetailsScreen = () => {
                 }}>
                 ₹
               </Text>
-              {console.log((newTransactionData?.amount))}
               <TextInput
                 ref={amountInputRef}
-                // value={newTransactionData?.amount === "" ? "" : parseInt(newTransactionData?.amount)?.toLocaleString("en-IN").toString()
-                // }
                 value={newTransactionData?.amount}
                 onChangeText={(e) => setNewTransactionData({ ...newTransactionData, amount: e })}
                 keyboardTpe='numeric'
-                placeholder=''
                 className=" text-black text-center w-3/4"
                 style={{
                   fontSize: responsiveFontSize(2.25)
@@ -472,7 +468,6 @@ const CustomerPaymentDetailsScreen = () => {
             <TextInput
               value={newTransactionData?.ref}
               onChangeText={(e) => setNewTransactionData({ ...newTransactionData, ref: e })}
-              // placeholder=''
               className="border-2 border-gray-300 w-3/4 rounded-2xl justify-between items-center flex-row text-black text-center"
               style={{
                 fontSize: responsiveFontSize(2.25)

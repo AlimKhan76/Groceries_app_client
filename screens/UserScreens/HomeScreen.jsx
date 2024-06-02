@@ -22,7 +22,7 @@ const HomeScreen = ({ navigation }) => {
         isError,
         refetch
     } = useQuery({
-        queryKey: ["Best Selling"],
+        queryKey: ["Indian Vegetables"],
         queryFn: ({ queryKey }) => getProductByCategoryAPI(queryKey[0]),
         enabled: true,
         staleTime: Infinity
@@ -61,8 +61,8 @@ const HomeScreen = ({ navigation }) => {
             <ScrollView
                 horizontal={false}>
 
-                <View className="flex-row flex-wrap justify-center  "
-                    style={{ paddingBottom: responsiveHeight(2.5), gap:responsiveHeight(1) }}>
+                <View className="flex-row flex-wrap justify-center"
+                    style={{ paddingBottom: responsiveHeight(2.5), gap: responsiveHeight(1) }}>
                     <View className="items-center pb-2 ">
                         <Image source={require("../../assets/images/home_screen/banner.png")}
                             resizeMode='contain'
@@ -78,11 +78,11 @@ const HomeScreen = ({ navigation }) => {
                     <View className='flex-row px-6 py-1 w-full justify-between'>
                         <Text className="text-black font-mulish-semibold"
                             style={{ fontSize: responsiveFontSize(2.10) }}>
-                            Best Selling Products
+                            Every Day Vegetables
                         </Text>
                         <TouchableOpacity
                             onPress={() => navigation.navigate("CategoryProducts", {
-                                category: "Best Selling"
+                                category: "Indian Vegetables"
                             })}>
                             <Text
                                 className='text-[#53B175] font-mulish-semibold '
@@ -122,7 +122,7 @@ const HomeScreen = ({ navigation }) => {
                             </View>
                             :
                             bestSellingProducts?.map((product, index) => {
-                                if (index < 5) {
+                                if (index < 15) {
                                     return (
                                         <ProductCard key={product?._id} product={product} />
                                     )
@@ -135,7 +135,7 @@ const HomeScreen = ({ navigation }) => {
 
                     {!isError && !loadingProducts && !isLoadingUserData &&
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("CategoryProducts", { category: "Best Selling" })}
+                            onPress={() => navigation.navigate("CategoryProducts", { category: "Indian Vegetables" })}
                             className='border-gray-100 border-2 px-4 py-4 rounded-2xl justify-center items-center'
                             style={{ width: responsiveWidth(45) }}>
 
@@ -144,7 +144,7 @@ const HomeScreen = ({ navigation }) => {
                                 <Text
                                     className="text-black font-mulish-semibold text-center"
                                     style={{ fontSize: responsiveFontSize(2.25) }}>
-                                    View All Best Selling Products
+                                    View All Vegetables
                                 </Text>
                             </View>
                             <View

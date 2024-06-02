@@ -153,7 +153,7 @@ const OrderConfirmationScreen = () => {
 
     const { data: cartItems, isLoading } = useQuery({
         queryKey: ['cartItems'],
-        queryFn: ({signal})=>getItemsFromCartAPI(signal),
+        queryFn: ({ signal }) => getItemsFromCartAPI(signal),
         staleTime: Infinity,
     })
 
@@ -188,18 +188,10 @@ const OrderConfirmationScreen = () => {
     })
 
 
-    // const setPriceCategory = (cartItems) => {
-    //     const cart = cartItems.cart.map(obj => {
-    //         return { ...obj, price: obj?.price?.[userData?.category] };
-    //     });
-
-    //     console.log(cart)
-    //     return cart
-    // }
     const optimizeOrder = () => {
         const newArray = cartItems?.cart?.map(item => {
             const { cartItem, quantity, _id } = item;
-            const { description, baseQuantity, category, url, __v, ...newCartItem } = cartItem;
+            const { description, baseQuantity, url, __v, ...newCartItem } = cartItem;
             return { cartItem: newCartItem, quantity, _id };
         });
         return newArray
@@ -232,7 +224,7 @@ const OrderConfirmationScreen = () => {
             <Divider />
 
 
-            
+
 
 
             <ScrollView className="m-3 overflow-hidden mb-5 "
@@ -285,7 +277,7 @@ const OrderConfirmationScreen = () => {
                                 style={{
                                     fontSize: responsiveFontSize(1.75)
                                 }}>
-                               Pincode: {address?.pincode}
+                                Pincode: {address?.pincode}
                             </Text>
 
                             {address?.landmark.length > 0 &&
@@ -393,7 +385,7 @@ const OrderConfirmationScreen = () => {
                                         <Text className="text-black flex-wrap" style={{
                                             fontSize: responsiveFontSize(1.75)
                                         }}>
-                                            {product?.cartItem?.title}
+                                            {product?.cartItem?.title[0]}
 
                                         </Text>
                                     </DataTable.Cell>
@@ -412,7 +404,7 @@ const OrderConfirmationScreen = () => {
                                             fontFamily: "Mulish-Medium",
                                             color: "black"
                                         }}>
-                                        ₹ {product?.quantity * product?.cartItem?.price?.[userData?.category]}
+                                        ₹ {Number((Number(product?.quantity) * Number(product?.cartItem?.price?.[userData?.category])).toFixed(2))}
                                     </DataTable.Cell>
 
                                 </DataTable.Row>

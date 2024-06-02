@@ -128,56 +128,14 @@ const ExploreScreen = ({ navigation, route }) => {
               horizontal={false} >
 
               <View className="flex-row flex-wrap justify-center  "
-                style={{ gap: responsiveHeight(1) }}
-              >
+                style={{ gap: responsiveHeight(1) }}>
 
                 {data?.length > 0 && data !== undefined &&
                   data?.map((product) => {
                     return (
                       <ProductCard key={product?._id} product={product} />
-                      // <TouchableOpacity
-                      //   key={product?._id}
-                      //   onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
-                      //   className='border-gray-100 border-2 px-4 py-4 rounded-2xl '
-                      //   style={{ width: responsiveWidth(45) }}>
-
-                      //   <Image
-                      //     className="items-center bg-center self-center w-full h-24"
-                      //     resizeMode='contain'
-                      //     source={{ uri: `${product?.url}` }} />
-
-                      //   <Text
-                      //     className="pt-2 text-black items-center font-mulish-bold "
-                      //     style={{ fontSize: responsiveFontSize(2) }}>
-                      //     {product?.title}
-                      //   </Text>
-
-                      //   <Text
-                      //     className=" font-mulish-regular text-slate-500"
-                      //     style={{ fontSize: responsiveFontSize(1.75) }}>
-                      //     {product?.baseQuantity}
-                      //   </Text>
-
-                      //   <View
-                      //     className="flex-row justify-between pt-3 items-center">
-                      //     <Text
-                      //       className="text-black font-mulish-bold"
-                      //       style={{
-                      //         fontSize: responsiveFontSize(2)
-                      //       }}>
-                      //       ₹{product?.price?.[userData?.category]}
-                      //     </Text>
-
-                      //     <View
-                      //       className="bg-[#53B175] rounded-2xl p-3 text-center">
-                      //       <Feather
-                      //         name="chevron-right"
-                      //         color="white" size={responsiveHeight(2.5)} />
-                      //     </View>
-
-                      //   </View>
-                      // </TouchableOpacity>
                     )
+
                   })
                 }
 

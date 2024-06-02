@@ -8,6 +8,7 @@ import { getProductByCategoryAPI } from '../../api/productAPI'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
 import useUserDataQuery from '../../hooks/useUserData'
+import ProductCard from '../components/ProductCard'
 
 const AllCategorizedProductScreen = ({ route }) => {
     const navigation = useNavigation();
@@ -48,73 +49,69 @@ const AllCategorizedProductScreen = ({ route }) => {
 
 
             <ScrollView
-                className=" py-3 my-2.5"
+                className=" py-3 my-2.5 "
                 horizontal={false}   >
 
 
-                <View className="flex-row flex-wrap gap-2 justify-center pb-8  ">
+                <View className="flex-row flex-wrap  justify-center pb-8   "
+                    style={{ gap: responsiveHeight(1) }}>
 
                     {loadingProducts ?
-
                         <View className="flex-1 justify-center items-center pt-[50%]">
                             <ActivityIndicator animating={true} size={'large'}
                                 color={'#53B175'} />
                         </View>
                         :
                         categorizedProducts?.map((product, index) => {
-                            // if (index < 5) {
-                                return (
-                                    <TouchableOpacity
-                                        key={product?._id}
-                                        onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
-                                        className='border-gray-100 border-2 px-4 py-4 rounded-2xl '
-                                        style={{ width: responsiveWidth(45) }}>
+                            return (
+                                <ProductCard key={product?._id} product={product} />
+                                // <TouchableOpacity
+                                //     key={product?._id}
+                                //     onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
+                                //     className='border-gray-100 border-2 px-4 py-4 rounded-2xl '
+                                //     style={{ width: responsiveWidth(45) }}>
 
-                                        <Image
-                                            className="items-center bg-center self-center w-full h-24"
-                                            resizeMode='contain'
-                                            source={{ uri: `${product?.url}` }} />
+                                //     <Image
+                                //         className="items-center bg-center self-center w-full h-24"
+                                //         resizeMode='contain'
+                                //         source={{ uri: `${product?.url}` }} />
 
-                                        <Text
-                                            className="pt-2 text-black items-center font-mulish-semibold"
-                                            style={{
-                                                fontSize: responsiveFontSize(2)
-                                            }}>
-                                            {product?.title}
-                                        </Text>
+                                //     <Text
+                                //         className="pt-2 text-black items-center font-mulish-semibold"
+                                //         style={{
+                                //             fontSize: responsiveFontSize(2)
+                                //         }}>
+                                //         {product?.title[0]}
+                                //     </Text>
 
-                                        <Text
-                                            className="text-base font-mulish-regular text-slate-500"
-                                            style={{
-                                                fontSize: responsiveFontSize(1.5)
-                                            }}>
-                                            {product?.baseQuantity}
-                                        </Text>
+                                //     <Text
+                                //         className="text-base font-mulish-regular text-slate-500"
+                                //         style={{
+                                //             fontSize: responsiveFontSize(1.5)
+                                //         }}>
+                                //         {product?.baseQuantity}
+                                //     </Text>
 
-                                        <View
-                                            className="flex-row justify-between pt-3 items-center">
-                                            <Text
-                                                className="text-black font-mulish-semibold"
-                                                style={{
-                                                    fontSize: responsiveFontSize(2)
-                                                }}>
-                                                ₹{product?.price?.[userData?.category]}
-                                            </Text>
+                                //     <View
+                                //         className="flex-row justify-between pt-3 items-center">
+                                //         <Text
+                                //             className="text-black font-mulish-semibold"
+                                //             style={{
+                                //                 fontSize: responsiveFontSize(2)
+                                //             }}>
+                                //             ₹{product?.price?.[userData?.category]}
+                                //         </Text>
 
-                                            <View
-                                                className="bg-[#53B175] rounded-2xl p-3 text-center">
-                                                <Feather
-                                                    name="chevron-right"
-                                                    color="white" size={responsiveHeight(2.5)} />
-                                            </View>
+                                //         <View
+                                //             className="bg-[#53B175] rounded-2xl p-3 text-center">
+                                //             <Feather
+                                //                 name="chevron-right"
+                                //                 color="white" size={responsiveHeight(2.5)} />
+                                //         </View>
 
-                                        </View>
-                                    </TouchableOpacity>
-                                )
-                            // }
-                            // else {
-                            //     return null
-                            // }
+                                //     </View>
+                                // </TouchableOpacity>
+                            )
                         })
                     }
 

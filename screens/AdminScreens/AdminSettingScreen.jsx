@@ -14,6 +14,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import * as SecureStore from "expo-secure-store";
 import { BlurView } from '@react-native-community/blur'
 import { Dialog, Toast } from 'react-native-alert-notification'
+import { downloadPendingInvoices } from '../../api/adminAPIs/downloadAPIs'
 
 
 
@@ -64,7 +65,7 @@ const AdminSettingScreen = ({ navigation }) => {
       )
         .fetch("GET",
           `https://groceries-app-server.vercel.app/adminOrder/downloadPendingOrders`,
-          // "http://192.168.0.100:5000/adminOrder/downloadPendingOrders",
+          // "http://192.168.0.102:5000/adminOrder/downloadPendingOrders",
           {
             Authorization: token
 
@@ -151,7 +152,10 @@ const AdminSettingScreen = ({ navigation }) => {
                   downloadCSV() :
                   data?.title === "Mark all pending orders as delivered" ?
                     setConfirmation(true) :
-                    navigation.navigate(data?.navigation)
+                    data?.title === "Download Pending Invoices" ?
+                      downloadPendingInvoices()
+                      :
+                      navigation.navigate(data?.navigation)
               }
               }
 

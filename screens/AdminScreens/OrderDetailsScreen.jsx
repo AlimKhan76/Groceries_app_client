@@ -11,8 +11,8 @@ import { updateOrderStatusAPI } from '../../api/adminAPIs/orderAPI'
 import moment from 'moment-timezone'
 import Feather from "react-native-vector-icons/Feather"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import EvilIcons from "react-native-vector-icons/EvilIcons"
 import { Toast } from 'react-native-alert-notification'
+import { downloadInvoiceByOrderId } from '../../api/adminAPIs/downloadAPIs'
 
 const OrderDetailsScreen = ({ navigation, route }) => {
     const { order } = route?.params;
@@ -46,13 +46,6 @@ const OrderDetailsScreen = ({ navigation, route }) => {
 
     })
 
-    const data = [
-        { label: 'Out for delivery', value: 'Out for delivery' },
-        { label: 'Delivered', value: 'Delivered' },
-    ];
-
-    const [selected, setSelected] = useState("null");
-
     return (
         <SafeAreaView className=" flex-1 "
             edges={["right", "left", "top"]}>
@@ -79,6 +72,11 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                         color: "black",
                         fontSize: responsiveFontSize(3),
                     }} />
+                <Appbar.Action
+                    onPress={() => downloadInvoiceByOrderId(order?._id)}
+                    icon="download-circle-outline"
+                    iconColor='black'
+                />
             </Appbar.Header>
             <Divider />
 
@@ -270,7 +268,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                                         <Text className=" text-black font-mulish-medium"
                                             style={{ fontSize: responsiveFontSize(1.65) }}>
 
-                                            {product?.cartItem?.title}
+                                            {product?.cartItem?.title[0]}
                                         </Text>
                                     </DataTable.Cell>
                                     <DataTable.Cell numeric
@@ -288,7 +286,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                                             fontFamily: "Mulish-Bold",
                                             color: "black",
                                         }}>
-                                        ₹ {product?.quantity * product?.cartItem?.price?.[order?.customerCategory]}
+                                        ₹ {Number((Number(product?.quantity) * Number(product?.cartItem?.price?.[order?.customerCategory])).toFixed(2))}
                                     </DataTable.Cell>
                                 </DataTable.Row>
 

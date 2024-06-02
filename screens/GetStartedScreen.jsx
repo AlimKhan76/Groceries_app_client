@@ -17,16 +17,16 @@ const GetStartedScreen = ({ navigation }) => {
                 <Text
                     className="text-white font-mulish-semibold  m-2"
                     style={{
-                        fontSize:responsiveFontSize(4)
+                        fontSize: responsiveFontSize(4)
                     }}>
                     Welcome to
                 </Text>
 
                 <Text className="text-white font-mulish-semibold  mb-3"
-                style={{
-                    fontSize:responsiveFontSize(3.5)
-                }}>
-                    Shri Biroba app
+                    style={{
+                        fontSize: responsiveFontSize(3.5)
+                    }}>
+                    Biroba Vegetables app
                 </Text>
 
                 <Text className="text-white font-mulish-medium mb-8">

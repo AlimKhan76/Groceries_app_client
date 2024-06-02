@@ -56,7 +56,7 @@ const LoginScreen = ({ navigation }) => {
                             marginHorizontal: responsiveWidth(6),
                         }}
                         className='text-black font-mulish-semibold'>
-                        Get your groceries with Shri Biroba
+                        Get your groceries with Biroba Vegetables
                     </Text>
 
 
