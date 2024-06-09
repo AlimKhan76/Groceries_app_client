@@ -3,7 +3,7 @@ const { API } = require("../config/axios");
 exports.getOrdersByStatusAPI = async (pageParam, status) => {
     try {
         const { data } = await API.get(`adminOrder/getOrders/${status}/${pageParam}`)
-        console.log("Fetched " + status + " products " + data)
+        console.log("Fetched " + status + " Orders " + data)
         return data;
 
     } catch (error) {

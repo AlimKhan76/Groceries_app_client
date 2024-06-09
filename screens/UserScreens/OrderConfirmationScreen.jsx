@@ -391,6 +391,7 @@ const OrderConfirmationScreen = () => {
                                     </DataTable.Cell>
                                     <DataTable.Cell numeric
                                         textStyle={{
+                                            // textAlign: "center",
                                             fontSize: responsiveFontSize(1.5),
                                             fontFamily: "Mulish-Medium",
                                             color: "black",

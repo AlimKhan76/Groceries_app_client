@@ -39,6 +39,7 @@ const data = [
     },
     {
         "icon": <MaterialIcons name="event-available" size={responsiveHeight(3)} color="black" />,
+        "navigation": "ProductAvailabilityScreen",
         "title": "Update Product Availability"
     },
     {

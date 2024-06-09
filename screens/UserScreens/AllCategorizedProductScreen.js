@@ -1,9 +1,9 @@
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Image, FlatList } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Appbar, Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { getProductByCategoryAPI } from '../../api/productAPI'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
@@ -14,14 +14,27 @@ const AllCategorizedProductScreen = ({ route }) => {
     const navigation = useNavigation();
 
     const { category } = route.params
-    const { data: categorizedProducts, isLoading: loadingProducts } = useQuery({
+    const { data: categorizedProducts,
+        isLoading: loadingProducts,
+        fetchNextPage,
+        isLoading,
+        isRefetching,
+        isFetching,
+        refetch,
+        error,
+        hasNextPage,
+        isFetchingNextPage,
+        fetchPreviousPage,
+
+    } = useInfiniteQuery({
         queryKey: ["getProductByCategoryAPI", category],
-        queryFn: () => getProductByCategoryAPI(category),
-        staleTime: Infinity
+        queryFn: ({ pageParam }) => getProductByCategoryAPI(category, pageParam),
+        staleTime: Infinity,
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, pages) => lastPage?.nextPage,
     })
 
     const { data: userData } = useUserDataQuery()
-
 
     return (
         <SafeAreaView className="bg-white flex-1">
@@ -47,82 +60,46 @@ const AllCategorizedProductScreen = ({ route }) => {
             <Divider />
 
 
-
-            <ScrollView
-                className=" py-3 my-2.5 "
-                horizontal={false}   >
-
-
-                <View className="flex-row flex-wrap  justify-center pb-8   "
-                    style={{ gap: responsiveHeight(1) }}>
-
-                    {loadingProducts ?
-                        <View className="flex-1 justify-center items-center pt-[50%]">
-                            <ActivityIndicator animating={true} size={'large'}
-                                color={'#53B175'} />
-                        </View>
-                        :
-                        categorizedProducts?.map((product, index) => {
-                            return (
-                                <ProductCard key={product?._id} product={product} />
-                                // <TouchableOpacity
-                                //     key={product?._id}
-                                //     onPress={() => navigation.navigate("ProductDetails", { product: { ...product, price: product?.price?.[userData?.category] } })}
-                                //     className='border-gray-100 border-2 px-4 py-4 rounded-2xl '
-                                //     style={{ width: responsiveWidth(45) }}>
-
-                                //     <Image
-                                //         className="items-center bg-center self-center w-full h-24"
-                                //         resizeMode='contain'
-                                //         source={{ uri: `${product?.url}` }} />
-
-                                //     <Text
-                                //         className="pt-2 text-black items-center font-mulish-semibold"
-                                //         style={{
-                                //             fontSize: responsiveFontSize(2)
-                                //         }}>
-                                //         {product?.title[0]}
-                                //     </Text>
-
-                                //     <Text
-                                //         className="text-base font-mulish-regular text-slate-500"
-                                //         style={{
-                                //             fontSize: responsiveFontSize(1.5)
-                                //         }}>
-                                //         {product?.baseQuantity}
-                                //     </Text>
-
-                                //     <View
-                                //         className="flex-row justify-between pt-3 items-center">
-                                //         <Text
-                                //             className="text-black font-mulish-semibold"
-                                //             style={{
-                                //                 fontSize: responsiveFontSize(2)
-                                //             }}>
-                                //             ₹{product?.price?.[userData?.category]}
-                                //         </Text>
-
-                                //         <View
-                                //             className="bg-[#53B175] rounded-2xl p-3 text-center">
-                                //             <Feather
-                                //                 name="chevron-right"
-                                //                 color="white" size={responsiveHeight(2.5)} />
-                                //         </View>
-
-                                //     </View>
-                                // </TouchableOpacity>
-                            )
-                        })
-                    }
-
-
-
+            {loadingProducts ?
+                <View className="flex-1 justify-center items-center pt-[50%]">
+                    <ActivityIndicator animating={true} size={'large'}
+                        color={'#53B175'} />
                 </View>
-            </ScrollView>
+                :
+                <FlatList
+                    columnWrapperStyle={{
+                        justifyContent: "center",
+                        gap: responsiveHeight(1)
+                    }}
+                    contentContainerStyle={{
+                        justifyContent: "center",
+                        gap: responsiveHeight(1)
+                    }}
+                    className="my-3 "
+                    numColumns={2}
+                    onEndReached={() => isFetchingNextPage || !hasNextPage ? null : fetchNextPage()}
+                    data={categorizedProducts?.pages?.map(pages => pages?.docs).flat()}
+                    initialNumToRender={14}
+                    keyExtractor={(item) => item?._id}
+                    renderItem={({ item: product }) => {
+                        return (
+                            <ProductCard product={product} key={product?._id} />
+                        )
+                    }}
+                    ListFooterComponent={isFetching ?
+                        <View className="w-screen  items-center  ">
+                            <ActivityIndicator style={{
+                                marginVertical: responsiveHeight(1.5)
+                            }}
+                                size={"small"} color='#419a79' />
+                        </View>
+                        : ""
+                    }
+                >
+                </FlatList>
 
-
-
-        </SafeAreaView>
+            }
+        </SafeAreaView >
     )
 }
 

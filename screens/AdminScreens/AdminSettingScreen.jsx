@@ -1,12 +1,12 @@
 import React, { Fragment, useState } from 'react'
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import data from "../components/AdminAccountScreenCard"
 import { downloadPendingOrders, markAllPendingOrdersAsDeliveredAPI } from '../../api/adminAPIs/orderAPI'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import RNFS from 'react-native-fs';
 import { BASE_URL } from "@env"
-import { ActivityIndicator, Divider } from 'react-native-paper'
+import { ActivityIndicator, Avatar, Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import RNFetchBlob from 'rn-fetch-blob';
 import Feather from "react-native-vector-icons/Feather"
@@ -14,12 +14,21 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import * as SecureStore from "expo-secure-store";
 import { BlurView } from '@react-native-community/blur'
 import { Dialog, Toast } from 'react-native-alert-notification'
-import { downloadPendingInvoices } from '../../api/adminAPIs/downloadAPIs'
+import { downloadCSVForPendingOrders, downloadPendingInvoices } from '../../api/adminAPIs/downloadAPIs'
+import Modal from "react-native-modal";
+import { addProductAPI } from '../../api/adminAPIs/adminProductAPI'
 
 
 
 const AdminSettingScreen = ({ navigation }) => {
   const [confirmation, setConfirmation] = useState(false)
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [newProductData, setNewProductData] = useState({
+    title: "",
+    baseQuantity: "",
+    unit: "",
+    category: ""
+  })
   const queryClient = useQueryClient()
 
   const logout = async () => {
@@ -37,69 +46,6 @@ const AdminSettingScreen = ({ navigation }) => {
     }
 
   }
-
-  const downloadCSV = async () => {
-    try {
-      const token = await SecureStore.getItemAsync("token")
-      RNFetchBlob.config(Platform.select({
-        ios: {
-          fileCache: true,
-          notification: true,
-          title: `orders-${new Date().toDateString()}`,
-          path: RNFS.DocumentDirectoryPath + `/orders-${new Date().toDateString()}.csv`,
-
-        },
-        android: {
-          addAndroidDownloads: {
-            title: `orders-${new Date().toDateString()}`,
-            fileCache: true,
-            useDownloadManager: true,
-            // setting it to true will use the device's native download manager and will be shown in the notification bar.
-            notification: true,
-            path: RNFS.DownloadDirectoryPath + `/orders-${new Date().toDateString()}.xlsx`,  // this is the path where your downloaded file will live in
-            description: 'Downloading orders files.'
-          }
-        }
-      })
-
-      )
-        .fetch("GET",
-          `https://groceries-app-server.vercel.app/adminOrder/downloadPendingOrders`,
-          // "http://192.168.0.102:5000/adminOrder/downloadPendingOrders",
-          {
-            Authorization: token
-
-          })
-        .then((res) => {
-          // the temp file path
-          console.log("The file saved to ", res.path());
-          if (Platform.OS === "ios") {
-            RNFetchBlob.ios.openDocument(res.data);
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          Dialog.show({
-            type: "DANGER",
-            title: "Error in downloading Orders",
-            textBody: "Please try again later",
-            autoClose: 1000
-          })
-        })
-    }
-    catch (err) {
-      console.log(err)
-      Dialog.show({
-        type: "DANGER",
-        title: "Error in downloading Orders",
-        textBody: "Please try again later",
-        autoClose: 1000
-      })
-    }
-
-  }
-
-
 
   const { mutate, isPending } = useMutation({
     mutationFn: markAllPendingOrdersAsDeliveredAPI,
@@ -120,21 +66,63 @@ const AdminSettingScreen = ({ navigation }) => {
   })
 
 
+  const { mutate: addProduct, isPending: isAdding } = useMutation({
+    mutationFn: addProductAPI,
+    onSuccess: () => {
+      setIsModalVisible(false)
+      setNewProductData({
+        title: "",
+        baseQuantity: "",
+        unit: "",
+        category: ""
+      })
+      Dialog.show({
+        type: "SUCCESS",
+        autoClose: 1000,
+        title: "Product Added"
+      })
+    },
+    onError: () => {
+      Dialog.show({
+        type: "DANGER",
+        autoClose: 1000,
+        title: "Error in adding product"
+      })
+    }
+  })
+
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-row py-8 px-4 ">
-        <Image
-          className="w-14 h-14 rounded-xl"
-          source={(require("../../assets/images/profile.png"))} />
-        <View className="px-5">
-          <Text className="text-black text-xl font-mulish-bold">
-            Admin
-          </Text>
-          <Text className="font-mulish-regular text-black">Admin</Text>
 
+      <View className="flex-row py-8 px-4 border-b-gray-300 border-b-2 justify-between">
+        <View className="flex-row items-center justify-center">
+
+          <Avatar.Icon size={responsiveHeight(6)} icon="account" color='white'
+            style={{ backgroundColor: "#bbbbbb" }} />
+
+          <View className="px-5">
+
+            <Text className="text-black font-mulish-bold"
+              style={{ fontSize: responsiveFontSize(2.5) }}>
+              Admin
+            </Text>
+
+            <Text className="font-mulish-regular text-black"
+              style={{ fontSize: responsiveFontSize(1.75) }}>
+              Admin
+            </Text>
+          </View>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            setIsModalVisible(true)
+          }}
+          hitSlop={10}
+          className="items-center justify-center px-2">
+          <Feather name="plus-circle" color="#53B175" size={responsiveHeight(3.5)} />
+        </TouchableOpacity>
+
       </View>
-      <Divider bold />
 
 
       {data?.map((data, index) => {
@@ -149,7 +137,7 @@ const AdminSettingScreen = ({ navigation }) => {
               }}
               onPress={() => {
                 data?.title === "Download Pending Orders" ?
-                  downloadCSV() :
+                  downloadCSVForPendingOrders() :
                   data?.title === "Mark all pending orders as delivered" ?
                     setConfirmation(true) :
                     data?.title === "Download Pending Invoices" ?
@@ -265,10 +253,127 @@ const AdminSettingScreen = ({ navigation }) => {
       </View>
 
 
+      <Modal
+        testID={'modalForStartDate'}
+        animationIn={"slideInLeft"}
+        animationOut={"slideOutLeft"}
+        animationOutTiming={500}
+        animationInTiming={700}
+        hideModalContentWhileAnimating
+        backdropTransitionOutTiming={0}
+        isVisible={isModalVisible}
+        onBackButtonPress={() => {
+          setIsModalVisible(false)
+          setNewProductData({
+            title: "",
+            baseQuantity: "",
+            unit: "",
+            category: ""
+          })
+        }}
+      >
+
+        <View className="flex-1 justify-center flex-col ">
 
 
-    </SafeAreaView>
+          <View className="bg-white justify-center items-center w-full rounded-xl">
+            <View className=" p-4 w-full  max-h-full">
+              <View className="flex-row items-center justify-between p-4 border-b rounded-t ">
+                <Text className="text-xl font-semibold text-gray-900 ">
+                  Add Product
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsModalVisible(false)
+                    setNewProductData({
+                      title: "",
+                      baseQuantity: "",
+                      unit: "",
+                      category: ""
+                    })
+                  }}
+                  className=" text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center ">
+                  <MaterialIcons name="close" color="black" size={responsiveHeight(3)} />
+                </TouchableOpacity>
+              </View>
+              <View className="p-4 gap-y-4 ">
+                <View>
+                  <Text
+                    className="block mb-2 text-sm font-medium text-gray-900 ">
+                    Product Name
+                  </Text>
+                  <TextInput
+                    onChangeText={(e) => setNewProductData({ ...newProductData, title: e })}
+                    value={newProductData?.title}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholderTextColor={"black"} />
+                </View>
+                <View>
+                  <Text
+                    className="block mb-2 text-sm font-medium text-gray-900 ">
+                    Starting Quantity
+                  </Text>
+                  <TextInput
+                    keyboardType='numeric'
+                    onChangeText={(e) => setNewProductData({ ...newProductData, baseQuantity: e })}
+                    value={newProductData?.baseQuantity}
+
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholderTextColor={"black"} />
+                </View>
+                <View>
+                  <Text
+                    className="block mb-2 text-sm font-medium text-gray-900 ">
+                    Category
+                  </Text>
+                  <TextInput
+                    onChangeText={(e) => setNewProductData({ ...newProductData, category: e })}
+                    value={newProductData?.category}
+
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholderTextColor={"black"} />
+                </View>
+                <View>
+                  <Text
+                    className="block mb-2 text-sm font-medium text-gray-900 ">
+                    Unit
+                  </Text>
+
+
+                  <TextInput
+                    onChangeText={(e) => setNewProductData({ ...newProductData, unit: e })}
+                    value={newProductData?.unit}
+
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholderTextColor={"black"} />
+                </View>
+
+
+                <TouchableOpacity
+                  disabled={isAdding}
+                  onPress={() => addProduct(newProductData)}
+                  className="w-full  text-white bg-[#53B175]  focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                  {isAdding ?
+                    <ActivityIndicator color='white' size={"small"} />
+                    :
+                    <Text className="text-center font-mulish-semibold text-base text-white">
+                      Add product
+                    </Text>
+                  }
+                </TouchableOpacity>
+
+              </View>
+            </View>
+          </View>
+
+        </View>
+
+
+      </Modal>
+
+    </SafeAreaView >
   )
 }
+
 
 export default AdminSettingScreen

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, Image, StatusBar, PixelRatio, Dimensions } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, Image, StatusBar, PixelRatio, Dimensions, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Heart from "../../assets/icons/tabs/heart.svg"
@@ -154,6 +154,41 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     };
 
 
+    // useFocusEffect(React.useCallback(() => {
+    //     console.log(modifiedProducts.size)
+    //     navigation.addListener('beforeRemove', (e) => {
+    //         if (quantity === product?.baseQuantity ) {
+    //             // If we don't have unsaved changes, then we don't need to do anything
+    //             return;
+    //         }
+
+    //         // Prevent default behavior of leaving the screen
+    //         e.preventDefault();
+
+    //         // Prompt the user before leaving the screen
+    //         Alert.alert(
+    //             'Discard changes?',
+    //             'You have unsaved changes. Are you sure to discard them and leave the screen?',
+    //             [
+    //                 { text: "Don't leave", style: 'cancel', onPress: () => { } },
+    //                 {
+    //                     text: 'Discard',
+    //                     style: 'destructive',
+    //                     // If the user confirmed, then we dispatch the action we blocked earlier
+    //                     // This will continue the action that had triggered the removal of the screen
+    //                     onPress: () => {
+    //                         // queryClient.invalidateQueries({ queryKey: ["allProductsAvailability"] })
+    //                         navigation.dispatch(e.data.action)
+    //                     },
+
+    //                 },
+    //             ]
+    //         );
+    //     }
+
+    //     )
+    // }, [navigation, quantity]))
+
     return (
         <SafeAreaView className="flex-1 bg-white "
             edges={['right', 'top', 'left']}>
@@ -274,7 +309,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                             className="flex-row items-center justify-between pt-5 ">
 
                             <View
-                                className="flex-row items-center">
+                                className="flex-row items-center justify-around">
 
                                 <TouchableOpacity
                                     onLongPress={() => handleLongPress("decreasing")}
@@ -289,7 +324,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
 
 
-                                <Text className=" text-black items-center px-3"
+                                <Text className=" text-black items-center px-3 w-16 text-center"
                                     style={{ fontSize: responsiveFontSize(2.25) }}>
                                     {isFetching ? <ActivityIndicator color='#53B175' /> :
                                         quantity

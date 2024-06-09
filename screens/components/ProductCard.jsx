@@ -25,18 +25,18 @@ const ProductCard = ({ product }) => {
                 style={{ height: responsiveHeight(15) }} />
 
             <Text
-                className="pt-2 text-black items-center font-mulish-bold "
+                className="pt-3 text-black items-center font-mulish-bold  "
                 style={{ fontSize: responsiveFontSize(2) }}>
                 {product?.title[0]}
             </Text>
             <Text
                 className=" font-mulish-medium text-slate-500"
                 style={{ fontSize: responsiveFontSize(1.5) }}>
-                {product?.baseQuantity} {product?.unit}
+                {product?.unit}
             </Text>
 
             <View
-                className="flex-row justify-between pt-3 items-center">
+                className="flex-row justify-between pt-3 gap-x-2 items-center">
                 <Text
                     className="text-black font-mulish-bold"
                     style={{ fontSize: responsiveFontSize(1.85) }}>

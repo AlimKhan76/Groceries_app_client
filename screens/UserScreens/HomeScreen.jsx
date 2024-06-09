@@ -23,16 +23,16 @@ const HomeScreen = ({ navigation }) => {
         refetch
     } = useQuery({
         queryKey: ["Indian Vegetables"],
-        queryFn: ({ queryKey }) => getProductByCategoryAPI(queryKey[0]),
+        queryFn: ({ queryKey }) => getProductByCategoryAPI(queryKey[0], 1),
         enabled: true,
         staleTime: Infinity
     })
+
     const { data: userData, isLoading: isLoadingUserData } = useUserDataQuery()
 
     return (
         <SafeAreaView className=' bg-white flex-1 '
             edges={['right', 'top', 'left']}>
-
             <View className=" justify-center items-center "
                 style={{ marginVertical: responsiveHeight(2.5) }}>
                 <Image
@@ -121,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
                                 </TouchableOpacity>
                             </View>
                             :
-                            bestSellingProducts?.map((product, index) => {
+                            bestSellingProducts?.docs?.map((product, index) => {
                                 if (index < 15) {
                                     return (
                                         <ProductCard key={product?._id} product={product} />
@@ -158,7 +158,52 @@ const HomeScreen = ({ navigation }) => {
 
                 </View>
             </ScrollView>
+            {/* {console.log(bestSellingProducts)}
+            <FlatList
+                columnWrapperStyle={{
+                    justifyContent: "center",
+                    gap: responsiveHeight(1)
+                }}
+                contentContainerStyle={{
 
+                    justifyContent: "center",
+                    gap: responsiveHeight(1)
+                }}
+                className="my-3 "
+                numColumns={2}
+                data={bestSellingProducts?.pages?.map(pages => pages?.docs).flat()}
+                initialNumToRender={15}
+                keyExtractor={(item) => item?._id}
+                renderItem={({ item: product }) => {
+                    return (
+                        <ProductCard product={product} key={product?._id} />
+                    )
+                }}
+
+                ListFooterComponent={
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("CategoryProducts", { category: "Indian Vegetables" })}
+                        className='border-gray-100 border-2 px-4 py-4 rounded-2xl justify-center items-center'
+                        style={{ width: responsiveWidth(45) }}>
+
+                        <View
+                            className="flex-row justify-between py-5 items-center">
+                            <Text
+                                className="text-black font-mulish-semibold text-center"
+                                style={{ fontSize: responsiveFontSize(2.25) }}>
+                                View All Vegetables
+                            </Text>
+                        </View>
+                        <View
+                            className="bg-[#53B175] rounded-2xl p-4 text-center items-center">
+                            <Feather
+                                name="chevron-right"
+                                color="white" size={responsiveHeight(3)} />
+                        </View>
+                    </TouchableOpacity>
+                }
+            >
+            </FlatList> */}
         </SafeAreaView >
     )
 }

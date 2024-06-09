@@ -2,7 +2,8 @@ import axios from "axios"
 import * as SecureStore from 'expo-secure-store';
 
 export const API = axios.create({
-    // baseURL: "http://192.168.0.102:5000/"
+    // http://192.168.217.35:5000/
+    // baseURL: "http://192.168.29.107:5000/"
     baseURL: "https://groceries-app-server.vercel.app/"
 })
 

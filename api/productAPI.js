@@ -12,11 +12,10 @@ exports.changeFavouriteProductAPI = async (productId) => {
     }
 }
 
-exports.getProductByCategoryAPI = async (category) => {
+exports.getProductByCategoryAPI = async (category, pageParam) => {
     try {
-        console.log(category)
-        const { data } = await API.get(`product/getByCategory/${category}`)
-        console.log(`All the products of ${category} are fetched` + data)
+        const { data } = await API.get(`product/getByCategory/${category}/${pageParam}`)
+        console.log(`All the products of ${category} are fetched ` + data)
         return data;
     }
     catch (error) {

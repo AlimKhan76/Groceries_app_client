@@ -1,27 +1,22 @@
-import { View, Text, Image, TouchableOpacity, Keyboard } from 'react-native'
+import { View, Text, TouchableOpacity, Keyboard } from 'react-native'
 import React, { Fragment } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import data from "../components/UserAccountScreenCard"
 import * as SecureStore from "expo-secure-store";
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { getUserDataAPI } from '../../api/userAPI'
+import { useQueryClient } from '@tanstack/react-query'
 import { Divider } from 'react-native-paper'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Feather from "react-native-vector-icons/Feather"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import useUserDataQuery from '../../hooks/useUserData';
 import ReactNativeModal from 'react-native-modal';
+import { Avatar } from 'react-native-paper';
 
 const AccountScreen = ({ navigation }) => {
 
   const queryClient = useQueryClient()
-  // const { data: userData } = useQuery({
-  //   queryKey: ['userData'],
-  //   queryFn: getUserDataAPI,
-  //   staleTime: Infinity,
-  // })
 
-  const { data: userData } = useUserDataQuery()
+  const { data: userData, isLoading } = useUserDataQuery()
 
   const logout = async () => {
     try {
@@ -41,24 +36,37 @@ const AccountScreen = ({ navigation }) => {
     <SafeAreaView className="flex-1 bg-white"
       edges={['right', 'top', 'left']}>
 
-      <View className="flex-row py-8 px-4 border-b-gray-300 border-b-2">
+      <View className="flex-row py-8 px-4 border-b-gray-300 border-b-2 justify-between">
+        <View className="flex-row items-center justify-center">
 
-        <Image
-          className="w-14 h-14 rounded-xl"
-          source={(require("../../assets/images/profile.png"))} />
+          <Avatar.Icon size={responsiveHeight(6)} icon="account" color='white'
+            style={{ backgroundColor: "#bbbbbb" }} />
 
-        <View className="px-5">
+          <View className="px-5">
 
-          <Text className="text-black font-mulish-bold"
-            style={{ fontSize: responsiveFontSize(2.5) }}>
-            {userData?.name}
-          </Text>
+            <Text className="text-black font-mulish-bold"
+              style={{ fontSize: responsiveFontSize(2.5) }}>
+              {isLoading ?
+                "........" :
+                userData?.name
+              }
+            </Text>
 
-          <Text className="font-mulish-regular text-black"
-            style={{ fontSize: responsiveFontSize(1.75) }}>
-            {userData?.contactNo}
-          </Text>
+            <Text className="font-mulish-regular text-black"
+              style={{ fontSize: responsiveFontSize(1.75) }}>
+              {isLoading ?
+                "........" :
+                userData?.contactNo
+              }
+            </Text>
+          </View>
         </View>
+        {/* <TouchableOpacity
+          disabled={isLoading}
+          hitSlop={10}
+          className="items-center justify-center px-2">
+          <Feather name="edit" color={isLoading ? "#b2b2b2" : "#53B175"} size={responsiveHeight(3)} />
+        </TouchableOpacity> */}
 
       </View>
 
